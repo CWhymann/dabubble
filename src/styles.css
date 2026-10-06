@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/nunito-v32-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/nunito-v32-latin-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/nunito-v32-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/nunito-v32-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/nunito-v32-latin-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: 'Nunito', sans-serif;
+
+  --color-purple-1: #444df2;
+  --color-purple-2: #797ef3;
+  --color-light-purple: #adb0d9;
+  --color-bg: #eceefe;
+  --color-text-gray: #686868;
+  --color-online: #92c83e;
+
+  --text-display: 2.875rem;
+  --text-display--line-height: 1.2;
+  --text-display--font-weight: 700;
+
+  --shadow-header: 0 2px 10px #00000014;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background-color: var(--color-bg);
+  font-family: var(--font-sans);
+}
