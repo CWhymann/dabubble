@@ -1,0 +1,12 @@
+<label
+  class="flex w-full max-w-125 items-center gap-7.5 rounded-full bg-bg px-8 py-4.5 focus-within:ring-2 focus-within:ring-purple-2"
+>
+  <img class="size-6 shrink-0" [src]="icon()" alt="" />
+  <input
+    class="min-w-0 flex-1 bg-transparent text-lg leading-[1.2] font-medium text-black outline-hidden placeholder:text-text-gray"
+    [type]="type()"
+    [name]="name()"
+    [placeholder]="placeholder()"
+    [attr.aria-label]="label()"
+  />
+</label>
