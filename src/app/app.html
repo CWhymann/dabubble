@@ -1,14 +1,23 @@
-<main class="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
-  <h1 class="text-display text-purple-1">DABubble</h1>
-  <app-input-field
-    icon="/icons/mail.svg"
-    label="E-Mail"
-    type="email"
-    name="email"
-    placeholder="beispielname@email.com"
-  />
-  <div class="flex gap-4">
-    <app-button-primary>Anmelden</app-button-primary>
-    <app-button-secondary>Gäste-Login</app-button-secondary>
-  </div>
+<main class="flex min-h-screen items-center justify-center p-4">
+  <section class="flex w-full max-w-151.5 flex-col items-center gap-6 rounded-[30px] bg-white p-6">
+    <h1 class="text-display text-purple-1">DABubble</h1>
+    <app-input-field
+      icon="/icons/mail.svg"
+      label="E-Mail"
+      type="email"
+      name="email"
+      placeholder="beispielname@email.com"
+    />
+    <app-input-field
+      icon="/icons/lock.svg"
+      label="Passwort"
+      type="password"
+      name="password"
+      placeholder="Passwort"
+    />
+    <div class="flex gap-4">
+      <app-button-primary>Anmelden</app-button-primary>
+      <app-button-secondary>Gäste-Login</app-button-secondary>
+    </div>
+  </section>
 </main>
