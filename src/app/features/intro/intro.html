@@ -1,0 +1,24 @@
+<div class="pointer-events-none fixed inset-0 z-50">
+  <div
+    class="absolute inset-0 bg-linear-to-t from-purple-dark to-purple-2 transition-opacity duration-500 ease-out"
+    [class.opacity-0]="docked()"
+  ></div>
+  <div
+    class="absolute flex items-center transition-all duration-500 ease-out"
+    [class]="position()"
+  >
+    <img
+      class="w-[1.833em] shrink-0 animate-intro-logo motion-reduce:animate-none"
+      src="/icons/logo.svg"
+      alt=""
+    />
+    <div class="mt-[0.12em] ml-[0.38em] w-[4.61em] [clip-path:inset(0)]">
+      <span
+        class="block animate-intro-name font-figtree leading-none font-extrabold transition-colors duration-500 ease-out motion-reduce:animate-none"
+        [class]="textColor()"
+      >
+        DABubble
+      </span>
+    </div>
+  </div>
+</div>

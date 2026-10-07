@@ -1,27 +1,4 @@
-<main class="flex min-h-screen items-center justify-center p-4">
-  <section
-    class="flex w-full max-w-151.5 flex-col items-center gap-6 rounded-[30px] bg-white p-4 sm:p-6"
-  >
-    <h1 class="text-display text-purple-1">DABubble</h1>
-    <app-input-field
-      icon="/icons/mail.svg"
-      label="E-Mail"
-      type="email"
-      name="email"
-      placeholder="beispielname@email.com"
-    />
-    <app-input-field
-      icon="/icons/lock.svg"
-      label="Passwort"
-      type="password"
-      name="password"
-      placeholder="Passwort"
-    />
-    <app-forgot-password-link />
-    <app-button-google />
-    <div class="flex flex-wrap justify-center gap-4">
-      <app-button-primary>Anmelden</app-button-primary>
-      <app-button-secondary>Gäste-Login</app-button-secondary>
-    </div>
-  </section>
-</main>
+<app-login [hideLogo]="introRunning()" />
+@if (introRunning()) {
+  <app-intro (finished)="introRunning.set(false)" />
+}

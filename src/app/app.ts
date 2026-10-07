@@ -1,14 +1,13 @@
-import { Component } from '@angular/core';
-import { ButtonGoogle } from './shared/button-google/button-google';
-import { ButtonPrimary } from './shared/button-primary/button-primary';
-import { ButtonSecondary } from './shared/button-secondary/button-secondary';
-import { ForgotPasswordLink } from './shared/forgot-password-link/forgot-password-link';
-import { InputField } from './shared/input-field/input-field';
+import { Component, signal } from '@angular/core';
+import { Intro } from './features/intro/intro';
+import { Login } from './pages/login/login';
 
 @Component({
   selector: 'app-root',
-  imports: [ButtonGoogle, ButtonPrimary, ButtonSecondary, ForgotPasswordLink, InputField],
+  imports: [Intro, Login],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {}
+export class App {
+  protected readonly introRunning = signal(true);
+}

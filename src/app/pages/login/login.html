@@ -1,0 +1,57 @@
+<div
+  class="relative flex min-h-screen flex-col items-center gap-8 px-4 pt-18 pb-8 lg:justify-center lg:p-0"
+>
+  <div class="lg:absolute lg:top-18.75 lg:left-18.75" [class.invisible]="hideLogo()">
+    <app-logo />
+  </div>
+
+  <section
+    class="flex w-full max-w-151.5 flex-col items-center gap-5 rounded-[30px] bg-white px-5 py-8.75 shadow-header lg:min-h-192.25 lg:gap-10 lg:px-13.25 lg:py-12.5"
+  >
+    <div class="flex flex-col items-center gap-3.75 text-center lg:gap-7.5">
+      <h1 class="text-[32px] leading-[1.2] font-bold text-purple-1 lg:text-display">Anmeldung</h1>
+      <p class="max-w-121.5 text-[17px] leading-[1.2] text-black lg:text-xl">
+        Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.
+      </p>
+    </div>
+
+    <div class="flex w-full flex-col items-center gap-7.5 lg:gap-10">
+      <app-input-field
+        icon="/icons/mail.svg"
+        label="E-Mail"
+        type="email"
+        name="email"
+        placeholder="beispielname@email.com"
+      />
+      <app-input-field
+        icon="/icons/lock.svg"
+        label="Passwort"
+        type="password"
+        name="password"
+        placeholder="Passwort"
+      />
+    </div>
+
+    <app-forgot-password-link />
+    <app-or-divider />
+    <app-button-google />
+
+    <div class="flex flex-wrap justify-center gap-5 lg:gap-7.5">
+      <app-button-primary>Anmelden</app-button-primary>
+      <app-button-secondary>Gäste-Login</app-button-secondary>
+    </div>
+  </section>
+
+  <div
+    class="flex flex-col items-center gap-5 lg:absolute lg:top-18.75 lg:right-18.75 lg:items-end lg:gap-2.5"
+  >
+    <p class="text-lg text-black">Neu bei DABubble?</p>
+    <app-button-secondary class="lg:hidden" [compact]="true">Konto erstellen</app-button-secondary>
+    <app-text-link class="hidden lg:block">Konto erstellen</app-text-link>
+  </div>
+
+  <nav class="flex gap-4 lg:absolute lg:bottom-12 lg:left-1/2 lg:-translate-x-1/2">
+    <app-text-link>Impressum</app-text-link>
+    <app-text-link>Datenschutz</app-text-link>
+  </nav>
+</div>
