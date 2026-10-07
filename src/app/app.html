@@ -1,5 +1,7 @@
 <main class="flex min-h-screen items-center justify-center p-4">
-  <section class="flex w-full max-w-151.5 flex-col items-center gap-6 rounded-[30px] bg-white p-6">
+  <section
+    class="flex w-full max-w-151.5 flex-col items-center gap-6 rounded-[30px] bg-white p-4 sm:p-6"
+  >
     <h1 class="text-display text-purple-1">DABubble</h1>
     <app-input-field
       icon="/icons/mail.svg"
@@ -16,7 +18,7 @@
       placeholder="Passwort"
     />
     <app-button-google />
-    <div class="flex gap-4">
+    <div class="flex flex-wrap justify-center gap-4">
       <app-button-primary>Anmelden</app-button-primary>
       <app-button-secondary>Gäste-Login</app-button-secondary>
     </div>
