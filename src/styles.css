@@ -40,8 +40,49 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/figtree-v9-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/figtree-v9-latin-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/figtree-v9-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/figtree-v9-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/figtree-v9-latin-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: 'Nunito', sans-serif;
+  --font-figtree: 'Figtree', sans-serif;
 
   --color-purple-1: #444df2;
   --color-purple-2: #797ef3;
