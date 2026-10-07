@@ -80,9 +80,50 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/open-sans-v44-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/open-sans-v44-latin-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/open-sans-v44-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/open-sans-v44-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/open-sans-v44-latin-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: 'Nunito', sans-serif;
   --font-figtree: 'Figtree', sans-serif;
+  --font-open-sans: 'Open Sans', sans-serif;
 
   --color-purple-1: #444df2;
   --color-purple-2: #797ef3;
@@ -90,6 +131,7 @@
   --color-light-purple: #adb0d9;
   --color-bg: #eceefe;
   --color-text-gray: #686868;
+  --color-menu: #42526e;
   --color-online: #92c83e;
 
   --text-display: 2.875rem;
