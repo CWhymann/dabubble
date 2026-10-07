@@ -1,4 +1,4 @@
-<app-login [hideLogo]="introRunning()" />
-@if (introRunning()) {
-  <app-intro (finished)="introRunning.set(false)" />
+<router-outlet />
+@if (intro.running()) {
+  <app-intro (finished)="intro.finish()" />
 }

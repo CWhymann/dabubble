@@ -1,10 +1,4 @@
-<div
-  class="relative flex min-h-screen flex-col items-center gap-8 px-4 pt-18 pb-8 lg:justify-center lg:p-0"
->
-  <div class="lg:absolute lg:top-18.75 lg:left-18.75" [class.invisible]="hideLogo()">
-    <app-logo />
-  </div>
-
+<app-auth-layout>
   <section
     class="flex w-full max-w-151.5 flex-col items-center gap-5 rounded-[30px] bg-white px-5 py-8.75 shadow-header lg:min-h-192.25 lg:gap-10 lg:px-13.25 lg:py-12.5"
   >
@@ -49,9 +43,4 @@
     <app-button-secondary class="lg:hidden" [compact]="true">Konto erstellen</app-button-secondary>
     <app-text-link class="hidden lg:block">Konto erstellen</app-text-link>
   </div>
-
-  <nav class="flex gap-4 lg:absolute lg:bottom-12 lg:left-1/2 lg:-translate-x-1/2">
-    <app-text-link>Impressum</app-text-link>
-    <app-text-link>Datenschutz</app-text-link>
-  </nav>
-</div>
+</app-auth-layout>
