@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import {
   EMAIL_ERROR,
   EMAIL_PATTERN,
@@ -26,6 +27,7 @@ import { TextLink } from '../../shared/text-link/text-link';
     InputField,
     OrDivider,
     ReactiveFormsModule,
+    RouterLink,
     TextLink,
   ],
   templateUrl: './login.html',

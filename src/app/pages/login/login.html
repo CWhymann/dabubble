@@ -48,7 +48,9 @@
     class="flex flex-col items-center gap-5 lg:absolute lg:top-18.75 lg:right-18.75 lg:items-end lg:gap-2.5"
   >
     <p class="text-lg text-black">Neu bei DABubble?</p>
-    <app-button-secondary class="lg:hidden" [compact]="true">Konto erstellen</app-button-secondary>
-    <app-text-link class="hidden lg:block">Konto erstellen</app-text-link>
+    <app-button-secondary class="lg:hidden" routerLink="/register" [compact]="true">
+      Konto erstellen
+    </app-button-secondary>
+    <app-text-link class="hidden lg:block" routerLink="/register">Konto erstellen</app-text-link>
   </div>
 </app-auth-layout>
