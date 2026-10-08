@@ -21,6 +21,10 @@ export class Auth {
     });
   }
 
+  async updatePassword(password: string) {
+    return this.supabase.client.auth.updateUser({ password });
+  }
+
   async signOut() {
     return this.supabase.client.auth.signOut({
       scope: 'local',
