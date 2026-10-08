@@ -18,6 +18,7 @@
         label="E-Mail"
         type="email"
         name="email"
+        autocomplete="email"
         placeholder="beispielname@email.com"
         [error]="emailError()"
       />
@@ -27,7 +28,9 @@
         label="Passwort"
         type="password"
         name="password"
+        autocomplete="current-password"
         placeholder="Passwort"
+        [error]="passwordError()"
       />
     </div>
 

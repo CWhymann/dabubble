@@ -1,4 +1,4 @@
-import { Component, forwardRef, input, signal } from '@angular/core';
+import { Component, computed, forwardRef, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -16,9 +16,15 @@ export class InputField implements ControlValueAccessor {
   readonly name = input('');
   readonly placeholder = input('');
   readonly error = input('');
+  readonly autocomplete = input('off');
 
   protected readonly value = signal('');
   protected readonly isDisabled = signal(false);
+  protected readonly passwordVisible = signal(false);
+  protected readonly isPassword = computed(() => this.type() === 'password');
+  protected readonly inputType = computed(() =>
+    this.isPassword() && this.passwordVisible() ? 'text' : this.type(),
+  );
 
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
@@ -47,5 +53,9 @@ export class InputField implements ControlValueAccessor {
 
   protected handleBlur(): void {
     this.onTouched();
+  }
+
+  protected togglePassword(): void {
+    this.passwordVisible.update((visible) => !visible);
   }
 }

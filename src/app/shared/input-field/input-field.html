@@ -4,16 +4,43 @@
   <img class="size-6 shrink-0" [src]="icon()" alt="" />
   <input
     class="min-w-0 flex-1 bg-transparent text-lg leading-[1.2] font-medium text-black outline-hidden placeholder:text-text-gray"
-    [type]="type()"
+    [type]="inputType()"
     [name]="name()"
     [placeholder]="placeholder()"
     [value]="value()"
     [disabled]="isDisabled()"
+    [attr.autocomplete]="autocomplete()"
     [attr.aria-label]="label()"
     [attr.aria-invalid]="error() ? true : null"
     (input)="handleInput($event)"
     (blur)="handleBlur()"
   />
+  @if (isPassword()) {
+    <button
+      class="flex size-6 shrink-0 cursor-pointer items-center justify-center text-text-gray transition-colors duration-100 hover:text-purple-1"
+      type="button"
+      [attr.aria-label]="passwordVisible() ? 'Passwort verbergen' : 'Passwort anzeigen'"
+      [attr.aria-pressed]="passwordVisible()"
+      (click)="togglePassword()"
+    >
+      <svg
+        class="size-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+        <circle cx="12" cy="12" r="3" />
+        @if (passwordVisible()) {
+          <path d="M4 4l16 16" />
+        }
+      </svg>
+    </button>
+  }
 </label>
 @if (error()) {
   <p class="mt-1.5 text-sm leading-[1.2] text-error">{{ error() }}</p>
