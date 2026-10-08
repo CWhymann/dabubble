@@ -1,0 +1,17 @@
+<button
+  class="group relative size-6 shrink-0 cursor-pointer"
+  type="button"
+  role="checkbox"
+  [attr.aria-checked]="checked()"
+  [attr.aria-label]="label()"
+  [disabled]="isDisabled()"
+  (click)="toggle()"
+  (blur)="handleBlur()"
+>
+  <img class="absolute inset-0 size-full group-hover:opacity-0" [src]="icon()" alt="" />
+  <img
+    class="absolute inset-0 size-full opacity-0 group-hover:opacity-100"
+    [src]="iconHover()"
+    alt=""
+  />
+</button>

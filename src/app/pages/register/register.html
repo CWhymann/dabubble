@@ -3,6 +3,7 @@
     class="relative flex w-full max-w-151.5 flex-col items-center gap-7.5 rounded-[30px] bg-white px-5 py-8.75 shadow-header lg:min-h-167.25 lg:gap-10 lg:px-13.25 lg:py-10"
     [formGroup]="form"
     novalidate
+    (ngSubmit)="submit()"
   >
     <button
       class="absolute top-2 left-2 flex size-10 cursor-pointer items-center justify-center lg:top-11.25 lg:left-8"
@@ -56,12 +57,7 @@
       </div>
 
       <div class="flex w-full max-w-125 flex-wrap items-center gap-2">
-        <input
-          class="size-6 shrink-0 cursor-pointer accent-purple-1"
-          type="checkbox"
-          formControlName="privacy"
-          aria-label="Der Datenschutzerklärung zustimmen"
-        />
+        <app-checkbox formControlName="privacy" label="Der Datenschutzerklärung zustimmen" />
         <span class="font-open-sans text-base leading-[1.2] text-menu">Ich stimme der</span>
         <button
           class="-mx-1 cursor-pointer rounded-[30px] px-1 py-1.25 font-figtree text-lg leading-[1.2] whitespace-nowrap text-purple-2 transition-colors duration-100 ease-in hover:bg-bg hover:text-purple-1"
