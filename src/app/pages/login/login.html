@@ -2,6 +2,7 @@
   <form
     class="flex w-full max-w-151.5 flex-col items-center gap-5 rounded-[30px] bg-white px-5 py-8.75 shadow-header lg:min-h-192.25 lg:gap-10 lg:px-13.25 lg:py-12.5"
     [formGroup]="form"
+    (ngSubmit)="submit()"
     novalidate
   >
     <div class="flex flex-col items-center gap-3.75 text-center lg:gap-7.5">
@@ -22,6 +23,7 @@
         placeholder="beispielname@email.com"
         [error]="emailError()"
       />
+
       <app-input-field
         formControlName="password"
         icon="/icons/lock.svg"

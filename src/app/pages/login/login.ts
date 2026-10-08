@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Auth } from '../../core/auth';
 import {
   EMAIL_ERROR,
   EMAIL_PATTERN,
@@ -34,6 +35,10 @@ import { TextLink } from '../../shared/text-link/text-link';
 })
 export class Login {
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly router = inject(Router);
+  private readonly auth = inject(Auth);
+
+  protected readonly loginError = signal('');
 
   protected readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.pattern(EMAIL_PATTERN)]],
@@ -50,5 +55,21 @@ export class Login {
     const password = this.form.controls.password;
     const tooShort = password.touched && password.hasError('minlength');
     return tooShort ? PASSWORD_LENGTH_ERROR : '';
+  }
+
+  protected async submit(): Promise<void> {
+    if (this.form.invalid) return;
+
+    this.loginError.set('');
+
+    const { email, password } = this.form.getRawValue();
+    const { error } = await this.auth.signIn(email, password);
+
+    if (error) {
+      this.loginError.set(error.message);
+      return;
+    }
+
+    await this.router.navigateByUrl('/home');
   }
 }
