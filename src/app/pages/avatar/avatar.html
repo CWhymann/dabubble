@@ -1,1 +1,70 @@
-<app-auth-layout></app-auth-layout>
+<app-auth-layout>
+  <section
+    class="relative flex w-full max-w-151.5 flex-col items-center gap-6 rounded-[30px] bg-white px-5.25 py-6.5 shadow-header lg:min-h-167.25 lg:gap-0 lg:px-11 lg:py-10"
+  >
+    <button
+      class="absolute top-5 left-5.5 flex size-10 cursor-pointer items-center justify-center lg:top-11.25 lg:left-8"
+      type="button"
+      aria-label="Zurück"
+      (click)="goBack()"
+    >
+      <img src="/icons/13.%20go_back.svg" alt="" />
+    </button>
+
+    <h1
+      class="max-w-54.5 pt-9 text-center text-[32px] leading-[1.2] font-bold text-purple-1 min-[400px]:pt-0 lg:max-w-none lg:text-display"
+    >
+      Wähle deinen Avatar
+    </h1>
+
+    <div class="flex flex-col items-center gap-6 lg:mt-14 lg:gap-8">
+      @if (selected(); as src) {
+        <img class="size-30 rounded-full lg:size-42" [src]="src" alt="" />
+      } @else {
+        <div class="rounded-full bg-purple-2 p-4">
+          <img class="size-22 lg:size-34" src="/icons/person-placeholder.svg" alt="" />
+        </div>
+      }
+
+      <div class="flex w-full max-w-118 flex-col gap-4">
+        <div class="flex flex-col gap-2 leading-[normal] text-black">
+          <p class="text-center text-[32px] font-bold">{{ name() }}</p>
+          <p class="text-xl">Aus der Liste wählen</p>
+        </div>
+
+        <div
+          class="flex flex-wrap justify-center gap-1 lg:justify-start lg:gap-2"
+          role="group"
+          aria-label="Avatar auswählen"
+        >
+          @for (avatar of avatars; track avatar.src) {
+            <button
+              class="cursor-pointer rounded-full p-1"
+              type="button"
+              [attr.aria-label]="avatar.name"
+              [attr.aria-pressed]="selected() === avatar.src"
+              (click)="select(avatar.src)"
+            >
+              <img
+                class="size-12 rounded-full lg:size-16"
+                [class]="
+                  selected() === avatar.src
+                    ? 'outline-4 outline-bg'
+                    : 'hover:outline-4 hover:outline-light-purple'
+                "
+                [src]="avatar.src"
+                alt=""
+              />
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="flex w-full justify-end lg:mt-auto">
+      <app-button-primary type="button" [disabled]="!selected()" (click)="submit()">
+        Weiter
+      </app-button-primary>
+    </div>
+  </section>
+</app-auth-layout>

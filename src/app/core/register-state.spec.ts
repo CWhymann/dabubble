@@ -19,4 +19,11 @@ describe('RegisterState', () => {
     service.clear();
     expect(service.data()).toBeNull();
   });
+
+  it('should save the avatar and clear it with the data', () => {
+    service.selectAvatar('/icons/avatar-noah-braun.svg');
+    expect(service.avatar()).toBe('/icons/avatar-noah-braun.svg');
+    service.clear();
+    expect(service.avatar()).toBeNull();
+  });
 });
