@@ -7,6 +7,14 @@
     [type]="type()"
     [name]="name()"
     [placeholder]="placeholder()"
+    [value]="value()"
+    [disabled]="isDisabled()"
     [attr.aria-label]="label()"
+    [attr.aria-invalid]="error() ? true : null"
+    (input)="handleInput($event)"
+    (blur)="handleBlur()"
   />
 </label>
+@if (error()) {
+  <p class="mt-1.5 text-sm leading-[1.2] text-error">{{ error() }}</p>
+}
