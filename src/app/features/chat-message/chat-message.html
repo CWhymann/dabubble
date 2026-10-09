@@ -1,0 +1,63 @@
+<article
+  class="group flex gap-7.5 py-2.5 hover:bg-bg"
+  [class]="message().own ? 'flex-row-reverse pr-11.25 pl-36.5' : 'pl-11.25'"
+>
+  <img
+    class="size-17.5 shrink-0 self-start rounded-full bg-white"
+    [class.shadow-header]="message().own"
+    [src]="message().avatar"
+    alt=""
+  />
+  <div
+    class="flex min-w-0 flex-1 flex-col gap-2"
+    [class]="message().own ? 'items-end' : 'items-start'"
+  >
+    <div class="flex items-center gap-5" [class.flex-row-reverse]="message().own">
+      <button type="button" class="cursor-pointer text-lg font-bold hover:text-purple-1">
+        {{ message().author }}
+      </button>
+      <span class="text-sm text-text-gray">{{ message().time }} Uhr</span>
+    </div>
+
+    <p
+      class="w-fit max-w-full p-3.75 text-lg wrap-break-word"
+      [class]="
+        message().own
+          ? 'rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-purple-2 text-white'
+          : 'rounded-tr-[30px] rounded-br-[30px] rounded-bl-[30px] bg-bg group-hover:bg-white'
+      "
+    >
+      {{ message().text }}
+    </p>
+
+    @if (message().replies; as replies) {
+      <div class="flex items-center gap-5">
+        <button type="button" class="cursor-pointer text-lg text-purple-3 hover:text-purple-1">
+          {{ replies.count }} {{ replies.count === 1 ? 'Antwort' : 'Antworten' }}
+        </button>
+        <span class="text-sm text-text-gray">Letzte Antwort {{ replies.last }}</span>
+      </div>
+    }
+
+    @if (message().reactions.length) {
+      <div class="flex items-center gap-2">
+        @for (reaction of message().reactions; track reaction.label) {
+          <button
+            type="button"
+            class="flex cursor-pointer items-center gap-2.5 rounded-[20px] border border-light-purple bg-white px-2.5 py-1.25 text-base"
+          >
+            <img class="size-6" [src]="reaction.emoji" [alt]="reaction.label" />
+            {{ reaction.count }}
+          </button>
+        }
+        <button
+          type="button"
+          class="cursor-pointer rounded-[20px] bg-white p-1.25"
+          aria-label="Reaktion hinzufügen"
+        >
+          <img class="size-6" src="/icons/add-reaction.svg" alt="" />
+        </button>
+      </div>
+    }
+  </div>
+</article>

@@ -17,13 +17,17 @@
     <app-workspace-menu />
   </nav>
 
-  <main class="flex min-w-0 flex-col rounded-[30px] bg-white">
+  <main class="flex min-h-0 min-w-0 flex-col rounded-[30px] bg-white">
     <header
       class="relative flex h-24 items-center rounded-t-[30px] bg-white px-11.25 shadow-header"
     >
       <app-chat-header />
     </header>
-    <section class="flex-1 px-8.75 pb-5" aria-label="Nachrichten"></section>
+    <section class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5" aria-label="Nachrichten">
+      <div class="mt-auto">
+        <app-chat-messages />
+      </div>
+    </section>
   </main>
 
   <aside class="hidden rounded-[30px] bg-white 2xl:flex 2xl:flex-col" aria-label="Thread">

@@ -1,0 +1,15 @@
+<div class="flex flex-col gap-5">
+  @for (group of groups; track group.label) {
+    <div class="relative mx-8.75 flex h-8.75 items-center justify-center">
+      <div class="absolute inset-x-0 top-1/2 border-t border-light-purple"></div>
+      <span
+        class="relative rounded-[30px] border border-light-purple bg-white px-3.75 py-1.25 text-lg"
+      >
+        {{ group.label }}
+      </span>
+    </div>
+    @for (message of group.messages; track $index) {
+      <app-chat-message [message]="message" />
+    }
+  }
+</div>
