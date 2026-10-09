@@ -21,6 +21,12 @@ export class Auth {
     });
   }
 
+  async sendResetEmail(email: string) {
+    return this.supabase.client.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+  }
+
   async updatePassword(password: string) {
     return this.supabase.client.auth.updateUser({ password });
   }

@@ -1,0 +1,59 @@
+<app-auth-layout>
+  <form
+    class="relative flex h-auto w-full max-w-173 flex-col items-center gap-8 rounded-[30px] bg-white px-5 py-8 shadow-header lg:w-173 lg:max-w-none lg:gap-10 lg:px-22.5 lg:py-10"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    novalidate
+  >
+    <button
+      class="absolute top-5 left-5 flex size-10 cursor-pointer items-center justify-center lg:top-11.25 lg:left-8"
+      type="button"
+      aria-label="Zurück"
+      (click)="goBack()"
+    >
+      <img src="/icons/13.%20go_back.svg" alt="" />
+    </button>
+
+    <div class="flex flex-col items-center gap-3.75 pt-7 text-center lg:gap-8 lg:pt-0">
+      <h1
+        class="text-[32px] leading-[1.2] font-bold text-purple-1 lg:text-display lg:whitespace-nowrap"
+      >
+        Passwort zurücksetzen
+      </h1>
+      <p class="text-[17px] leading-[1.2] text-black lg:text-xl">
+        Bitte geben Sie Ihre E-Mail-Adresse ein.
+      </p>
+    </div>
+
+    <div class="flex w-full max-w-121.5 flex-col items-center gap-7.5 lg:gap-10">
+      <app-input-field
+        formControlName="email"
+        icon="/icons/mail.svg"
+        label="E-Mail"
+        type="email"
+        name="email"
+        autocomplete="email"
+        placeholder="beispielname@email.com"
+        [error]="emailError()"
+      />
+
+      <p class="text-center text-[17px] leading-[1.2] text-text-gray lg:text-xl">
+        Wir senden Ihnen eine E-Mail, über die
+        <br class="hidden sm:block" />
+        Sie Ihr Passwort ändern können.
+      </p>
+
+      <div class="flex w-full justify-end">
+        <app-button-primary type="submit" [disabled]="form.invalid"
+          >E-Mail senden</app-button-primary
+        >
+      </div>
+    </div>
+
+    @if (submitError()) {
+      <p class="text-center text-sm leading-[1.2] text-error">
+        {{ submitError() }}
+      </p>
+    }
+  </form>
+</app-auth-layout>
