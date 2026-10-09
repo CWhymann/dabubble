@@ -1,3 +1,31 @@
-<div class="flex min-h-screen items-center justify-center">
-  <h1 class="text-3xl font-bold text-purple-1">Anmeldung erfolgreich</h1>
+<div
+  class="grid min-h-dvh grid-cols-1 grid-rows-[1fr] gap-5 p-4 lg:h-dvh lg:grid-cols-[22.875rem_minmax(0,1fr)] lg:grid-rows-[4.375rem_minmax(0,1fr)] lg:px-5 lg:pt-6.25 lg:pb-6.25 2xl:grid-cols-[22.875rem_minmax(0,1fr)_30.3125rem]"
+>
+  <header class="hidden lg:col-span-full lg:flex lg:items-center lg:gap-5">
+    <div class="w-91.5 shrink-0 pl-6.25" aria-label="Workspace-Name"></div>
+    <div class="h-17.5 min-w-0 flex-1 rounded-[42px] bg-white" aria-label="Suche"></div>
+    <div
+      class="flex w-85.5 shrink-0 justify-end 2xl:w-121.25 2xl:pr-3.5"
+      aria-label="Profilmenü"
+    ></div>
+  </header>
+
+  <nav
+    class="hidden rounded-[30px] bg-white px-7.5 py-8 lg:block"
+    aria-label="Workspace-Menü"
+  ></nav>
+
+  <main class="flex min-w-0 flex-col rounded-[30px] bg-white">
+    <header
+      class="relative flex h-24 items-center justify-between rounded-t-[30px] bg-white px-11.25 shadow-header"
+    ></header>
+    <section class="flex-1 px-8.75 pb-5" aria-label="Nachrichten"></section>
+  </main>
+
+  <aside class="hidden rounded-[30px] bg-white 2xl:flex 2xl:flex-col" aria-label="Thread">
+    <header
+      class="relative flex h-26 items-center rounded-t-[30px] bg-white px-10 shadow-header"
+    ></header>
+    <section class="flex-1 px-5 pb-5" aria-label="Thread-Nachrichten"></section>
+  </aside>
 </div>
