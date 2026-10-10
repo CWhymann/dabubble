@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { DayGroup } from '../../core/chat';
 import { AVATARS } from '../../core/avatars';
 import { ChatMessage } from '../chat-message/chat-message';
@@ -11,6 +11,8 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
   templateUrl: './chat-messages.html',
 })
 export class ChatMessages {
+  readonly openThread = output<void>();
+
   protected readonly groups: DayGroup[] = [
     {
       label: 'Dienstag, 14 Januar',

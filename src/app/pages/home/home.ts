@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { MessageBox } from '../../features/message-box/message-box';
@@ -22,4 +22,14 @@ import { Logo } from '../../shared/logo/logo';
   ],
   templateUrl: './home.html',
 })
-export class Home {}
+export class Home {
+  protected readonly threadOpen = signal(true);
+
+  protected openThread(): void {
+    this.threadOpen.set(true);
+  }
+
+  protected closeThread(): void {
+    this.threadOpen.set(false);
+  }
+}

@@ -22,7 +22,11 @@
 
     @if (message().replies; as replies) {
       <div class="flex items-center gap-5">
-        <button type="button" class="cursor-pointer text-lg text-purple-3 hover:text-purple-1">
+        <button
+          type="button"
+          class="cursor-pointer text-lg text-purple-3 hover:text-purple-1"
+          (click)="openThread.emit()"
+        >
           {{ replies.count }} {{ replies.count === 1 ? 'Antwort' : 'Antworten' }}
         </button>
         <span class="text-sm text-text-gray">Letzte Antwort {{ replies.last }}</span>

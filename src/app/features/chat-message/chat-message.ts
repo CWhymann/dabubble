@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Message } from '../../core/chat';
 
 @Component({
@@ -8,6 +8,7 @@ import { Message } from '../../core/chat';
 export class ChatMessage {
   readonly message = input.required<Message>();
   readonly compact = input(false);
+  readonly openThread = output<void>();
 
   protected readonly spacing = computed(() => {
     const own = this.message().own;

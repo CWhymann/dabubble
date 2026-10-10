@@ -1,5 +1,6 @@
 <div
-  class="grid min-h-dvh grid-cols-1 grid-rows-[1fr] gap-5 p-4 lg:h-dvh lg:grid-cols-[22.875rem_minmax(0,1fr)] lg:grid-rows-[4.375rem_minmax(0,1fr)] lg:px-5 lg:pt-6.25 lg:pb-6.25 2xl:grid-cols-[22.875rem_minmax(0,1fr)_30.3125rem]"
+  class="grid min-h-dvh grid-cols-1 grid-rows-[1fr] gap-5 p-4 lg:h-dvh lg:grid-cols-[22.875rem_minmax(0,1fr)] lg:grid-rows-[4.375rem_minmax(0,1fr)] lg:px-5 lg:pt-6.25 lg:pb-6.25"
+  [class]="threadOpen() ? '2xl:grid-cols-[22.875rem_minmax(0,1fr)_30.3125rem]' : ''"
 >
   <header class="hidden lg:col-span-full lg:flex lg:items-center lg:gap-5">
     <div class="w-91.5 shrink-0 pl-6.25">
@@ -8,7 +9,10 @@
     <div class="min-w-0 flex-1">
       <app-search-bar />
     </div>
-    <div class="flex w-85.5 shrink-0 justify-end 2xl:w-121.25 2xl:pr-3.5">
+    <div
+      class="flex w-85.5 shrink-0 justify-end"
+      [class]="threadOpen() ? '2xl:w-121.25 2xl:pr-3.5' : ''"
+    >
       <app-profile-menu name="Frederik Beck" avatar="/icons/avatar-frederik-beck.svg" />
     </div>
   </header>
@@ -25,7 +29,7 @@
     </header>
     <section class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5" aria-label="Nachrichten">
       <div class="mt-auto">
-        <app-chat-messages />
+        <app-chat-messages (openThread)="openThread()" />
       </div>
     </section>
     <div class="mx-8.75 mb-10">
@@ -33,31 +37,34 @@
     </div>
   </main>
 
-  <aside class="hidden rounded-[30px] bg-white 2xl:flex 2xl:flex-col" aria-label="Thread">
-    <header
-      class="relative flex h-26 items-center justify-between rounded-t-[30px] bg-white px-10 shadow-header"
-    >
-      <div class="flex items-center gap-1.25">
-        <h2 class="text-2xl font-bold">Thread</h2>
-        <img class="size-4" src="/icons/tag-small.svg" alt="" />
-        <span class="text-sm text-purple-2">Entwicklerteam</span>
-      </div>
-      <button
-        type="button"
-        class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
-        aria-label="Thread schließen"
+  @if (threadOpen()) {
+    <aside class="hidden rounded-[30px] bg-white 2xl:flex 2xl:flex-col" aria-label="Thread">
+      <header
+        class="relative flex h-26 items-center justify-between rounded-t-[30px] bg-white px-10 shadow-header"
       >
-        <img class="size-6" src="/icons/close.svg" alt="" />
-      </button>
-    </header>
-    <section
-      class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5"
-      aria-label="Thread-Nachrichten"
-    >
-      <app-thread />
-    </section>
-    <div class="mx-5 mb-10">
-      <app-message-box placeholder="Antworten..." />
-    </div>
-  </aside>
+        <div class="flex items-center gap-1.25">
+          <h2 class="text-2xl font-bold">Thread</h2>
+          <img class="size-4" src="/icons/tag-small.svg" alt="" />
+          <span class="text-sm text-purple-2">Entwicklerteam</span>
+        </div>
+        <button
+          type="button"
+          class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+          aria-label="Thread schließen"
+          (click)="closeThread()"
+        >
+          <img class="size-6" src="/icons/close.svg" alt="" />
+        </button>
+      </header>
+      <section
+        class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5"
+        aria-label="Thread-Nachrichten"
+      >
+        <app-thread />
+      </section>
+      <div class="mx-5 mb-10">
+        <app-message-box placeholder="Antworten..." />
+      </div>
+    </aside>
+  }
 </div>
