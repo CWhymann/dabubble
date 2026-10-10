@@ -1,0 +1,66 @@
+<div
+  class="flex cursor-text flex-col gap-10 rounded-[20px] border border-light-purple bg-white p-5 focus-within:border-purple-1 hover:not-focus-within:border-purple-2"
+  (click)="field.focus()"
+>
+  <textarea
+    #field
+    rows="1"
+    class="max-h-40 w-full resize-none overflow-y-auto bg-transparent text-lg leading-[normal] text-black field-sizing-content outline-hidden placeholder:text-text-gray"
+    [placeholder]="placeholder()"
+    [attr.aria-label]="placeholder()"
+  ></textarea>
+
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-1.25">
+      <button
+        type="button"
+        class="group relative size-10 cursor-pointer rounded-[20px] hover:bg-bg"
+        aria-label="Emoji einfügen"
+      >
+        <img
+          class="absolute inset-2 size-6 group-hover:opacity-0"
+          src="/icons/sentiment-satisfied.svg"
+          alt=""
+        />
+        <img
+          class="absolute inset-2 size-6 opacity-0 group-hover:opacity-100"
+          src="/icons/sentiment-satisfied-hover.svg"
+          alt=""
+        />
+      </button>
+      <button
+        type="button"
+        class="group relative size-10 cursor-pointer rounded-[20px] hover:bg-bg"
+        aria-label="Person erwähnen"
+      >
+        <img
+          class="absolute inset-2 size-6 group-hover:opacity-0"
+          src="/icons/alternate-email.svg"
+          alt=""
+        />
+        <img
+          class="absolute inset-2 size-6 opacity-0 group-hover:opacity-100"
+          src="/icons/alternate-email-hover.svg"
+          alt=""
+        />
+      </button>
+    </div>
+
+    <button
+      type="button"
+      class="group relative size-10 cursor-pointer"
+      aria-label="Nachricht senden"
+    >
+      <img
+        class="absolute inset-1.25 size-7.5 group-hover:opacity-0"
+        src="/icons/send.svg"
+        alt=""
+      />
+      <img
+        class="absolute inset-1.25 size-7.5 opacity-0 group-hover:opacity-100"
+        src="/icons/send-hover.svg"
+        alt=""
+      />
+    </button>
+  </div>
+</div>
