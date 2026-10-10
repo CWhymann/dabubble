@@ -31,6 +31,10 @@ export class Auth {
     return this.supabase.client.auth.updateUser({ password });
   }
 
+  async signInAsGuest() {
+    return this.supabase.client.auth.signInAnonymously();
+  }
+
   async signOut() {
     return this.supabase.client.auth.signOut({
       scope: 'local',

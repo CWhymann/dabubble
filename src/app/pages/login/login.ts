@@ -72,4 +72,17 @@ export class Login {
 
     await this.router.navigateByUrl('/home');
   }
+
+  protected async guestLogin(): Promise<void> {
+    this.loginError.set('');
+
+    const { error } = await this.auth.signInAsGuest();
+
+    if (error) {
+      this.loginError.set(error.message);
+      return;
+    }
+
+    await this.router.navigateByUrl('/home');
+  }
 }
