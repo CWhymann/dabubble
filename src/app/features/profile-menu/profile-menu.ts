@@ -6,6 +6,7 @@ import { Auth } from '../../core/auth';
   selector: 'app-profile-menu',
   templateUrl: './profile-menu.html',
   host: {
+    class: 'block min-w-0',
     '(document:click)': 'closeOnOutsideClick($event)',
     '(document:keydown.escape)': 'close()',
   },

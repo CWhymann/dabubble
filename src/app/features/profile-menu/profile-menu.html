@@ -1,13 +1,14 @@
 <div class="relative">
   <button
     type="button"
-    class="group flex cursor-pointer items-center gap-5"
+    class="group flex max-w-full cursor-pointer items-center gap-5"
     aria-haspopup="menu"
     [attr.aria-expanded]="open()"
     (click)="toggle()"
   >
     <span
-      class="text-[32px] leading-normal font-bold whitespace-nowrap text-black group-hover:text-purple-2"
+      class="min-w-0 truncate text-[32px] leading-normal font-bold text-black group-hover:text-purple-2"
+      [attr.title]="name()"
       >{{ name() }}</span
     >
     <span class="relative block size-17.5 shrink-0">
