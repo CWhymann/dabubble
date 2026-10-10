@@ -4,6 +4,7 @@ import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { MessageBox } from '../../features/message-box/message-box';
 import { NavToggle } from '../../features/nav-toggle/nav-toggle';
 import { ProfileMenu } from '../../features/profile-menu/profile-menu';
+import { ProfileView } from '../../features/profile-view/profile-view';
 import { SearchBar } from '../../features/search-bar/search-bar';
 import { Thread } from '../../features/thread/thread';
 import { WorkspaceMenu } from '../../features/workspace-menu/workspace-menu';
@@ -18,6 +19,7 @@ import { Logo } from '../../shared/logo/logo';
     MessageBox,
     NavToggle,
     ProfileMenu,
+    ProfileView,
     SearchBar,
     Thread,
     WorkspaceMenu,
@@ -27,6 +29,7 @@ import { Logo } from '../../shared/logo/logo';
 export class Home {
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
+  protected readonly profileOpen = signal(false);
 
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
@@ -49,5 +52,13 @@ export class Home {
 
   protected closeThread(): void {
     this.threadOpen.set(false);
+  }
+
+  protected openProfile(): void {
+    this.profileOpen.set(true);
+  }
+
+  protected closeProfile(): void {
+    this.profileOpen.set(false);
   }
 }

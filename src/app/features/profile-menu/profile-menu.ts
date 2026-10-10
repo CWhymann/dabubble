@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, input, signal } from '@angular/core';
+import { Component, ElementRef, inject, input, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../../core/auth';
 
@@ -17,6 +17,7 @@ export class ProfileMenu {
 
   readonly name = input.required<string>();
   readonly avatar = input.required<string>();
+  readonly openProfile = output<void>();
 
   protected readonly open = signal(false);
 
@@ -32,6 +33,11 @@ export class ProfileMenu {
     if (!this.host.nativeElement.contains(event.target as Node)) {
       this.close();
     }
+  }
+
+  protected showProfile(): void {
+    this.close();
+    this.openProfile.emit();
   }
 
   protected async logOut(): Promise<void> {

@@ -13,7 +13,11 @@
       class="flex w-85.5 shrink-0 justify-end"
       [class]="threadOpen() ? '2xl:w-121.25 2xl:pr-3.5' : ''"
     >
-      <app-profile-menu name="Frederik Beck" avatar="/icons/avatar-frederik-beck.svg" />
+      <app-profile-menu
+        name="Frederik Beck"
+        avatar="/icons/avatar-frederik-beck.svg"
+        (openProfile)="openProfile()"
+      />
     </div>
   </header>
 
@@ -72,3 +76,12 @@
 </div>
 
 <app-nav-toggle [open]="menuOpen()" (toggleMenu)="toggleMenu()" />
+
+@if (profileOpen()) {
+  <app-profile-view
+    name="Frederik Beck"
+    avatar="/icons/avatar-frederik-beck.svg"
+    email="fred.beck@email.com"
+    (closed)="closeProfile()"
+  />
+}

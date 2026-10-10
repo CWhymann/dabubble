@@ -1,0 +1,47 @@
+<div class="fixed inset-0 z-30" aria-hidden="true" (click)="closed.emit()"></div>
+
+<section
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="profile-title"
+  class="fixed top-26 right-5 z-40 flex w-125 flex-col gap-9.5 rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-white px-10 py-11.25 shadow-menu"
+>
+  <div class="flex items-center justify-between">
+    <h2 id="profile-title" class="text-2xl font-bold text-black">Profil</h2>
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+      aria-label="Profil schließen"
+      (click)="closed.emit()"
+    >
+      <img class="size-6" src="/icons/close.svg" alt="" />
+    </button>
+  </div>
+
+  <div class="flex justify-center">
+    <img class="size-50 rounded-full bg-white object-cover" [src]="avatar()" alt="" />
+  </div>
+
+  <div class="flex flex-col gap-3.75">
+    <div class="flex items-center justify-between">
+      <p class="text-[32px] leading-normal font-bold text-black">{{ name() }}</p>
+      <button type="button" class="cursor-pointer text-lg font-semibold text-purple-3">
+        Bearbeiten
+      </button>
+    </div>
+    <div class="flex items-center gap-3.75">
+      <img class="size-4" src="/icons/online.svg" alt="" />
+      <span class="text-xl text-online">Aktiv</span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-3.75">
+    <div class="flex items-center gap-5">
+      <img class="size-7.5" src="/icons/mail-dark.svg" alt="" />
+      <span class="text-xl font-bold text-black">E-Mail-Adresse</span>
+    </div>
+    <a class="pl-12.5 text-lg leading-[1.2] font-medium text-link" [href]="'mailto:' + email()">
+      {{ email() }}
+    </a>
+  </div>
+</section>
