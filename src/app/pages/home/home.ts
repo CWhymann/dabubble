@@ -5,6 +5,7 @@ import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { MessageBox } from '../../features/message-box/message-box';
 import { NavToggle } from '../../features/nav-toggle/nav-toggle';
 import { OtherProfile } from '../../features/other-profile/other-profile';
+import { ProfileEdit } from '../../features/profile-edit/profile-edit';
 import { ProfileMenu } from '../../features/profile-menu/profile-menu';
 import { ProfileView } from '../../features/profile-view/profile-view';
 import { SearchBar } from '../../features/search-bar/search-bar';
@@ -21,6 +22,7 @@ import { Logo } from '../../shared/logo/logo';
     MessageBox,
     NavToggle,
     OtherProfile,
+    ProfileEdit,
     ProfileMenu,
     ProfileView,
     SearchBar,
@@ -30,11 +32,13 @@ import { Logo } from '../../shared/logo/logo';
   templateUrl: './home.html',
 })
 export class Home {
-  private readonly ownName = 'Frederik Beck';
+  private readonly ownAuthor = 'Frederik Beck';
 
+  protected readonly ownName = signal('Frederik Beck');
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
   protected readonly profileOpen = signal(false);
+  protected readonly profileEditOpen = signal(false);
   protected readonly otherProfile = signal<ChatUser | null>(null);
 
   protected readonly gridCols = computed(() => {
@@ -62,6 +66,7 @@ export class Home {
 
   protected openProfile(): void {
     this.otherProfile.set(null);
+    this.profileEditOpen.set(false);
     this.profileOpen.set(true);
   }
 
@@ -69,8 +74,24 @@ export class Home {
     this.profileOpen.set(false);
   }
 
+  protected editProfile(): void {
+    this.profileOpen.set(false);
+    this.profileEditOpen.set(true);
+  }
+
+  protected cancelEdit(): void {
+    this.profileEditOpen.set(false);
+    this.profileOpen.set(true);
+  }
+
+  protected saveProfile(name: string): void {
+    this.ownName.set(name);
+    this.profileEditOpen.set(false);
+    this.profileOpen.set(true);
+  }
+
   protected openProfileOf(name: string): void {
-    if (name === this.ownName) {
+    if (name === this.ownAuthor) {
       this.openProfile();
       return;
     }

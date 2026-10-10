@@ -1,0 +1,43 @@
+<div class="fixed inset-0 z-30" aria-hidden="true" (click)="cancelled.emit()"></div>
+
+<section
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="profile-edit-title"
+  class="fixed top-1/2 left-1/2 z-40 flex w-125 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-11.25 rounded-[30px] bg-white p-10 shadow-menu"
+>
+  <div class="flex h-10 w-full items-center justify-between">
+    <h2 id="profile-edit-title" class="text-2xl font-bold text-black">Dein Profil bearbeiten</h2>
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+      aria-label="Bearbeiten abbrechen"
+      (click)="cancelled.emit()"
+    >
+      <img class="size-6" src="/icons/close.svg" alt="" />
+    </button>
+  </div>
+
+  <img class="size-50 rounded-full bg-white object-cover" [src]="avatar()" alt="" />
+
+  <div class="flex w-full flex-col gap-1.75">
+    <label for="profile-edit-name" class="flex items-end gap-5">
+      <img class="size-7.5" src="/icons/account-circle-dark.svg" alt="" />
+      <span class="text-xl font-bold text-black">Vollständiger Name</span>
+    </label>
+    <input
+      id="profile-edit-name"
+      type="text"
+      class="w-full rounded-[30px] border border-light-purple px-5 py-3.75 text-lg text-black outline-hidden placeholder:text-text-gray hover:border-purple-2 focus:border-purple-1"
+      placeholder="Dein Name hier"
+      autocomplete="off"
+      [value]="draft()"
+      (input)="onInput($event)"
+    />
+  </div>
+
+  <div class="flex gap-8">
+    <app-button-secondary (click)="cancelled.emit()">Abbrechen</app-button-secondary>
+    <app-button-primary [disabled]="!canSave()" (click)="save()">Speichern</app-button-primary>
+  </div>
+</section>

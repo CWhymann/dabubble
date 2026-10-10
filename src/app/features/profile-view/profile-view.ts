@@ -12,4 +12,5 @@ export class ProfileView {
   readonly avatar = input.required<string>();
   readonly email = input.required<string>();
   readonly closed = output<void>();
+  readonly editRequested = output<void>();
 }

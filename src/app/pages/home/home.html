@@ -14,7 +14,7 @@
       [class]="threadOpen() ? '2xl:w-121.25 2xl:pr-3.5' : ''"
     >
       <app-profile-menu
-        name="Frederik Beck"
+        [name]="ownName()"
         avatar="/icons/avatar-frederik-beck.svg"
         (openProfile)="openProfile()"
       />
@@ -79,10 +79,20 @@
 
 @if (profileOpen()) {
   <app-profile-view
-    name="Frederik Beck"
+    [name]="ownName()"
     avatar="/icons/avatar-frederik-beck.svg"
     email="fred.beck@email.com"
     (closed)="closeProfile()"
+    (editRequested)="editProfile()"
+  />
+}
+
+@if (profileEditOpen()) {
+  <app-profile-edit
+    [name]="ownName()"
+    avatar="/icons/avatar-frederik-beck.svg"
+    (saved)="saveProfile($event)"
+    (cancelled)="cancelEdit()"
   />
 }
 
