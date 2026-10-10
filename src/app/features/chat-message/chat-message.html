@@ -1,7 +1,4 @@
-<article
-  class="group flex gap-7.5 py-2.5 hover:bg-bg"
-  [class]="message().own ? 'flex-row-reverse pr-11.25 pl-36.5' : 'pl-11.25'"
->
+<article class="group flex py-2.5 hover:bg-bg" [class]="spacing()">
   <img
     class="size-17.5 shrink-0 self-start rounded-full bg-white"
     [class.shadow-header]="message().own"
@@ -19,14 +16,7 @@
       <span class="text-sm text-text-gray">{{ message().time }} Uhr</span>
     </div>
 
-    <p
-      class="w-fit max-w-full p-3.75 text-lg wrap-break-word"
-      [class]="
-        message().own
-          ? 'rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-purple-2 text-white'
-          : 'rounded-tr-[30px] rounded-br-[30px] rounded-bl-[30px] bg-bg group-hover:bg-white'
-      "
-    >
+    <p class="w-fit max-w-full p-3.75 text-lg wrap-break-word" [class]="bubble()">
       {{ message().text }}
     </p>
 

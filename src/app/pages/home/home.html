@@ -35,8 +35,29 @@
 
   <aside class="hidden rounded-[30px] bg-white 2xl:flex 2xl:flex-col" aria-label="Thread">
     <header
-      class="relative flex h-26 items-center rounded-t-[30px] bg-white px-10 shadow-header"
-    ></header>
-    <section class="flex-1 px-5 pb-5" aria-label="Thread-Nachrichten"></section>
+      class="relative flex h-26 items-center justify-between rounded-t-[30px] bg-white px-10 shadow-header"
+    >
+      <div class="flex items-center gap-1.25">
+        <h2 class="text-2xl font-bold">Thread</h2>
+        <img class="size-4" src="/icons/tag-small.svg" alt="" />
+        <span class="text-sm text-purple-2">Entwicklerteam</span>
+      </div>
+      <button
+        type="button"
+        class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+        aria-label="Thread schließen"
+      >
+        <img class="size-6" src="/icons/close.svg" alt="" />
+      </button>
+    </header>
+    <section
+      class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5"
+      aria-label="Thread-Nachrichten"
+    >
+      <app-thread />
+    </section>
+    <div class="mx-5 mb-10">
+      <app-message-box placeholder="Antworten..." />
+    </div>
   </aside>
 </div>
