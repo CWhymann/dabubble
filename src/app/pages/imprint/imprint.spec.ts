@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AuthLayout } from './auth-layout';
+import { Imprint } from './imprint';
 
-describe('AuthLayout', () => {
-  let component: AuthLayout;
-  let fixture: ComponentFixture<AuthLayout>;
+describe('Imprint', () => {
+  let component: Imprint;
+  let fixture: ComponentFixture<Imprint>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuthLayout],
+      imports: [Imprint],
       providers: [provideRouter([])],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(AuthLayout);
+    fixture = TestBed.createComponent(Imprint);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

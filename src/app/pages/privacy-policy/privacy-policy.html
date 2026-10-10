@@ -1,0 +1,14 @@
+<app-legal-layout>
+  <article class="flex w-full max-w-328 flex-col gap-6">
+    <app-back-button class="self-start" routerLink="/login" />
+    <h1 class="text-display text-purple-1">Datenschutz</h1>
+    <div class="flex flex-col gap-8.75">
+      @for (section of sections; track $index) {
+        <section class="flex flex-col gap-2.5">
+          <h2 class="text-2xl font-bold text-purple-1">{{ section.title }}</h2>
+          <p class="text-xl text-black">{{ section.text }}</p>
+        </section>
+      }
+    </div>
+  </article>
+</app-legal-layout>

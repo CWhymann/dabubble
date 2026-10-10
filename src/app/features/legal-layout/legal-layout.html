@@ -1,0 +1,15 @@
+<div class="flex min-h-screen flex-col">
+  <header
+    class="flex items-center justify-between px-4 py-3.75 lg:absolute lg:top-6.25 lg:left-12.5 lg:p-0"
+  >
+    <app-logo [compact]="true" />
+    <div class="size-12.5 rounded-full bg-purple-2 p-1.5 lg:hidden">
+      <img class="size-full" src="/icons/person-placeholder.svg" alt="Gast" />
+    </div>
+  </header>
+  <main
+    class="flex flex-1 flex-col items-center justify-center px-4 pt-10 pb-8 lg:px-8 lg:pt-28 lg:pb-12"
+  >
+    <ng-content />
+  </main>
+</div>

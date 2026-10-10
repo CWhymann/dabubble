@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AuthLayout } from './auth-layout';
+import { PrivacyPolicy } from './privacy-policy';
 
-describe('AuthLayout', () => {
-  let component: AuthLayout;
-  let fixture: ComponentFixture<AuthLayout>;
+describe('PrivacyPolicy', () => {
+  let component: PrivacyPolicy;
+  let fixture: ComponentFixture<PrivacyPolicy>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuthLayout],
+      imports: [PrivacyPolicy],
       providers: [provideRouter([])],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(AuthLayout);
+    fixture = TestBed.createComponent(PrivacyPolicy);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
