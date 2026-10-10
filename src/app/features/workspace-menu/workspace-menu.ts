@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { AVATARS } from '../../core/avatars';
 
 interface MenuUser {
@@ -15,6 +15,9 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
   templateUrl: './workspace-menu.html',
 })
 export class WorkspaceMenu {
+  protected readonly channelsOpen = signal(true);
+  protected readonly usersOpen = signal(true);
+
   protected readonly channels = ['Entwicklerteam'];
   protected readonly activeChannel = 'Entwicklerteam';
   protected readonly users: MenuUser[] = [
@@ -25,4 +28,12 @@ export class WorkspaceMenu {
     { name: 'Elias Neumann', avatar: avatarOf('Elias Neumann'), online: true, you: false },
     { name: 'Steffen Hoffmann', avatar: avatarOf('Steffen Hoffmann'), online: true, you: false },
   ];
+
+  protected toggleChannels(): void {
+    this.channelsOpen.update((open) => !open);
+  }
+
+  protected toggleUsers(): void {
+    this.usersOpen.update((open) => !open);
+  }
 }

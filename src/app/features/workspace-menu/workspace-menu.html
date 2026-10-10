@@ -6,11 +6,19 @@
     >
       <span class="relative block size-15 shrink-0">
         <img class="size-full rounded-[30px]" src="/icons/workspace-logo.png" alt="" />
-        <img class="absolute inset-x-[21.2%] inset-y-[30.66%]" src="/icons/workspace-logo-symbol.svg" alt="" />
+        <img
+          class="absolute inset-x-[21.2%] inset-y-[30.66%]"
+          src="/icons/workspace-logo-symbol.svg"
+          alt=""
+        />
       </span>
       <span class="min-w-0 flex-1 text-2xl font-bold">Devspace</span>
     </button>
-    <button type="button" class="cursor-pointer rounded-[20px] p-2 hover:bg-bg" aria-label="Neue Nachricht">
+    <button
+      type="button"
+      class="cursor-pointer rounded-[20px] p-2 hover:bg-bg"
+      aria-label="Neue Nachricht"
+    >
       <img class="size-6" src="/icons/edit-square.svg" alt="" />
     </button>
   </div>
@@ -19,76 +27,135 @@
     <div class="flex w-full items-center justify-between py-0.75">
       <button
         type="button"
-        class="flex cursor-pointer items-center gap-3.75 rounded-[15px] py-1.25 pr-2.5 hover:text-purple-3"
+        class="group flex cursor-pointer items-center gap-3.75 rounded-[15px] py-1.25 pr-2.5 hover:text-purple-3 active:text-black"
+        [attr.aria-expanded]="channelsOpen()"
+        (click)="toggleChannels()"
       >
-        <img class="size-7.5" src="/icons/arrow-drop-down.svg" alt="" />
+        <span class="relative size-7.5 shrink-0" [class.-rotate-90]="!channelsOpen()">
+          <img
+            class="absolute inset-0 size-full group-hover:opacity-0"
+            src="/icons/arrow-drop-down.svg"
+            alt=""
+          />
+          <img
+            class="absolute inset-0 size-full opacity-0 group-hover:opacity-100"
+            src="/icons/arrow-drop-down-hover.svg"
+            alt=""
+          />
+        </span>
         <span class="flex items-center gap-2.5 text-xl font-bold">
-          <img class="size-6" src="/icons/workspaces.svg" alt="" />
+          <span class="relative size-6 shrink-0">
+            <img
+              class="absolute inset-0 size-full group-hover:opacity-0"
+              src="/icons/workspaces.svg"
+              alt=""
+            />
+            <img
+              class="absolute inset-0 size-full opacity-0 group-hover:opacity-100"
+              src="/icons/workspaces-hover.svg"
+              alt=""
+            />
+          </span>
           Channels
         </span>
       </button>
-      <button type="button" class="cursor-pointer rounded-[15px] p-0.75 hover:bg-bg" aria-label="Channel hinzufügen">
+      <button
+        type="button"
+        class="cursor-pointer rounded-[15px] p-0.75 hover:bg-bg"
+        aria-label="Channel hinzufügen"
+      >
         <img class="size-6" src="/icons/add.svg" alt="" />
       </button>
     </div>
 
-    <ul class="flex flex-col gap-3.25">
-      @for (channel of channels; track channel) {
-        <li class="flex pl-6.25">
+    @if (channelsOpen()) {
+      <ul class="flex flex-col gap-3.25">
+        @for (channel of channels; track channel) {
+          <li class="flex pl-6.25">
+            <button
+              type="button"
+              class="flex cursor-pointer items-center gap-2.5 rounded-[20px] px-5 py-1 text-lg hover:bg-bg"
+              [class.bg-bg]="channel === activeChannel"
+              [class.font-bold]="channel === activeChannel"
+              [class.text-purple-3]="channel === activeChannel"
+            >
+              <img class="size-6" src="/icons/tag.svg" alt="" />
+              {{ channel }}
+            </button>
+          </li>
+        }
+        <li class="flex pl-8.75">
           <button
             type="button"
-            class="flex cursor-pointer items-center gap-2.5 rounded-[20px] px-5 py-1 text-lg hover:bg-bg"
-            [class.bg-bg]="channel === activeChannel"
-            [class.font-bold]="channel === activeChannel"
-            [class.text-purple-3]="channel === activeChannel"
+            class="flex cursor-pointer items-center gap-2.5 px-2.5 py-1 text-lg hover:text-purple-3"
           >
-            <img class="size-6" src="/icons/tag.svg" alt="" />
-            {{ channel }}
+            <img class="size-6" src="/icons/add-circle.svg" alt="" />
+            Channel hinzufügen
           </button>
         </li>
-      }
-      <li class="flex pl-8.75">
-        <button type="button" class="flex cursor-pointer items-center gap-2.5 px-2.5 py-1 text-lg hover:text-purple-3">
-          <img class="size-6" src="/icons/add-circle.svg" alt="" />
-          Channel hinzufügen
-        </button>
-      </li>
-    </ul>
+      </ul>
+    }
   </div>
 
   <div class="flex flex-col gap-6.25">
     <div class="flex w-full items-center py-0.75">
       <button
         type="button"
-        class="flex cursor-pointer items-center gap-3.75 rounded-[15px] py-1.25 pr-2.5 hover:text-purple-3"
+        class="group flex cursor-pointer items-center gap-3.75 rounded-[15px] py-1.25 pr-2.5 hover:text-purple-3 active:text-black"
+        [attr.aria-expanded]="usersOpen()"
+        (click)="toggleUsers()"
       >
-        <img class="size-7.5" src="/icons/arrow-drop-down.svg" alt="" />
+        <span class="relative size-7.5 shrink-0" [class.-rotate-90]="!usersOpen()">
+          <img
+            class="absolute inset-0 size-full group-hover:opacity-0"
+            src="/icons/arrow-drop-down.svg"
+            alt=""
+          />
+          <img
+            class="absolute inset-0 size-full opacity-0 group-hover:opacity-100"
+            src="/icons/arrow-drop-down-hover.svg"
+            alt=""
+          />
+        </span>
         <span class="flex items-center gap-2.5 text-xl font-bold">
-          <img class="size-6" src="/icons/account-circle.svg" alt="" />
+          <span class="relative size-6 shrink-0">
+            <img
+              class="absolute inset-0 size-full group-hover:opacity-0"
+              src="/icons/account-circle.svg"
+              alt=""
+            />
+            <img
+              class="absolute inset-0 size-full opacity-0 group-hover:opacity-100"
+              src="/icons/account-circle-hover.svg"
+              alt=""
+            />
+          </span>
           Direktnachrichten
         </span>
       </button>
     </div>
 
-    <ul class="flex flex-col gap-3.25">
-      @for (user of users; track user.name) {
-        <li class="flex pl-6.25">
-          <button
-            type="button"
-            class="flex cursor-pointer items-center gap-3.75 rounded-[35px] px-5 py-1 text-lg hover:bg-bg"
-          >
-            <span class="relative block size-12.5 shrink-0">
-              <img class="size-full rounded-full bg-white" [src]="user.avatar" alt="" />
-              <img
-                class="absolute right-0 bottom-0 size-3.5"
-                [src]="user.online ? '/icons/online-small.svg' : '/icons/offline-small.svg'"
-                [alt]="user.online ? 'Online' : 'Offline'"
-              />
-            </span>
-            {{ user.name }}{{ user.you ? ' (Du)' : '' }}
-          </button>
-        </li>
-      }
-    </ul>
+    @if (usersOpen()) {
+      <ul class="flex flex-col gap-3.25">
+        @for (user of users; track user.name) {
+          <li class="flex pl-6.25">
+            <button
+              type="button"
+              class="flex cursor-pointer items-center gap-3.75 rounded-[35px] px-5 py-1 text-lg hover:bg-bg"
+            >
+              <span class="relative block size-12.5 shrink-0">
+                <img class="size-full rounded-full bg-white" [src]="user.avatar" alt="" />
+                <img
+                  class="absolute right-0 bottom-0 size-3.5"
+                  [src]="user.online ? '/icons/online-small.svg' : '/icons/offline-small.svg'"
+                  [alt]="user.online ? 'Online' : 'Offline'"
+                />
+              </span>
+              {{ user.name }}{{ user.you ? ' (Du)' : '' }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
   </div>
 </div>
