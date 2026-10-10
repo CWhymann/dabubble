@@ -1,0 +1,52 @@
+<div class="fixed inset-0 z-30" aria-hidden="true" (click)="closed.emit()"></div>
+
+<section
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="other-profile-title"
+  class="fixed top-1/2 left-1/2 z-40 flex w-125 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-11.25 rounded-[30px] bg-white p-10 shadow-menu"
+>
+  <div class="flex w-full items-center justify-between">
+    <h2 id="other-profile-title" class="text-2xl font-bold text-black">Profil</h2>
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+      aria-label="Profil schließen"
+      (click)="closed.emit()"
+    >
+      <img class="size-6" src="/icons/close.svg" alt="" />
+    </button>
+  </div>
+
+  <img class="size-50 rounded-full bg-white object-cover" [src]="user().avatar" alt="" />
+
+  <div class="flex w-full flex-col gap-3.75">
+    <p class="text-[32px] leading-normal font-bold text-black">{{ user().name }}</p>
+    <div class="flex items-center gap-3.75">
+      <img
+        class="size-4"
+        [src]="user().online ? '/icons/online.svg' : '/icons/offline.svg'"
+        alt=""
+      />
+      <span class="text-xl text-text-gray">{{ user().online ? 'Aktiv' : 'Abwesend' }}</span>
+    </div>
+  </div>
+
+  <div class="flex w-full flex-col gap-3.75">
+    <div class="flex items-center gap-5">
+      <img class="size-7.5" src="/icons/mail-dark.svg" alt="" />
+      <span class="text-xl font-bold text-black">E-Mail-Adresse</span>
+    </div>
+    <a class="pr-2.5 pl-12.5 text-lg text-link" [href]="'mailto:' + user().email">
+      {{ user().email }}
+    </a>
+  </div>
+
+  <button
+    type="button"
+    class="flex cursor-pointer items-center justify-center gap-2.5 rounded-[50px] bg-purple-1 px-6.25 py-3 text-lg font-bold whitespace-nowrap text-white transition-colors hover:bg-purple-2"
+  >
+    <img class="size-6" src="/icons/mode-comment.svg" alt="" />
+    Nachricht
+  </button>
+</section>

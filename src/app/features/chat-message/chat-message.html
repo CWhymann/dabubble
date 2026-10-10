@@ -10,7 +10,11 @@
     [class]="message().own ? 'items-end' : 'items-start'"
   >
     <div class="flex items-center gap-5" [class.flex-row-reverse]="message().own">
-      <button type="button" class="cursor-pointer text-lg font-bold hover:text-purple-1">
+      <button
+        type="button"
+        class="cursor-pointer text-lg font-bold hover:text-purple-1"
+        (click)="showProfile.emit(message().author)"
+      >
         {{ message().author }}
       </button>
       <span class="text-sm text-text-gray">{{ message().time }} Uhr</span>

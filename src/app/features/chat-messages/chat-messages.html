@@ -9,7 +9,11 @@
       </span>
     </div>
     @for (message of group.messages; track $index) {
-      <app-chat-message [message]="message" (openThread)="openThread.emit()" />
+      <app-chat-message
+        [message]="message"
+        (openThread)="openThread.emit()"
+        (showProfile)="showProfile.emit($event)"
+      />
     }
   }
 </div>

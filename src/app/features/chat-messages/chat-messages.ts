@@ -12,6 +12,7 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
 })
 export class ChatMessages {
   readonly openThread = output<void>();
+  readonly showProfile = output<string>();
 
   protected readonly groups: DayGroup[] = [
     {

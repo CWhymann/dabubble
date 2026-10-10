@@ -35,7 +35,7 @@
     </header>
     <section class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5" aria-label="Nachrichten">
       <div class="mt-auto">
-        <app-chat-messages (openThread)="openThread()" />
+        <app-chat-messages (openThread)="openThread()" (showProfile)="openProfileOf($event)" />
       </div>
     </section>
     <div class="mx-8.75 mb-10">
@@ -66,7 +66,7 @@
         class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5"
         aria-label="Thread-Nachrichten"
       >
-        <app-thread />
+        <app-thread (showProfile)="openProfileOf($event)" />
       </section>
       <div class="mx-5 mb-10">
         <app-message-box placeholder="Antworten..." />
@@ -84,4 +84,8 @@
     email="fred.beck@email.com"
     (closed)="closeProfile()"
   />
+}
+
+@if (otherProfile(); as user) {
+  <app-other-profile [user]="user" (closed)="closeOtherProfile()" />
 }

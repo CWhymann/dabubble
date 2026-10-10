@@ -1,8 +1,10 @@
 import { Component, computed, signal } from '@angular/core';
+import { ChatUser, USERS } from '../../core/users';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { MessageBox } from '../../features/message-box/message-box';
 import { NavToggle } from '../../features/nav-toggle/nav-toggle';
+import { OtherProfile } from '../../features/other-profile/other-profile';
 import { ProfileMenu } from '../../features/profile-menu/profile-menu';
 import { ProfileView } from '../../features/profile-view/profile-view';
 import { SearchBar } from '../../features/search-bar/search-bar';
@@ -18,6 +20,7 @@ import { Logo } from '../../shared/logo/logo';
     Logo,
     MessageBox,
     NavToggle,
+    OtherProfile,
     ProfileMenu,
     ProfileView,
     SearchBar,
@@ -27,9 +30,12 @@ import { Logo } from '../../shared/logo/logo';
   templateUrl: './home.html',
 })
 export class Home {
+  private readonly ownName = 'Frederik Beck';
+
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
   protected readonly profileOpen = signal(false);
+  protected readonly otherProfile = signal<ChatUser | null>(null);
 
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
@@ -55,10 +61,27 @@ export class Home {
   }
 
   protected openProfile(): void {
+    this.otherProfile.set(null);
     this.profileOpen.set(true);
   }
 
   protected closeProfile(): void {
     this.profileOpen.set(false);
+  }
+
+  protected openProfileOf(name: string): void {
+    if (name === this.ownName) {
+      this.openProfile();
+      return;
+    }
+    const user = USERS.find((candidate) => candidate.name === name);
+    if (user) {
+      this.profileOpen.set(false);
+      this.otherProfile.set(user);
+    }
+  }
+
+  protected closeOtherProfile(): void {
+    this.otherProfile.set(null);
   }
 }

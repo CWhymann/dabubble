@@ -9,6 +9,7 @@ export class ChatMessage {
   readonly message = input.required<Message>();
   readonly compact = input(false);
   readonly openThread = output<void>();
+  readonly showProfile = output<string>();
 
   protected readonly spacing = computed(() => {
     const own = this.message().own;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { AVATARS } from '../../core/avatars';
 import { Message } from '../../core/chat';
 import { ChatMessage } from '../chat-message/chat-message';
@@ -11,6 +11,8 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
   templateUrl: './thread.html',
 })
 export class Thread {
+  readonly showProfile = output<string>();
+
   protected readonly root: Message = {
     author: 'Noah Braun',
     avatar: avatarOf('Noah Braun'),
