@@ -142,6 +142,7 @@
 
   --shadow-header: 0 2px 10px #00000014;
   --shadow-nav: 4px 4px 7px 0 #00000033;
+  --shadow-menu: 0 6px 10px 0 #00000033;
 
   --animate-intro-logo: intro-logo 0.3s ease-out 0.5s both;
   --animate-intro-name: intro-name 0.5s ease-out 0.8s both;
