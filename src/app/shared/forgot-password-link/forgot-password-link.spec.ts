@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { ForgotPasswordLink } from './forgot-password-link';
 
 describe('ForgotPasswordLink', () => {
@@ -8,6 +9,7 @@ describe('ForgotPasswordLink', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ForgotPasswordLink],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ForgotPasswordLink);

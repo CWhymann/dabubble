@@ -11,6 +11,8 @@ describe('InputField', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(InputField);
+    fixture.componentRef.setInput('icon', '/icons/mail.svg');
+    fixture.componentRef.setInput('label', 'E-Mail');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

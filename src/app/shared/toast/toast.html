@@ -1,0 +1,15 @@
+@if (toast.content(); as content) {
+  <div
+    class="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-4 lg:bottom-12 lg:justify-end lg:px-12"
+    role="status"
+  >
+    <div
+      class="flex animate-toast-in items-center justify-center gap-4 rounded-t-[30px] rounded-bl-[30px] bg-purple-1 p-6 text-center text-2xl font-bold text-white shadow-menu lg:gap-7 lg:p-12.5 lg:text-4xl"
+    >
+      @if (content.icon) {
+        <img class="size-8 shrink-0 lg:size-10" [src]="content.icon" alt="" />
+      }
+      <span>{{ content.text }}</span>
+    </div>
+  </div>
+}

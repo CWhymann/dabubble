@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '../../core/auth';
+import { Toast } from '../../core/toast';
 import { PASSWORD_LENGTH_ERROR, PASSWORD_MIN_LENGTH } from '../../core/validation';
 import { AuthLayout } from '../../features/auth-layout/auth-layout';
 
@@ -14,6 +15,7 @@ export class ResetPassword {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
   private readonly auth = inject(Auth);
+  private readonly toast = inject(Toast);
 
   protected readonly submitError = signal('');
 
@@ -46,6 +48,7 @@ export class ResetPassword {
     this.form.markAllAsTouched();
 
     if (
+      this.toast.content() ||
       this.form.invalid ||
       this.form.controls.password.value !== this.form.controls.confirmPassword.value
     ) {
@@ -59,6 +62,7 @@ export class ResetPassword {
       return;
     }
 
+    await this.toast.show('Passwort geändert');
     await this.router.navigateByUrl('/login');
   }
 

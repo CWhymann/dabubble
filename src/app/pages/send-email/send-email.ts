@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '../../core/auth';
+import { Toast } from '../../core/toast';
 import { EMAIL_ERROR, EMAIL_PATTERN } from '../../core/validation';
 import { AuthLayout } from '../../features/auth-layout/auth-layout';
 import { ButtonPrimary } from '../../shared/button-primary/button-primary';
@@ -16,6 +17,7 @@ export class SendEmail {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
   private readonly auth = inject(Auth);
+  private readonly toast = inject(Toast);
 
   protected readonly submitError = signal('');
 
@@ -30,7 +32,7 @@ export class SendEmail {
   }
 
   protected async submit(): Promise<void> {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.toast.content()) return;
 
     this.submitError.set('');
 
@@ -38,7 +40,11 @@ export class SendEmail {
 
     if (error) {
       this.submitError.set(error.message);
+      return;
     }
+
+    await this.toast.show('E-Mail gesendet', '/icons/send-white.svg');
+    await this.router.navigateByUrl('/login');
   }
 
   protected goBack(): void {

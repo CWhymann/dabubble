@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { AVATARS } from '../../core/avatars';
 import { RegisterState } from '../../core/register-state';
 import { Avatar } from './avatar';
@@ -8,7 +9,10 @@ describe('Avatar', () => {
   let state: RegisterState;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [Avatar] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [Avatar],
+      providers: [provideRouter([])],
+    }).compileComponents();
     state = TestBed.inject(RegisterState);
     state.clear();
     fixture = TestBed.createComponent(Avatar);
