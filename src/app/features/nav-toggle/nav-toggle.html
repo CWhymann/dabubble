@@ -1,0 +1,23 @@
+<button
+  type="button"
+  class="group fixed top-[70%] left-0 z-10 hidden -translate-y-1/2 cursor-pointer flex-col items-center gap-2 rounded-r-[30px] bg-white px-3 py-5 shadow-nav lg:flex"
+  [attr.aria-label]="label()"
+  [attr.aria-expanded]="open()"
+  (click)="toggleMenu.emit()"
+>
+  <span class="relative size-8 shrink-0">
+    <span class="absolute top-2 left-2 size-4">
+      <span class="absolute -inset-[6.25%] group-hover:opacity-0">
+        <img class="block size-full max-w-none" [src]="icon()" alt="" />
+      </span>
+      <span class="absolute -inset-[7.81%] opacity-0 group-hover:opacity-100">
+        <img class="block size-full max-w-none" [src]="iconHover()" alt="" />
+      </span>
+    </span>
+  </span>
+  <span
+    class="rotate-180 text-xl leading-[1.2] font-medium whitespace-nowrap [writing-mode:vertical-rl]"
+  >
+    {{ label() }}
+  </span>
+</button>

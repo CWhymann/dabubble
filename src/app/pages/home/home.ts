@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { MessageBox } from '../../features/message-box/message-box';
+import { NavToggle } from '../../features/nav-toggle/nav-toggle';
 import { ProfileMenu } from '../../features/profile-menu/profile-menu';
 import { SearchBar } from '../../features/search-bar/search-bar';
 import { Thread } from '../../features/thread/thread';
@@ -15,6 +16,7 @@ import { Logo } from '../../shared/logo/logo';
     ChatMessages,
     Logo,
     MessageBox,
+    NavToggle,
     ProfileMenu,
     SearchBar,
     Thread,
@@ -23,7 +25,23 @@ import { Logo } from '../../shared/logo/logo';
   templateUrl: './home.html',
 })
 export class Home {
+  protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
+
+  protected readonly gridCols = computed(() => {
+    if (this.menuOpen()) {
+      return this.threadOpen()
+        ? 'lg:grid-cols-[22.875rem_minmax(0,1fr)] 2xl:grid-cols-[22.875rem_minmax(0,1fr)_30.3125rem]'
+        : 'lg:grid-cols-[22.875rem_minmax(0,1fr)]';
+    }
+    return this.threadOpen()
+      ? 'lg:grid-cols-[minmax(0,1fr)] 2xl:grid-cols-[minmax(0,1fr)_30.3125rem]'
+      : 'lg:grid-cols-[minmax(0,1fr)]';
+  });
+
+  protected toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
 
   protected openThread(): void {
     this.threadOpen.set(true);
