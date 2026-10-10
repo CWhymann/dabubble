@@ -23,7 +23,7 @@
 
   @if (menuOpen()) {
     <nav class="hidden rounded-[30px] bg-white px-7.5 py-8 lg:block" aria-label="Workspace-Menü">
-      <app-workspace-menu />
+      <app-workspace-menu [channels]="channels()" (addChannel)="openAddChannel()" />
     </nav>
   }
 
@@ -98,4 +98,8 @@
 
 @if (otherProfile(); as user) {
   <app-other-profile [user]="user" (closed)="closeOtherProfile()" />
+}
+
+@if (addChannelOpen()) {
+  <app-add-channel (created)="createChannel($event)" (closed)="closeAddChannel()" />
 }

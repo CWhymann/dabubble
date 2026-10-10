@@ -1,5 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { ChatUser, USERS } from '../../core/users';
+import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { MessageBox } from '../../features/message-box/message-box';
@@ -16,6 +17,7 @@ import { Logo } from '../../shared/logo/logo';
 @Component({
   selector: 'app-home',
   imports: [
+    AddChannel,
     ChatHeader,
     ChatMessages,
     Logo,
@@ -35,10 +37,12 @@ export class Home {
   private readonly ownAuthor = 'Frederik Beck';
 
   protected readonly ownName = signal('Frederik Beck');
+  protected readonly channels = signal<string[]>(['Entwicklerteam']);
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
   protected readonly profileOpen = signal(false);
   protected readonly profileEditOpen = signal(false);
+  protected readonly addChannelOpen = signal(false);
   protected readonly otherProfile = signal<ChatUser | null>(null);
 
   protected readonly gridCols = computed(() => {
@@ -104,5 +108,18 @@ export class Home {
 
   protected closeOtherProfile(): void {
     this.otherProfile.set(null);
+  }
+
+  protected openAddChannel(): void {
+    this.addChannelOpen.set(true);
+  }
+
+  protected closeAddChannel(): void {
+    this.addChannelOpen.set(false);
+  }
+
+  protected createChannel(channel: NewChannel): void {
+    this.channels.update((list) => (list.includes(channel.name) ? list : [...list, channel.name]));
+    this.closeAddChannel();
   }
 }

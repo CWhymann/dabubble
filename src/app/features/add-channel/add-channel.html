@@ -1,0 +1,65 @@
+<div class="fixed inset-0 z-30" aria-hidden="true" (click)="closed.emit()"></div>
+
+<section
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="add-channel-title"
+  class="fixed top-1/2 left-1/2 z-40 flex w-218 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-end gap-5 rounded-[30px] bg-white p-10 shadow-menu"
+>
+  <div class="flex w-full items-start justify-between">
+    <h2 id="add-channel-title" class="text-2xl font-bold text-black">Channel erstellen</h2>
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+      aria-label="Dialog schließen"
+      (click)="closed.emit()"
+    >
+      <img class="size-6" src="/icons/close.svg" alt="" />
+    </button>
+  </div>
+
+  <p class="w-full text-lg text-black">
+    Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein
+    #marketing zum Beispiel.
+  </p>
+
+  <div class="flex w-full flex-col gap-5">
+    <label for="add-channel-name" class="text-lg font-bold text-black">Channel-Name</label>
+    <div
+      class="flex h-15 items-center gap-3.75 rounded-[40px] border border-light-purple px-5 py-4.5 focus-within:border-purple-1 hover:not-focus-within:border-purple-2"
+    >
+      <img class="size-5.75 shrink-0" src="/icons/tag-gray.svg" alt="" />
+      <input
+        id="add-channel-name"
+        type="text"
+        class="min-w-0 flex-1 bg-transparent text-lg text-black outline-hidden placeholder:text-text-gray"
+        placeholder="z.B. Kooperationsprojekte"
+        autocomplete="off"
+        maxlength="25"
+        [value]="name()"
+        (input)="onName($event)"
+        (keydown.enter)="create()"
+      />
+    </div>
+  </div>
+
+  <div class="flex w-full flex-col gap-5">
+    <label for="add-channel-description" class="text-lg font-bold text-black">
+      Beschreibung <span class="font-normal text-text-gray">(optional)</span>
+    </label>
+    <div
+      class="rounded-[30px] border border-light-purple p-5 focus-within:border-purple-1 hover:not-focus-within:border-purple-2"
+    >
+      <textarea
+        id="add-channel-description"
+        rows="1"
+        class="max-h-40 w-full resize-none overflow-y-auto bg-transparent text-lg text-black field-sizing-content outline-hidden placeholder:text-text-gray"
+        placeholder="Dein Text hier"
+        [value]="description()"
+        (input)="onDescription($event)"
+      ></textarea>
+    </div>
+  </div>
+
+  <app-button-primary [disabled]="!canCreate()" (click)="create()">Erstellen</app-button-primary>
+</section>
