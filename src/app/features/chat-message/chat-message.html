@@ -22,100 +22,153 @@
     </div>
 
     <div class="relative w-fit max-w-full">
-      <!-- Reaktionsleiste: nur beim Hover oder nach Tipp, oberhalb der Blase -->
-      <div
-        class="pointer-events-none absolute -top-5 z-20 flex items-center gap-1 rounded-[25px] border border-light-purple bg-white py-0.75 pr-1.5 pl-2.5 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100"
-        [class.left-0]="message().own"
-        [class.right-0]="!message().own"
-        [class.pointer-events-auto]="pickerOpen() || tapped()"
-        [class.opacity-100]="pickerOpen() || tapped()"
-      >
-        @for (option of quickReactions; track option.icon) {
-          <button
-            type="button"
-            class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
-            [attr.aria-label]="option.label + ' setzen'"
-            (click)="toggle(option)"
-          >
-            <img class="size-5" [src]="option.icon" [alt]="option.label" />
-          </button>
-        }
-
-        <div class="relative">
-          <button
-            type="button"
-            class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
-            aria-label="Reaktion hinzufügen"
-            [attr.aria-expanded]="pickerOpen()"
-            (click)="pickerOpen.update((open) => !open)"
-          >
-            <img class="size-6" src="/icons/add-reaction.svg" alt="" />
-          </button>
-
-          @if (pickerOpen()) {
-            <div
-              class="absolute bottom-full mb-2 flex w-72 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-[20px] border border-light-purple bg-white p-3 shadow-menu"
-              [class.left-0]="message().own"
-              [class.right-0]="!message().own"
-              role="listbox"
-              aria-label="Reaktionen"
+      <!-- Leiste: beim Hover oder nach Tipp, oberhalb der Blase -->
+      @if (!editing()) {
+        <div
+          class="absolute -top-5 z-20 flex items-center gap-1 rounded-[25px] border border-light-purple bg-white py-0.75 pr-1.5 pl-2.5 transition-opacity"
+          [class.left-0]="message().own"
+          [class.right-0]="!message().own"
+          [class.opacity-0]="!barVisible()"
+          [class.opacity-100]="barVisible()"
+          [class.pointer-events-none]="!barVisible()"
+        >
+          @for (option of quickReactions; track option.icon) {
+            <button
+              type="button"
+              class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+              [attr.aria-label]="option.label + ' setzen'"
+              (click)="toggle(option)"
             >
-              <div class="flex gap-2">
-                @for (option of reactionOptions; track option.icon) {
+              <img class="size-5" [src]="option.icon" [alt]="option.label" />
+            </button>
+          }
+
+          <div class="relative">
+            <button
+              type="button"
+              class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+              aria-label="Reaktion hinzufügen"
+              [attr.aria-expanded]="pickerOpen()"
+              (click)="togglePicker()"
+            >
+              <img class="size-6" src="/icons/add-reaction.svg" alt="" />
+            </button>
+
+            @if (pickerOpen()) {
+              <div
+                class="absolute top-full mt-2 flex w-72 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-[20px] border border-light-purple bg-white p-3 shadow-menu"
+                [class.left-0]="message().own"
+                [class.right-0]="!message().own"
+                role="listbox"
+                aria-label="Reaktionen"
+              >
+                <div class="flex gap-2">
+                  @for (option of reactionOptions; track option.icon) {
+                    <button
+                      type="button"
+                      class="flex size-10 cursor-pointer items-center justify-center rounded-[10px] hover:bg-bg"
+                      [attr.aria-label]="option.label"
+                      (click)="toggle(option)"
+                    >
+                      <img class="size-6" [src]="option.icon" [alt]="option.label" />
+                    </button>
+                  }
+                </div>
+                <p class="text-xs text-black">
+                  Die Emoticons für Reaktionen stammen von iconduck, Emojitwo Emoji Set.
+                  <a
+                    href="https://iconduck.com/sets/emoji-two-emoji-set"
+                    target="_blank"
+                    rel="noopener"
+                    class="text-purple-3 hover:underline"
+                  >
+                    Link zum Emojitwo Emoji Set
+                  </a>
+                </p>
+              </div>
+            }
+          </div>
+
+          @if (canReply()) {
+            <button
+              type="button"
+              class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+              aria-label="Antworten"
+              (click)="openThread.emit(message().id)"
+            >
+              <img class="size-6" src="/icons/comment.svg" alt="" />
+            </button>
+          }
+
+          @if (message().own) {
+            <div class="relative">
+              <button
+                type="button"
+                class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+                aria-label="Weitere Optionen"
+                [attr.aria-expanded]="menuOpen()"
+                (click)="toggleMenu()"
+              >
+                <img class="size-6" src="/icons/more-vert.svg" alt="" />
+              </button>
+
+              @if (menuOpen()) {
+                <div
+                  class="absolute top-full right-0 mt-2 flex flex-col rounded-[20px] bg-white p-2 shadow-menu"
+                  role="menu"
+                >
                   <button
                     type="button"
-                    class="flex size-10 cursor-pointer items-center justify-center rounded-[10px] hover:bg-bg"
-                    [attr.aria-label]="option.label"
-                    (click)="toggle(option)"
+                    role="menuitem"
+                    class="cursor-pointer rounded-[20px] px-5 py-2.5 text-left text-lg font-medium whitespace-nowrap text-black hover:bg-bg hover:text-purple-3"
+                    (click)="startEdit()"
                   >
-                    <img class="size-6" [src]="option.icon" [alt]="option.label" />
+                    Nachricht bearbeiten
                   </button>
-                }
-              </div>
-              <p class="text-xs text-black">
-                Die Emoticons für Reaktionen stammen von iconduck, Emojitwo Emoji Set.
-                <a
-                  href="https://iconduck.com/sets/emoji-two-emoji-set"
-                  target="_blank"
-                  rel="noopener"
-                  class="text-purple-3 hover:underline"
-                >
-                  Link zum Emojitwo Emoji Set
-                </a>
-              </p>
+                </div>
+              }
             </div>
           }
         </div>
+      }
 
-        @if (canReply()) {
-          <button
-            type="button"
-            class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
-            aria-label="Antworten"
-            (click)="openThread.emit(message().id)"
-          >
-            <img class="size-6" src="/icons/comment.svg" alt="" />
-          </button>
-        }
-
-        @if (message().own) {
-          <button
-            type="button"
-            class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
-            aria-label="Weitere Optionen"
-          >
-            <img class="size-6" src="/icons/more-vert.svg" alt="" />
-          </button>
-        }
-      </div>
-
-      <p
-        class="w-fit max-w-full p-3.75 text-[17px] wrap-break-word lg:text-lg"
-        [class]="bubble()"
-        (click)="tapped.update((value) => !value)"
-      >
-        {{ message().text }}
-      </p>
+      @if (editing()) {
+        <div
+          class="flex w-full min-w-72 flex-col gap-4 rounded-[20px] border border-light-purple bg-white p-5"
+        >
+          <textarea
+            rows="3"
+            class="w-full resize-none bg-transparent text-lg text-black outline-hidden"
+            aria-label="Nachricht bearbeiten"
+            [value]="draft()"
+            (input)="onDraft($event)"
+          ></textarea>
+          <div class="flex justify-end gap-4">
+            <button
+              type="button"
+              class="cursor-pointer rounded-[50px] border border-purple-2 px-6 py-3 text-lg font-bold whitespace-nowrap text-purple-1 hover:bg-purple-1 hover:text-white"
+              (click)="cancelEdit()"
+            >
+              Abbrechen
+            </button>
+            <button
+              type="button"
+              class="cursor-pointer rounded-[50px] bg-purple-1 px-6 py-3 text-lg font-bold whitespace-nowrap text-white hover:bg-purple-2"
+              (click)="saveEdit()"
+            >
+              Speichern
+            </button>
+          </div>
+        </div>
+      } @else {
+        <p
+          class="w-fit max-w-full p-3.75 text-[17px] wrap-break-word lg:text-lg"
+          [class]="bubble()"
+          (click)="tapped.update((value) => !value)"
+        >
+          {{ message().text }}
+        </p>
+      }
     </div>
 
     @if (canReply() && message().replies; as replies) {
@@ -171,7 +224,7 @@
           type="button"
           class="cursor-pointer rounded-[20px] bg-white p-1.25"
           aria-label="Reaktion hinzufügen"
-          (click)="pickerOpen.update((open) => !open)"
+          (click)="togglePicker()"
         >
           <img class="size-6" src="/icons/add-reaction.svg" alt="" />
         </button>

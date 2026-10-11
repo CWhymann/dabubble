@@ -19,7 +19,7 @@ const WIDE_QUERY = '(min-width: 1024px)';
   templateUrl: './chat-message.html',
   host: {
     '(document:click)': 'closeOnOutsideClick($event)',
-    '(document:keydown.escape)': 'closeAll()',
+    '(document:keydown.escape)': 'onEscape()',
   },
 })
 export class ChatMessage {
@@ -34,7 +34,11 @@ export class ChatMessage {
     (option) =>
       option.icon === '/icons/emoji-check.svg' || option.icon === '/icons/emoji-hands-up.svg',
   );
+
   protected readonly pickerOpen = signal(false);
+  protected readonly menuOpen = signal(false);
+  protected readonly editing = signal(false);
+  protected readonly draft = signal('');
   // Auf dem Handy gibt es keinen Hover: Ein Tipp auf die Nachricht zeigt die Leiste.
   protected readonly tapped = signal(false);
   protected readonly expanded = signal(false);
@@ -54,6 +58,11 @@ export class ChatMessage {
     query.addEventListener('change', listener);
     this.destroyRef.onDestroy(() => query.removeEventListener('change', listener));
   }
+
+  // Die Leiste bleibt sichtbar, solange ein Menü offen ist oder die Nachricht angetippt wurde.
+  protected readonly barVisible = computed(
+    () => this.tapped() || this.pickerOpen() || this.menuOpen(),
+  );
 
   // Thread und Mobil: 7 Reaktionen, Desktop: 20.
   protected readonly limit = computed(() => (this.compact() || !this.wide() ? 7 : 20));
@@ -93,13 +102,55 @@ export class ChatMessage {
 
   protected closeOnOutsideClick(event: MouseEvent): void {
     if (!this.host.nativeElement.contains(event.target as Node)) {
-      this.closeAll();
+      this.pickerOpen.set(false);
+      this.menuOpen.set(false);
+      this.tapped.set(false);
     }
   }
 
-  protected closeAll(): void {
+  // Escape bricht eine laufende Bearbeitung ab, sonst schließt es Menüs.
+  protected onEscape(): void {
+    if (this.editing()) {
+      this.cancelEdit();
+      return;
+    }
+    this.pickerOpen.set(false);
+    this.menuOpen.set(false);
+    this.tapped.set(false);
+  }
+
+  protected togglePicker(): void {
+    this.menuOpen.set(false);
+    this.pickerOpen.update((open) => !open);
+  }
+
+  protected toggleMenu(): void {
+    this.pickerOpen.set(false);
+    this.menuOpen.update((open) => !open);
+  }
+
+  protected startEdit(): void {
+    this.menuOpen.set(false);
     this.pickerOpen.set(false);
     this.tapped.set(false);
+    this.draft.set(this.message().text);
+    this.editing.set(true);
+  }
+
+  protected cancelEdit(): void {
+    this.editing.set(false);
+  }
+
+  protected saveEdit(): void {
+    const text = this.draft().trim();
+    if (text) {
+      this.store.editMessage(this.message().id, text);
+    }
+    this.editing.set(false);
+  }
+
+  protected onDraft(event: Event): void {
+    this.draft.set((event.target as HTMLTextAreaElement).value);
   }
 
   protected toggle(option: ReactionOption): void {

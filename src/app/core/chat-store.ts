@@ -91,6 +91,12 @@ export class ChatStore {
         }
       }
     }
+    for (const list of Object.values(this.threads())) {
+      const found = list.find((message) => message.id === id);
+      if (found) {
+        return found;
+      }
+    }
     return undefined;
   }
 
@@ -114,6 +120,11 @@ export class ChatStore {
       ...root,
       replies: { count: (root.replies?.count ?? 0) + 1, last: message.time },
     }));
+  }
+
+  // Ändert den Text einer eigenen Nachricht (Chat oder Thread).
+  editMessage(id: string, text: string): void {
+    this.mapMessage(id, (message) => ({ ...message, text }));
   }
 
   // Setzt die Reaktion des eigenen Nutzers, oder nimmt sie wieder zurück.
