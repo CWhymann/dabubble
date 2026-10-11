@@ -1,7 +1,7 @@
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2.5 thread:gap-2">
   <app-chat-message [message]="root" [compact]="true" (showProfile)="showProfile.emit($event)" />
 
-  <div class="mr-8 ml-8.25 flex items-center gap-5">
+  <div class="mx-5 flex items-center gap-5 thread:mr-8 thread:ml-8.25">
     <span class="text-lg text-light-purple">
       {{ replies.length }} {{ replies.length === 1 ? 'Antwort' : 'Antworten' }}
     </span>

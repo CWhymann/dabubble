@@ -19,7 +19,7 @@ import { Thread } from '../../features/thread/thread';
 import { WorkspaceMenu } from '../../features/workspace-menu/workspace-menu';
 import { Logo } from '../../shared/logo/logo';
 
-type MobileView = 'menu' | 'chat';
+type MobileView = 'menu' | 'chat' | 'thread';
 
 @Component({
   selector: 'app-home',
@@ -68,6 +68,11 @@ export class Home {
     return channel ? (this.channelMembers()[channel] ?? []) : [];
   });
 
+  protected readonly messagePlaceholder = computed(() => {
+    const user = this.activeDm();
+    return user ? `Nachricht an ${user.name}` : `Nachricht an #${this.activeChannel() ?? ''}`;
+  });
+
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
       return this.threadOpen()
@@ -85,10 +90,14 @@ export class Home {
 
   protected openThread(): void {
     this.threadOpen.set(true);
+    this.mobileView.set('thread');
   }
 
   protected closeThread(): void {
     this.threadOpen.set(false);
+    if (this.mobileView() === 'thread') {
+      this.mobileView.set('menu');
+    }
   }
 
   protected showMobileMenu(): void {

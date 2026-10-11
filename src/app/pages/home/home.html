@@ -4,7 +4,7 @@
 >
   <header
     class="items-center justify-between gap-2.5 bg-bg px-4 lg:hidden"
-    [class]="mobileView() === 'chat' ? 'flex' : 'hidden'"
+    [class]="mobileView() !== 'menu' ? 'flex' : 'hidden'"
   >
     <button
       type="button"
@@ -113,17 +113,21 @@
       </div>
     </section>
     <div class="mx-4 mb-7.5 lg:mx-8.75 lg:mb-10">
-      <app-message-box />
+      <app-message-box [placeholder]="messagePlaceholder()" />
     </div>
   </main>
 
   @if (threadOpen()) {
-    <aside class="hidden rounded-[30px] bg-white thread:flex thread:flex-col" aria-label="Thread">
+    <aside
+      class="min-h-0 bg-white thread:flex thread:flex-col thread:rounded-[30px]"
+      [class]="mobileView() === 'thread' ? 'flex flex-col lg:hidden' : 'hidden'"
+      aria-label="Thread"
+    >
       <header
-        class="relative flex h-26 items-center justify-between rounded-t-[30px] bg-white px-10 shadow-header"
+        class="relative flex h-15 items-center justify-between bg-white px-4 shadow-dropdown thread:h-26 thread:rounded-t-[30px] thread:px-10 thread:shadow-header"
       >
         <div class="flex items-center gap-1.25">
-          <h2 class="text-2xl font-bold">Thread</h2>
+          <h2 class="text-xl font-bold thread:text-2xl">Thread</h2>
           <img class="size-4" src="/icons/tag-small.svg" alt="" />
           <span class="text-sm text-purple-2">{{ activeChannel() }}</span>
         </div>
@@ -137,12 +141,12 @@
         </button>
       </header>
       <section
-        class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5"
+        class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-2.5 thread:pb-9.5"
         aria-label="Thread-Nachrichten"
       >
         <app-thread (showProfile)="openProfileOf($event)" />
       </section>
-      <div class="mx-5 mb-10">
+      <div class="mx-4 mb-7.5 thread:mx-5 thread:mb-10">
         <app-message-box placeholder="Antworten..." />
       </div>
     </aside>
