@@ -68,11 +68,6 @@ export class Home {
     return channel ? (this.channelMembers()[channel] ?? []) : [];
   });
 
-  protected readonly messagePlaceholder = computed(() => {
-    const user = this.activeDm();
-    return user ? `Nachricht an ${user.name}` : `Nachricht an #${this.activeChannel() ?? ''}`;
-  });
-
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
       return this.threadOpen()
