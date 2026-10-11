@@ -103,3 +103,11 @@
 @if (addChannelOpen()) {
   <app-add-channel (created)="createChannel($event)" (closed)="closeAddChannel()" />
 }
+
+@if (pendingChannel(); as channel) {
+  <app-add-members
+    [channelName]="channel.name"
+    (confirmed)="confirmMembers()"
+    (closed)="closeAddMembers()"
+  />
+}

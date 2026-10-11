@@ -1,6 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { ChatUser, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
+import { AddMembers } from '../../features/add-members/add-members';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { MessageBox } from '../../features/message-box/message-box';
@@ -18,6 +19,7 @@ import { Logo } from '../../shared/logo/logo';
   selector: 'app-home',
   imports: [
     AddChannel,
+    AddMembers,
     ChatHeader,
     ChatMessages,
     Logo,
@@ -43,6 +45,7 @@ export class Home {
   protected readonly profileOpen = signal(false);
   protected readonly profileEditOpen = signal(false);
   protected readonly addChannelOpen = signal(false);
+  protected readonly pendingChannel = signal<NewChannel | null>(null);
   protected readonly otherProfile = signal<ChatUser | null>(null);
 
   protected readonly gridCols = computed(() => {
@@ -119,7 +122,21 @@ export class Home {
   }
 
   protected createChannel(channel: NewChannel): void {
-    this.channels.update((list) => (list.includes(channel.name) ? list : [...list, channel.name]));
-    this.closeAddChannel();
+    this.addChannelOpen.set(false);
+    this.pendingChannel.set(channel);
+  }
+
+  protected closeAddMembers(): void {
+    this.pendingChannel.set(null);
+  }
+
+  protected confirmMembers(): void {
+    const channel = this.pendingChannel();
+    if (channel) {
+      this.channels.update((list) =>
+        list.includes(channel.name) ? list : [...list, channel.name],
+      );
+    }
+    this.closeAddMembers();
   }
 }

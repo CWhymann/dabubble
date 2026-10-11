@@ -1,0 +1,122 @@
+<div class="fixed inset-0 z-30" aria-hidden="true" (click)="closed.emit()"></div>
+
+<section
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="add-members-title"
+  class="fixed top-1/2 left-1/2 z-40 flex w-177.5 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-end gap-5 rounded-[30px] bg-white p-10 shadow-menu"
+>
+  <div class="flex w-full items-start justify-between">
+    <h2 id="add-members-title" class="text-2xl font-bold text-black">Leute hinzufügen</h2>
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+      aria-label="Dialog schließen"
+      (click)="closed.emit()"
+    >
+      <img class="size-6" src="/icons/close.svg" alt="" />
+    </button>
+  </div>
+
+  <div
+    class="flex w-full flex-col gap-5"
+    role="radiogroup"
+    aria-label="Wer soll hinzugefügt werden?"
+  >
+    <button
+      type="button"
+      role="radio"
+      class="flex cursor-pointer items-center gap-5 text-left text-lg text-black"
+      [attr.aria-checked]="mode() === 'all'"
+      (click)="setMode('all')"
+    >
+      <img
+        class="size-5 shrink-0"
+        [src]="mode() === 'all' ? '/icons/radio-checked.svg' : '/icons/radio-unchecked.svg'"
+        alt=""
+      />
+      <span
+        >Alle Mitglieder von <span class="text-purple-3">{{ channelName() }}</span> hinzufügen</span
+      >
+    </button>
+
+    <button
+      type="button"
+      role="radio"
+      class="flex cursor-pointer items-center gap-5 text-left text-lg text-black"
+      [attr.aria-checked]="mode() === 'specific'"
+      (click)="setMode('specific')"
+    >
+      <img
+        class="size-5 shrink-0"
+        [src]="mode() === 'specific' ? '/icons/radio-checked.svg' : '/icons/radio-unchecked.svg'"
+        alt=""
+      />
+      <span>Bestimmte Leute hinzufügen</span>
+    </button>
+  </div>
+
+  @if (mode() === 'specific') {
+    <div class="relative w-full">
+      <div
+        class="flex min-h-15 w-full flex-wrap items-center gap-2.5 rounded-[30px] border border-light-purple px-5 py-1.5 focus-within:border-purple-1 hover:not-focus-within:border-purple-2"
+      >
+        @for (user of selected(); track user.name) {
+          <span class="flex items-center gap-3.75 rounded-[35px] bg-bg px-2.5 py-0.75">
+            <img class="size-8.5 rounded-full bg-white object-cover" [src]="user.avatar" alt="" />
+            <span class="text-lg text-black">{{ user.name }}</span>
+            <button
+              type="button"
+              class="flex size-7.5 cursor-pointer items-center justify-center rounded-full hover:bg-white"
+              [attr.aria-label]="user.name + ' entfernen'"
+              (click)="remove(user)"
+            >
+              <img class="size-6" src="/icons/close.svg" alt="" />
+            </button>
+          </span>
+        }
+        <input
+          type="text"
+          class="min-w-32 flex-1 bg-transparent py-2 text-lg text-black outline-hidden placeholder:text-text-gray"
+          placeholder="Name eingeben"
+          autocomplete="off"
+          aria-label="Name eingeben"
+          [value]="query()"
+          (input)="onQuery($event)"
+        />
+      </div>
+
+      @if (suggestions().length > 0) {
+        <ul
+          class="absolute top-full left-5 z-10 mt-2 flex w-83.75 max-w-full flex-col gap-3.75 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] border border-light-purple bg-white px-5.25 py-5 shadow-dropdown"
+        >
+          @for (user of suggestions(); track user.name) {
+            <li>
+              <button
+                type="button"
+                class="flex w-full cursor-pointer items-center gap-3.75 rounded-[35px] px-5 py-1 text-left text-lg text-black hover:bg-bg"
+                (click)="select(user)"
+              >
+                <span class="relative shrink-0">
+                  <img
+                    class="size-12.5 rounded-full bg-white object-cover"
+                    [src]="user.avatar"
+                    alt=""
+                  />
+                  <img
+                    class="absolute right-0 bottom-0 size-3.5"
+                    [src]="user.online ? '/icons/online.svg' : '/icons/offline.svg'"
+                    alt=""
+                  />
+                </span>
+                <span class="whitespace-nowrap">{{ user.name }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+
+  <app-button-primary [disabled]="!canConfirm()" (click)="confirm()">Erstellen</app-button-primary>
+</section>
