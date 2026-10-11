@@ -1,10 +1,6 @@
-import { Component, computed, input, output } from '@angular/core';
-import { DayGroup } from '../../core/chat';
-import { AVATARS } from '../../core/avatars';
-import { DEV_CHANNEL } from '../../core/channels';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { ChatStore } from '../../core/chat-store';
 import { ChatMessage } from '../chat-message/chat-message';
-
-const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
 
 @Component({
   selector: 'app-chat-messages',
@@ -12,44 +8,12 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
   templateUrl: './chat-messages.html',
 })
 export class ChatMessages {
+  // Schlüssel des Chats: Channel-Name oder "dm:<Name>" für Direktnachrichten.
   readonly channel = input.required<string>();
   readonly openThread = output<void>();
   readonly showProfile = output<string>();
 
-  private readonly devGroups: DayGroup[] = [
-    {
-      label: 'Dienstag, 14 Januar',
-      messages: [
-        {
-          author: 'Noah Braun',
-          avatar: avatarOf('Noah Braun'),
-          time: '14:25',
-          text: 'Welche Version ist aktuell von Angular?',
-          own: false,
-          replies: { count: 2, last: '14:56' },
-          reactions: [],
-        },
-      ],
-    },
-    {
-      label: 'Heute',
-      messages: [
-        {
-          author: 'Frederik Beck',
-          avatar: avatarOf('Frederik Beck'),
-          time: '15:06',
-          text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque blandit odio efficitur lectus vestibulum, quis accumsan ante vulputate. Quisque tristique iaculis erat, eu faucibus lacus iaculis ac.',
-          own: true,
-          reactions: [
-            { emoji: '/icons/emoji-rocket.svg', label: 'Rakete', count: 1 },
-            { emoji: '/icons/emoji-check.svg', label: 'Haken', count: 1 },
-          ],
-        },
-      ],
-    },
-  ];
+  private readonly store = inject(ChatStore);
 
-  protected readonly groups = computed(() =>
-    this.channel() === DEV_CHANNEL ? this.devGroups : [],
-  );
+  protected readonly groups = computed(() => this.store.groupsFor(this.channel()));
 }

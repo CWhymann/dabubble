@@ -108,6 +108,11 @@
       <div class="mt-auto">
         @if (activeDm(); as user) {
           <app-dm-intro [user]="user" (showProfile)="openProfileOf($event)" />
+          <app-chat-messages
+            [channel]="'dm:' + user.name"
+            (openThread)="openThread()"
+            (showProfile)="openProfileOf($event)"
+          />
         } @else if (activeChannel(); as channel) {
           <app-chat-messages
             [channel]="channel"
@@ -122,7 +127,7 @@
       </div>
     </section>
     <div class="mx-4 mb-7.5 lg:mx-8.75 lg:mb-10">
-      <app-message-box />
+      <app-message-box [placeholder]="messagePlaceholder()" (sent)="sendMessage($event)" />
     </div>
   </main>
 

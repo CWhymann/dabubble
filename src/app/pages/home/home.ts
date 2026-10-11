@@ -1,10 +1,11 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import {
   DEV_CHANNEL,
   DEV_CHANNEL_CREATOR,
   DEV_CHANNEL_DESCRIPTION,
   DEV_CHANNEL_MEMBERS,
 } from '../../core/channels';
+import { ChatStore } from '../../core/chat-store';
 import { SearchHit } from '../../core/search';
 import { ChatUser, DM_USERS, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
@@ -70,6 +71,7 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
 })
 export class Home {
   private readonly ownAuthor = 'Frederik Beck';
+  private readonly store = inject(ChatStore);
 
   protected readonly ownName = signal('Frederik Beck');
   protected readonly channels = signal<string[]>([DEV_CHANNEL]);
@@ -104,6 +106,17 @@ export class Home {
     return (channel && this.channelMeta()[channel]) || { description: '', creator: '' };
   });
 
+  // Schlüssel des offenen Chats: Channel-Name oder "dm:<Name>".
+  protected readonly activeChatKey = computed(() => {
+    const dm = this.activeDm();
+    return dm ? `dm:${dm.name}` : this.activeChannel();
+  });
+
+  protected readonly messagePlaceholder = computed(() => {
+    const dm = this.activeDm();
+    return dm ? `Nachricht an ${dm.name}` : `Nachricht an #${this.activeChannel() ?? ''}`;
+  });
+
   protected readonly mainClass = computed(
     () =>
       ({
@@ -123,6 +136,13 @@ export class Home {
       ? 'lg:grid-cols-[minmax(0,1fr)] thread:grid-cols-[minmax(0,1fr)_30.3125rem]'
       : 'lg:grid-cols-[minmax(0,1fr)]';
   });
+
+  protected sendMessage(text: string): void {
+    const key = this.activeChatKey();
+    if (key) {
+      this.store.send(key, text, this.ownName());
+    }
+  }
 
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);

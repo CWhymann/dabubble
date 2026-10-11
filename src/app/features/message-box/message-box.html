@@ -62,6 +62,7 @@
       [attr.aria-label]="placeholder()"
       [value]="text()"
       (input)="onInput($event)"
+      (keydown.enter)="onEnter($event)"
     ></textarea>
 
     <div class="flex items-center justify-between">
@@ -107,6 +108,7 @@
         type="button"
         class="group relative size-10 cursor-pointer"
         aria-label="Nachricht senden"
+        (click)="submit()"
       >
         <img
           class="absolute inset-1.25 size-7.5 group-hover:opacity-0"

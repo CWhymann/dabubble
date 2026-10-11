@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { ChatUser, DM_USERS, isOwnUser } from '../../core/users';
 
 const EMOJIS = [
@@ -34,6 +34,7 @@ const EMOJIS = [
 })
 export class MessageBox {
   readonly placeholder = input('Nachricht an #Entwicklerteam');
+  readonly sent = output<string>();
 
   protected readonly emojis = EMOJIS;
   protected readonly text = signal('');
@@ -57,6 +58,25 @@ export class MessageBox {
 
   protected onInput(event: Event): void {
     this.text.set((event.target as HTMLTextAreaElement).value);
+  }
+
+  // Enter sendet, Shift+Enter fügt eine neue Zeile ein.
+  protected onEnter(event: Event): void {
+    if ((event as KeyboardEvent).shiftKey) {
+      return;
+    }
+    event.preventDefault();
+    this.submit();
+  }
+
+  protected submit(): void {
+    const value = this.text().trim();
+    if (!value) {
+      return;
+    }
+    this.sent.emit(value);
+    this.text.set('');
+    this.emojiOpen.set(false);
   }
 
   protected startTag(): void {
