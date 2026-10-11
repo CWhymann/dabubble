@@ -1,66 +1,124 @@
-<div
-  class="flex cursor-text flex-col gap-10 rounded-[20px] border border-light-purple bg-white p-5 focus-within:border-purple-1 hover:not-focus-within:border-purple-2"
-  (click)="field.focus()"
->
-  <textarea
-    #field
-    rows="1"
-    class="max-h-40 w-full resize-none overflow-y-auto bg-transparent text-lg leading-[normal] text-black field-sizing-content outline-hidden placeholder:text-text-gray"
-    [placeholder]="placeholder()"
-    [attr.aria-label]="placeholder()"
-  ></textarea>
+<div class="relative">
+  @if (tagging()) {
+    <ul
+      class="absolute bottom-full left-0 z-20 mb-3 flex max-h-80 w-87.5 max-w-full flex-col gap-2 overflow-y-auto rounded-[20px] border border-light-purple bg-white p-4 shadow-menu"
+      aria-label="Personen erwähnen"
+    >
+      @for (user of tagHits(); track user.name) {
+        <li>
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center gap-3.75 rounded-[35px] px-4 py-1 text-left text-lg text-black hover:bg-bg"
+            (click)="tag(user); field.focus()"
+          >
+            <span class="relative block size-12.5 shrink-0">
+              <img
+                class="size-full rounded-full bg-white object-cover"
+                [src]="user.avatar"
+                alt=""
+              />
+              <img
+                class="absolute right-0 bottom-0 size-3.5"
+                [src]="user.online ? '/icons/online-small.svg' : '/icons/offline-small.svg'"
+                [alt]="user.online ? 'Online' : 'Offline'"
+              />
+            </span>
+            <span class="min-w-0 truncate">{{ label(user) }}</span>
+          </button>
+        </li>
+      } @empty {
+        <li class="px-4 py-2 text-lg text-text-gray">Keine Treffer.</li>
+      }
+    </ul>
+  }
 
-  <div class="flex items-center justify-between">
-    <div class="flex items-center gap-1.25">
+  @if (emojiOpen()) {
+    <div
+      class="absolute bottom-full left-0 z-20 mb-3 grid grid-cols-8 gap-1 rounded-[20px] border border-light-purple bg-white p-3 shadow-menu"
+      role="listbox"
+      aria-label="Emojis"
+    >
+      @for (emoji of emojis; track emoji) {
+        <button
+          type="button"
+          class="flex size-10 cursor-pointer items-center justify-center rounded-[10px] text-2xl hover:bg-bg"
+          (click)="insertEmoji(emoji); field.focus()"
+        >
+          {{ emoji }}
+        </button>
+      }
+    </div>
+  }
+
+  <div
+    class="flex cursor-text flex-col gap-10 rounded-[20px] border border-light-purple bg-white p-5 focus-within:border-purple-1 hover:not-focus-within:border-purple-2"
+    (click)="field.focus()"
+  >
+    <textarea
+      #field
+      rows="1"
+      class="max-h-40 w-full resize-none overflow-y-auto bg-transparent text-lg leading-[normal] text-black field-sizing-content outline-hidden placeholder:text-text-gray"
+      [placeholder]="placeholder()"
+      [attr.aria-label]="placeholder()"
+      [value]="text()"
+      (input)="onInput($event)"
+    ></textarea>
+
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-1.25">
+        <button
+          type="button"
+          class="group relative size-10 cursor-pointer rounded-[20px] hover:bg-bg"
+          aria-label="Emoji einfügen"
+          [attr.aria-expanded]="emojiOpen()"
+          (click)="toggleEmojis($event)"
+        >
+          <img
+            class="absolute inset-2 size-6 group-hover:opacity-0"
+            src="/icons/sentiment-satisfied.svg"
+            alt=""
+          />
+          <img
+            class="absolute inset-2 size-6 opacity-0 group-hover:opacity-100"
+            src="/icons/sentiment-satisfied-hover.svg"
+            alt=""
+          />
+        </button>
+        <button
+          type="button"
+          class="group relative size-10 cursor-pointer rounded-[20px] hover:bg-bg"
+          aria-label="Person erwähnen"
+          (click)="startTag(); field.focus()"
+        >
+          <img
+            class="absolute inset-2 size-6 group-hover:opacity-0"
+            src="/icons/alternate-email.svg"
+            alt=""
+          />
+          <img
+            class="absolute inset-2 size-6 opacity-0 group-hover:opacity-100"
+            src="/icons/alternate-email-hover.svg"
+            alt=""
+          />
+        </button>
+      </div>
+
       <button
         type="button"
-        class="group relative size-10 cursor-pointer rounded-[20px] hover:bg-bg"
-        aria-label="Emoji einfügen"
+        class="group relative size-10 cursor-pointer"
+        aria-label="Nachricht senden"
       >
         <img
-          class="absolute inset-2 size-6 group-hover:opacity-0"
-          src="/icons/sentiment-satisfied.svg"
+          class="absolute inset-1.25 size-7.5 group-hover:opacity-0"
+          src="/icons/send.svg"
           alt=""
         />
         <img
-          class="absolute inset-2 size-6 opacity-0 group-hover:opacity-100"
-          src="/icons/sentiment-satisfied-hover.svg"
-          alt=""
-        />
-      </button>
-      <button
-        type="button"
-        class="group relative size-10 cursor-pointer rounded-[20px] hover:bg-bg"
-        aria-label="Person erwähnen"
-      >
-        <img
-          class="absolute inset-2 size-6 group-hover:opacity-0"
-          src="/icons/alternate-email.svg"
-          alt=""
-        />
-        <img
-          class="absolute inset-2 size-6 opacity-0 group-hover:opacity-100"
-          src="/icons/alternate-email-hover.svg"
+          class="absolute inset-1.25 size-7.5 opacity-0 group-hover:opacity-100"
+          src="/icons/send-hover.svg"
           alt=""
         />
       </button>
     </div>
-
-    <button
-      type="button"
-      class="group relative size-10 cursor-pointer"
-      aria-label="Nachricht senden"
-    >
-      <img
-        class="absolute inset-1.25 size-7.5 group-hover:opacity-0"
-        src="/icons/send.svg"
-        alt=""
-      />
-      <img
-        class="absolute inset-1.25 size-7.5 opacity-0 group-hover:opacity-100"
-        src="/icons/send-hover.svg"
-        alt=""
-      />
-    </button>
   </div>
 </div>
