@@ -8,6 +8,7 @@ import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { DmHeader } from '../../features/dm-header/dm-header';
 import { DmIntro } from '../../features/dm-intro/dm-intro';
 import { MessageBox } from '../../features/message-box/message-box';
+import { MobileMenu } from '../../features/mobile-menu/mobile-menu';
 import { NavToggle } from '../../features/nav-toggle/nav-toggle';
 import { OtherProfile } from '../../features/other-profile/other-profile';
 import { ProfileEdit } from '../../features/profile-edit/profile-edit';
@@ -17,6 +18,8 @@ import { SearchBar } from '../../features/search-bar/search-bar';
 import { Thread } from '../../features/thread/thread';
 import { WorkspaceMenu } from '../../features/workspace-menu/workspace-menu';
 import { Logo } from '../../shared/logo/logo';
+
+type MobileView = 'menu' | 'chat';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +32,7 @@ import { Logo } from '../../shared/logo/logo';
     DmIntro,
     Logo,
     MessageBox,
+    MobileMenu,
     NavToggle,
     OtherProfile,
     ProfileEdit,
@@ -50,6 +54,7 @@ export class Home {
   protected readonly channelMembers = signal<Record<string, string[]>>({
     [DEV_CHANNEL]: DEV_CHANNEL_MEMBERS,
   });
+  protected readonly mobileView = signal<MobileView>('menu');
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
   protected readonly profileOpen = signal(false);
@@ -86,9 +91,14 @@ export class Home {
     this.threadOpen.set(false);
   }
 
+  protected showMobileMenu(): void {
+    this.mobileView.set('menu');
+  }
+
   protected selectChannel(channel: string): void {
     this.activeDm.set(null);
     this.activeChannel.set(channel);
+    this.mobileView.set('chat');
     if (channel !== DEV_CHANNEL) {
       this.threadOpen.set(false);
     }
@@ -100,6 +110,7 @@ export class Home {
       this.activeChannel.set(null);
       this.activeDm.set(user);
       this.threadOpen.set(false);
+      this.mobileView.set('chat');
     }
   }
 

@@ -2,33 +2,54 @@
   class="grid h-dvh grid-cols-1 grid-rows-[5rem_minmax(0,1fr)] lg:grid-rows-[4.375rem_minmax(0,1fr)] lg:gap-5 lg:px-5 lg:pt-6.25 lg:pb-6.25"
   [class]="gridCols()"
 >
-  <header class="flex items-center justify-between gap-2.5 bg-bg px-4 lg:hidden">
-    <div class="flex min-w-0 items-center gap-0.5">
-      <button
-        type="button"
-        class="flex size-6.25 shrink-0 cursor-pointer items-center"
-        aria-label="Zurück zum Menü"
-      >
-        <img class="size-6.25 rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
-      </button>
-      <div class="flex min-w-0 items-center gap-2.5">
-        <span class="relative block size-12.5 shrink-0">
-          <img class="size-full rounded-[30px]" src="/icons/workspace-logo.png" alt="" />
-          <img
-            class="absolute inset-x-[21.2%] inset-y-[30.66%]"
-            src="/icons/workspace-logo-symbol.svg"
-            alt=""
-          />
-        </span>
-        <span class="min-w-0 truncate text-xl font-bold">Devspace</span>
-      </div>
-    </div>
+  <header
+    class="items-center justify-between gap-2.5 bg-bg px-4 lg:hidden"
+    [class]="mobileView() === 'chat' ? 'flex' : 'hidden'"
+  >
+    <button
+      type="button"
+      class="flex min-w-0 cursor-pointer items-center gap-0.5"
+      aria-label="Zurück zum Menü"
+      (click)="showMobileMenu()"
+    >
+      <img class="size-6.25 shrink-0 rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
+      <span class="relative block size-12.5 shrink-0">
+        <img class="size-full rounded-[30px]" src="/icons/workspace-logo.png" alt="" />
+        <img
+          class="absolute inset-x-[21.2%] inset-y-[30.66%]"
+          src="/icons/workspace-logo-symbol.svg"
+          alt=""
+        />
+      </span>
+      <span class="ml-2.5 min-w-0 truncate text-xl font-bold">Devspace</span>
+    </button>
     <app-profile-menu
       [name]="ownName()"
       avatar="/icons/avatar-frederik-beck.svg"
       (openProfile)="openProfile()"
     />
   </header>
+
+  @if (mobileView() === 'menu') {
+    <header class="flex items-center justify-between gap-2.5 bg-bg px-4 lg:hidden">
+      <app-logo [compact]="true" />
+      <app-profile-menu
+        [name]="ownName()"
+        avatar="/icons/avatar-frederik-beck.svg"
+        (openProfile)="openProfile()"
+      />
+    </header>
+    <div class="min-h-0 overflow-y-auto bg-white px-4 pt-3 lg:hidden">
+      <app-mobile-menu
+        [channels]="channels()"
+        [activeChannel]="activeChannel()"
+        [activeUser]="activeDm()?.name ?? null"
+        (addChannel)="openAddChannel()"
+        (selectChannel)="selectChannel($event)"
+        (selectUser)="selectUser($event)"
+      />
+    </div>
+  }
 
   <header class="hidden lg:col-span-full lg:flex lg:items-center lg:gap-5">
     <div class="w-91.5 shrink-0 pl-6.25">
@@ -62,7 +83,10 @@
     </nav>
   }
 
-  <main class="flex min-h-0 min-w-0 flex-col bg-white lg:rounded-[30px]">
+  <main
+    class="min-h-0 min-w-0 flex-col bg-white lg:flex lg:rounded-[30px]"
+    [class]="mobileView() === 'chat' ? 'flex' : 'hidden'"
+  >
     <header
       class="relative flex h-15 items-center bg-white px-4 shadow-dropdown lg:h-24 lg:rounded-t-[30px] lg:px-6 lg:shadow-header 2xl:px-11.25"
     >

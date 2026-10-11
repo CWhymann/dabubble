@@ -1,0 +1,30 @@
+<div class="flex flex-col gap-6.25 rounded-b-[30px] bg-white p-5">
+  <label
+    class="flex h-12 cursor-text items-center justify-between gap-4 rounded-[42px] border border-light-purple bg-white px-6 focus-within:border-purple-1 hover:not-focus-within:border-purple-2"
+  >
+    <input
+      type="search"
+      class="min-w-0 flex-1 bg-transparent text-lg text-black outline-hidden placeholder:text-text-gray"
+      placeholder="Gehe zu..."
+      aria-label="Gehe zu..."
+    />
+    <img class="size-8 shrink-0" src="/icons/search.svg" alt="" />
+  </label>
+
+  <app-workspace-menu
+    [channels]="channels()"
+    [activeChannel]="activeChannel()"
+    [activeUser]="activeUser()"
+    (addChannel)="addChannel.emit()"
+    (selectChannel)="selectChannel.emit($event)"
+    (selectUser)="selectUser.emit($event)"
+  />
+</div>
+
+<button
+  type="button"
+  class="fixed right-4 bottom-14.25 flex size-15 cursor-pointer items-center justify-center rounded-full bg-purple-1 shadow-menu hover:bg-purple-2"
+  aria-label="Neue Nachricht"
+>
+  <img class="size-6 brightness-0 invert" src="/icons/edit-square.svg" alt="" />
+</button>
