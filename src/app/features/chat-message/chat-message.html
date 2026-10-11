@@ -22,10 +22,9 @@
     </div>
 
     <div class="relative w-fit max-w-full">
-      <!-- Leiste: beim Hover oder nach Tipp, oberhalb der Blase -->
       @if (!editing()) {
         <div
-          class="absolute -top-5 z-20 flex items-center gap-1 rounded-[25px] border border-light-purple bg-white py-0.75 pr-1.5 pl-2.5 transition-opacity"
+          class="absolute -top-5 z-20 flex items-center gap-1 rounded-[25px] border border-light-purple bg-white py-0.75 pr-1.5 pl-2.5 opacity-0 pointer-events-none transition-opacity group-hover:pointer-events-auto group-hover:opacity-100"
           [class.left-0]="message().own"
           [class.right-0]="!message().own"
           [class.opacity-0]="!barVisible()"
