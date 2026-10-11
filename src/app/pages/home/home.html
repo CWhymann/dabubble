@@ -90,7 +90,12 @@
       @if (activeDm(); as user) {
         <app-dm-header [user]="user" (showProfile)="openProfileOf($event)" />
       } @else if (activeChannel(); as channel) {
-        <app-chat-header class="block w-full" [channelName]="channel" [members]="activeMembers()" />
+        <app-chat-header
+          class="block w-full"
+          [channelName]="channel"
+          [members]="activeMembers()"
+          (editChannel)="openChannelEdit()"
+        />
       }
     </header>
     <section
@@ -177,6 +182,20 @@
     (closed)="closeOtherProfile()"
     (messageRequested)="openDmWith(user)"
   />
+}
+
+@if (channelEditOpen()) {
+  @if (activeChannel(); as channel) {
+    <app-channel-edition
+      [channel]="channel"
+      [description]="activeChannelMeta().description"
+      [creator]="activeChannelMeta().creator"
+      [memberNames]="activeMembers()"
+      (saved)="saveChannel($event)"
+      (closed)="closeChannelEdit()"
+      (showProfile)="openProfileOf($event)"
+    />
+  }
 }
 
 @if (addChannelOpen()) {

@@ -2,6 +2,8 @@
   <button
     type="button"
     class="flex min-w-0 cursor-pointer items-center gap-1.25 rounded-[100px] py-0.5 text-xl font-bold hover:bg-bg hover:text-purple-3 lg:max-w-69.5 lg:gap-2.5 lg:px-1 2xl:px-2.5 lg:py-1.5 lg:text-2xl"
+    aria-label="Channel bearbeiten"
+    (click)="editChannel.emit()"
   >
     <img class="size-6 shrink-0" src="/icons/tag-dark.svg" alt="" />
     <span class="min-w-0 truncate">{{ channelName() }}</span>

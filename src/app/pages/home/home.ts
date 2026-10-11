@@ -1,9 +1,15 @@
 import { Component, computed, signal } from '@angular/core';
-import { DEV_CHANNEL, DEV_CHANNEL_MEMBERS } from '../../core/channels';
+import {
+  DEV_CHANNEL,
+  DEV_CHANNEL_CREATOR,
+  DEV_CHANNEL_DESCRIPTION,
+  DEV_CHANNEL_MEMBERS,
+} from '../../core/channels';
 import { ChatUser, DM_USERS, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddMembers } from '../../features/add-members/add-members';
 import { ChatHeader } from '../../features/chat-header/chat-header';
+import { ChannelEdit, ChannelEdition } from '../../features/channel-edition/channel-edition';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
 import { DmHeader } from '../../features/dm-header/dm-header';
 import { DmIntro } from '../../features/dm-intro/dm-intro';
@@ -21,12 +27,23 @@ import { Logo } from '../../shared/logo/logo';
 
 type MobileView = 'menu' | 'chat' | 'thread';
 
+interface ChannelMeta {
+  description: string;
+  creator: string;
+}
+
+function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<string, T> {
+  const { [from]: value, ...rest } = map;
+  return value === undefined ? rest : { ...rest, [to]: value };
+}
+
 @Component({
   selector: 'app-home',
   imports: [
     AddChannel,
     AddMembers,
     ChatHeader,
+    ChannelEdition,
     ChatMessages,
     DmHeader,
     DmIntro,
@@ -54,6 +71,10 @@ export class Home {
   protected readonly channelMembers = signal<Record<string, string[]>>({
     [DEV_CHANNEL]: DEV_CHANNEL_MEMBERS,
   });
+  protected readonly channelMeta = signal<Record<string, ChannelMeta>>({
+    [DEV_CHANNEL]: { description: DEV_CHANNEL_DESCRIPTION, creator: DEV_CHANNEL_CREATOR },
+  });
+  protected readonly channelEditOpen = signal(false);
   protected readonly mobileView = signal<MobileView>('menu');
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
@@ -66,6 +87,11 @@ export class Home {
   protected readonly activeMembers = computed(() => {
     const channel = this.activeChannel();
     return channel ? (this.channelMembers()[channel] ?? []) : [];
+  });
+
+  protected readonly activeChannelMeta = computed<ChannelMeta>(() => {
+    const channel = this.activeChannel();
+    return (channel && this.channelMeta()[channel]) || { description: '', creator: '' };
   });
 
   protected readonly mainClass = computed(
@@ -90,6 +116,31 @@ export class Home {
 
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
+  }
+
+  protected openChannelEdit(): void {
+    this.channelEditOpen.set(true);
+  }
+
+  protected closeChannelEdit(): void {
+    this.channelEditOpen.set(false);
+  }
+
+  protected saveChannel(edit: ChannelEdit): void {
+    const old = this.activeChannel();
+    if (!old) {
+      return;
+    }
+    const name = edit.name.trim();
+    const newName = name && (name === old || !this.channels().includes(name)) ? name : old;
+    const meta = this.channelMeta()[old] ?? { description: '', creator: this.ownAuthor };
+    this.channels.update((list) => list.map((channel) => (channel === old ? newName : channel)));
+    this.channelMembers.update((map) => renameKey(map, old, newName));
+    this.channelMeta.update((map) => ({
+      ...renameKey(map, old, newName),
+      [newName]: { ...meta, description: edit.description },
+    }));
+    this.activeChannel.set(newName);
   }
 
   protected openThread(): void {
@@ -207,5 +258,9 @@ export class Home {
     const members = [this.ownAuthor, ...names.filter((member) => member !== this.ownAuthor)];
     this.channels.update((list) => [...list, name]);
     this.channelMembers.update((map) => ({ ...map, [name]: members }));
+    this.channelMeta.update((map) => ({
+      ...map,
+      [name]: { description: '', creator: this.ownAuthor },
+    }));
   }
 }

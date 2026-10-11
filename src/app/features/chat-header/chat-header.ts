@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { AVATARS } from '../../core/avatars';
 
 const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
@@ -10,6 +10,7 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
 export class ChatHeader {
   readonly channelName = input.required<string>();
   readonly members = input.required<string[]>();
+  readonly editChannel = output<void>();
 
   protected readonly avatars = computed(() => this.members().slice(0, 3).map(avatarOf));
 }
