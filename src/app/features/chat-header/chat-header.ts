@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { AVATARS } from '../../core/avatars';
 
 const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
@@ -8,6 +8,8 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
   templateUrl: './chat-header.html',
 })
 export class ChatHeader {
-  protected readonly channelName = 'Entwicklerteam';
-  protected readonly members = ['Noah Braun', 'Sofia Müller', 'Frederik Beck'].map(avatarOf);
+  readonly channelName = input.required<string>();
+  readonly members = input.required<string[]>();
+
+  protected readonly avatars = computed(() => this.members().slice(0, 3).map(avatarOf));
 }

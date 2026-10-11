@@ -1,61 +1,19 @@
-<article class="group flex py-2.5 hover:bg-bg" [class]="spacing()">
-  <img
-    class="size-17.5 shrink-0 self-start rounded-full bg-white"
-    [class.shadow-header]="message().own"
-    [src]="message().avatar"
-    alt=""
-  />
-  <div
-    class="flex min-w-0 flex-1 flex-col gap-2"
-    [class]="message().own ? 'items-end' : 'items-start'"
-  >
-    <div class="flex items-center gap-5" [class.flex-row-reverse]="message().own">
-      <button
-        type="button"
-        class="cursor-pointer text-lg font-bold hover:text-purple-1"
-        (click)="showProfile.emit(message().author)"
+<div class="flex flex-col gap-5">
+  @for (group of groups(); track group.label) {
+    <div class="relative mx-8.75 flex h-8.75 items-center justify-center">
+      <div class="absolute inset-x-0 top-1/2 border-t border-light-purple"></div>
+      <span
+        class="relative rounded-[30px] border border-light-purple bg-white px-3.75 py-1.25 text-lg"
       >
-        {{ message().author }}
-      </button>
-      <span class="text-sm text-text-gray">{{ message().time }} Uhr</span>
+        {{ group.label }}
+      </span>
     </div>
-
-    <p class="w-fit max-w-full p-3.75 text-lg wrap-break-word" [class]="bubble()">
-      {{ message().text }}
-    </p>
-
-    @if (message().replies; as replies) {
-      <div class="flex items-center gap-5">
-        <button
-          type="button"
-          class="cursor-pointer text-lg text-purple-3 hover:text-purple-1"
-          (click)="openThread.emit()"
-        >
-          {{ replies.count }} {{ replies.count === 1 ? 'Antwort' : 'Antworten' }}
-        </button>
-        <span class="text-sm text-text-gray">Letzte Antwort {{ replies.last }}</span>
-      </div>
+    @for (message of group.messages; track $index) {
+      <app-chat-message
+        [message]="message"
+        (openThread)="openThread.emit()"
+        (showProfile)="showProfile.emit($event)"
+      />
     }
-
-    @if (message().reactions.length) {
-      <div class="flex items-center gap-2">
-        @for (reaction of message().reactions; track reaction.label) {
-          <button
-            type="button"
-            class="flex cursor-pointer items-center gap-2.5 rounded-[20px] border border-light-purple bg-white px-2.5 py-1.25 text-base"
-          >
-            <img class="size-6" [src]="reaction.emoji" [alt]="reaction.label" />
-            {{ reaction.count }}
-          </button>
-        }
-        <button
-          type="button"
-          class="cursor-pointer rounded-[20px] bg-white p-1.25"
-          aria-label="Reaktion hinzufügen"
-        >
-          <img class="size-6" src="/icons/add-reaction.svg" alt="" />
-        </button>
-      </div>
-    }
-  </div>
-</article>
+  }
+</div>

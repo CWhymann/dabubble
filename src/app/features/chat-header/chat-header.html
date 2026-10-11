@@ -3,8 +3,8 @@
     type="button"
     class="flex w-69.5 cursor-pointer items-center gap-2.5 rounded-[100px] px-2.5 py-1.5 text-2xl font-bold hover:bg-bg hover:text-purple-3"
   >
-    <img class="size-6" src="/icons/tag-dark.svg" alt="" />
-    {{ channelName }}
+    <img class="size-6 shrink-0" src="/icons/tag-dark.svg" alt="" />
+    <span class="min-w-0 truncate">{{ channelName() }}</span>
     <span class="flex flex-1 items-center px-2">
       <img src="/icons/chevron-down.svg" alt="" />
     </span>
@@ -14,18 +14,18 @@
     <button
       type="button"
       class="flex h-11.5 cursor-pointer items-center gap-2.5 rounded-[30px] px-2.5 py-0.75 hover:bg-bg hover:text-purple-3"
-      [attr.aria-label]="members.length + ' Mitglieder anzeigen'"
+      [attr.aria-label]="members().length + ' Mitglieder anzeigen'"
     >
       <span class="flex -space-x-2.5">
-        @for (member of members; track member) {
+        @for (avatar of avatars(); track avatar) {
           <img
             class="size-10 rounded-full border-2 border-white bg-white object-cover"
-            [src]="member"
+            [src]="avatar"
             alt=""
           />
         }
       </span>
-      <span class="text-xl font-semibold">{{ members.length }}</span>
+      <span class="text-xl font-semibold">{{ members().length }}</span>
     </button>
     <button
       type="button"

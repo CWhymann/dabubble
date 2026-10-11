@@ -1,4 +1,5 @@
 import { Component, computed, signal } from '@angular/core';
+import { DEV_CHANNEL, DEV_CHANNEL_MEMBERS } from '../../core/channels';
 import { ChatUser, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddMembers } from '../../features/add-members/add-members';
@@ -39,7 +40,11 @@ export class Home {
   private readonly ownAuthor = 'Frederik Beck';
 
   protected readonly ownName = signal('Frederik Beck');
-  protected readonly channels = signal<string[]>(['Entwicklerteam']);
+  protected readonly channels = signal<string[]>([DEV_CHANNEL]);
+  protected readonly activeChannel = signal(DEV_CHANNEL);
+  protected readonly channelMembers = signal<Record<string, string[]>>({
+    [DEV_CHANNEL]: DEV_CHANNEL_MEMBERS,
+  });
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
   protected readonly profileOpen = signal(false);
@@ -47,6 +52,10 @@ export class Home {
   protected readonly addChannelOpen = signal(false);
   protected readonly pendingChannel = signal<NewChannel | null>(null);
   protected readonly otherProfile = signal<ChatUser | null>(null);
+
+  protected readonly activeMembers = computed(
+    () => this.channelMembers()[this.activeChannel()] ?? [],
+  );
 
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
@@ -69,6 +78,13 @@ export class Home {
 
   protected closeThread(): void {
     this.threadOpen.set(false);
+  }
+
+  protected selectChannel(channel: string): void {
+    this.activeChannel.set(channel);
+    if (channel !== DEV_CHANNEL) {
+      this.threadOpen.set(false);
+    }
   }
 
   protected openProfile(): void {
@@ -130,13 +146,21 @@ export class Home {
     this.pendingChannel.set(null);
   }
 
-  protected confirmMembers(): void {
+  protected confirmMembers(names: string[]): void {
     const channel = this.pendingChannel();
     if (channel) {
-      this.channels.update((list) =>
-        list.includes(channel.name) ? list : [...list, channel.name],
-      );
+      this.addChannel(channel.name, names);
+      this.selectChannel(channel.name);
     }
     this.closeAddMembers();
+  }
+
+  private addChannel(name: string, names: string[]): void {
+    if (this.channels().includes(name)) {
+      return;
+    }
+    const members = [this.ownAuthor, ...names.filter((member) => member !== this.ownAuthor)];
+    this.channels.update((list) => [...list, name]);
+    this.channelMembers.update((map) => ({ ...map, [name]: members }));
   }
 }

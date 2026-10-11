@@ -16,12 +16,13 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
 })
 export class WorkspaceMenu {
   readonly channels = input.required<string[]>();
+  readonly activeChannel = input.required<string>();
   readonly addChannel = output<void>();
+  readonly selectChannel = output<string>();
 
   protected readonly channelsOpen = signal(true);
   protected readonly usersOpen = signal(true);
 
-  protected readonly activeChannel = 'Entwicklerteam';
   protected readonly users: MenuUser[] = [
     { name: 'Frederik Beck', avatar: avatarOf('Frederik Beck'), online: true, you: true },
     { name: 'Sofia Müller', avatar: avatarOf('Sofia Müller'), online: true, you: false },

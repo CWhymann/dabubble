@@ -23,7 +23,12 @@
 
   @if (menuOpen()) {
     <nav class="hidden rounded-[30px] bg-white px-7.5 py-8 lg:block" aria-label="Workspace-Menü">
-      <app-workspace-menu [channels]="channels()" (addChannel)="openAddChannel()" />
+      <app-workspace-menu
+        [channels]="channels()"
+        [activeChannel]="activeChannel()"
+        (addChannel)="openAddChannel()"
+        (selectChannel)="selectChannel($event)"
+      />
     </nav>
   }
 
@@ -31,11 +36,15 @@
     <header
       class="relative flex h-24 items-center rounded-t-[30px] bg-white px-11.25 shadow-header"
     >
-      <app-chat-header />
+      <app-chat-header [channelName]="activeChannel()" [members]="activeMembers()" />
     </header>
     <section class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5" aria-label="Nachrichten">
       <div class="mt-auto">
-        <app-chat-messages (openThread)="openThread()" (showProfile)="openProfileOf($event)" />
+        <app-chat-messages
+          [channel]="activeChannel()"
+          (openThread)="openThread()"
+          (showProfile)="openProfileOf($event)"
+        />
       </div>
     </section>
     <div class="mx-8.75 mb-10">
@@ -51,7 +60,7 @@
         <div class="flex items-center gap-1.25">
           <h2 class="text-2xl font-bold">Thread</h2>
           <img class="size-4" src="/icons/tag-small.svg" alt="" />
-          <span class="text-sm text-purple-2">Entwicklerteam</span>
+          <span class="text-sm text-purple-2">{{ activeChannel() }}</span>
         </div>
         <button
           type="button"
@@ -107,7 +116,7 @@
 @if (pendingChannel(); as channel) {
   <app-add-members
     [channelName]="channel.name"
-    (confirmed)="confirmMembers()"
+    (confirmed)="confirmMembers($event)"
     (closed)="closeAddMembers()"
   />
 }
