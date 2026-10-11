@@ -1,0 +1,88 @@
+<div class="fixed inset-0 z-50" aria-hidden="true" (click)="closed.emit()"></div>
+
+<section
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="add-channel-members-title"
+  class="fixed top-1/2 left-1/2 z-50 flex w-[min(434px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col items-end gap-5 rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-white p-5 shadow-menu lg:p-10"
+>
+  <div class="flex w-full flex-col gap-1.25">
+    <div class="flex items-center justify-between">
+      <h2 id="add-channel-members-title" class="text-2xl font-bold text-black">Leute hinzufügen</h2>
+      <button
+        type="button"
+        class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+        aria-label="Dialog schließen"
+        (click)="closed.emit()"
+      >
+        <img class="size-6" src="/icons/close.svg" alt="" />
+      </button>
+    </div>
+    <div class="flex items-center gap-2.5">
+      <img class="size-6" src="/icons/tag-small.svg" alt="" />
+      <span class="text-lg text-purple-2">{{ channelName() }}</span>
+    </div>
+  </div>
+
+  <div class="relative w-full">
+    <div
+      class="flex min-h-14 w-full flex-wrap items-center gap-2.5 rounded-[30px] border border-purple-1 px-5 py-1.5"
+    >
+      @for (user of selected(); track user.name) {
+        <span class="flex items-center gap-3 rounded-[35px] bg-bg py-0.75 pr-1 pl-2.5">
+          <img class="size-8.5 rounded-full bg-white object-cover" [src]="user.avatar" alt="" />
+          <span class="text-lg text-black">{{ user.name }}</span>
+          <button
+            type="button"
+            class="flex size-7.5 cursor-pointer items-center justify-center rounded-full hover:bg-white"
+            [attr.aria-label]="user.name + ' entfernen'"
+            (click)="remove(user)"
+          >
+            <img class="size-6" src="/icons/close.svg" alt="" />
+          </button>
+        </span>
+      }
+      <input
+        type="text"
+        class="min-w-32 flex-1 bg-transparent py-2 text-lg text-black outline-hidden placeholder:text-text-gray"
+        placeholder="Name eingeben"
+        autocomplete="off"
+        aria-label="Name eingeben"
+        [value]="query()"
+        (input)="onQuery($event)"
+      />
+    </div>
+
+    @if (suggestions().length > 0) {
+      <ul
+        class="absolute top-full left-5 z-10 mt-2 flex w-83.75 max-w-full flex-col gap-3.75 rounded-[20px] border border-light-purple bg-white px-5 py-5 shadow-dropdown"
+      >
+        @for (user of suggestions(); track user.name) {
+          <li>
+            <button
+              type="button"
+              class="flex w-full cursor-pointer items-center gap-3.75 rounded-[35px] px-5 py-1 text-left text-lg text-black hover:bg-bg"
+              (click)="select(user)"
+            >
+              <span class="relative shrink-0">
+                <img
+                  class="size-12.5 rounded-full bg-white object-cover"
+                  [src]="user.avatar"
+                  alt=""
+                />
+                <img
+                  class="absolute right-0 bottom-0 size-3.5"
+                  [src]="user.online ? '/icons/online-small.svg' : '/icons/offline-small.svg'"
+                  [alt]="user.online ? 'Online' : 'Offline'"
+                />
+              </span>
+              <span class="whitespace-nowrap">{{ user.name }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <app-button-primary [disabled]="!canConfirm()" (click)="confirm()">Hinzufügen</app-button-primary>
+</section>

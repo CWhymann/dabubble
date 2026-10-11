@@ -7,6 +7,7 @@ import {
 } from '../../core/channels';
 import { ChatUser, DM_USERS, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
+import { AddChannelMembers } from '../../features/add-channel-members/add-channel-members';
 import { AddMembers } from '../../features/add-members/add-members';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChannelEdit, ChannelEdition } from '../../features/channel-edition/channel-edition';
@@ -41,6 +42,7 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
   selector: 'app-home',
   imports: [
     AddChannel,
+    AddChannelMembers,
     AddMembers,
     ChatHeader,
     ChannelEdition,
@@ -75,6 +77,7 @@ export class Home {
     [DEV_CHANNEL]: { description: DEV_CHANNEL_DESCRIPTION, creator: DEV_CHANNEL_CREATOR },
   });
   protected readonly channelEditOpen = signal(false);
+  protected readonly channelMembersOpen = signal(false);
   protected readonly mobileView = signal<MobileView>('menu');
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
@@ -124,6 +127,48 @@ export class Home {
 
   protected closeChannelEdit(): void {
     this.channelEditOpen.set(false);
+  }
+
+  protected openChannelMembers(): void {
+    this.channelMembersOpen.set(true);
+  }
+
+  protected closeChannelMembers(): void {
+    this.channelMembersOpen.set(false);
+  }
+
+  protected addChannelMembers(names: string[]): void {
+    const channel = this.activeChannel();
+    if (channel) {
+      this.channelMembers.update((map) => {
+        const current = map[channel] ?? [];
+        return {
+          ...map,
+          [channel]: [...current, ...names.filter((name) => !current.includes(name))],
+        };
+      });
+    }
+    this.closeChannelMembers();
+  }
+
+  protected leaveChannel(): void {
+    const channel = this.activeChannel();
+    if (!channel) {
+      return;
+    }
+    const remaining = this.channels().filter((name) => name !== channel);
+    const withoutKey = <T>(map: Record<string, T>) =>
+      Object.fromEntries(Object.entries(map).filter(([key]) => key !== channel));
+    this.channels.set(remaining);
+    this.channelMembers.update(withoutKey);
+    this.channelMeta.update(withoutKey);
+    this.closeChannelEdit();
+    if (remaining.length > 0) {
+      this.selectChannel(remaining[0]);
+    } else {
+      this.activeChannel.set(null);
+      this.mobileView.set('menu');
+    }
   }
 
   protected saveChannel(edit: ChannelEdit): void {

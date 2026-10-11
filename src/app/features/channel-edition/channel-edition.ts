@@ -21,6 +21,8 @@ export class ChannelEdition {
   readonly saved = output<ChannelEdit>();
   readonly closed = output<void>();
   readonly showProfile = output<string>();
+  readonly addMembers = output<void>();
+  readonly leave = output<void>();
 
   protected readonly editingName = signal(false);
   protected readonly editingDescription = signal(false);

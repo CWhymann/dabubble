@@ -194,6 +194,19 @@
       (saved)="saveChannel($event)"
       (closed)="closeChannelEdit()"
       (showProfile)="openProfileOf($event)"
+      (addMembers)="openChannelMembers()"
+      (leave)="leaveChannel()"
+    />
+  }
+}
+
+@if (channelMembersOpen()) {
+  @if (activeChannel(); as channel) {
+    <app-add-channel-members
+      [channelName]="channel"
+      [existingMembers]="activeMembers()"
+      (added)="addChannelMembers($event)"
+      (closed)="closeChannelMembers()"
     />
   }
 }
