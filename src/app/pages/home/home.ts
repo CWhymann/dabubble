@@ -1,10 +1,12 @@
 import { Component, computed, signal } from '@angular/core';
 import { DEV_CHANNEL, DEV_CHANNEL_MEMBERS } from '../../core/channels';
-import { ChatUser, USERS } from '../../core/users';
+import { ChatUser, DM_USERS, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddMembers } from '../../features/add-members/add-members';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
+import { DmHeader } from '../../features/dm-header/dm-header';
+import { DmIntro } from '../../features/dm-intro/dm-intro';
 import { MessageBox } from '../../features/message-box/message-box';
 import { NavToggle } from '../../features/nav-toggle/nav-toggle';
 import { OtherProfile } from '../../features/other-profile/other-profile';
@@ -23,6 +25,8 @@ import { Logo } from '../../shared/logo/logo';
     AddMembers,
     ChatHeader,
     ChatMessages,
+    DmHeader,
+    DmIntro,
     Logo,
     MessageBox,
     NavToggle,
@@ -41,7 +45,8 @@ export class Home {
 
   protected readonly ownName = signal('Frederik Beck');
   protected readonly channels = signal<string[]>([DEV_CHANNEL]);
-  protected readonly activeChannel = signal(DEV_CHANNEL);
+  protected readonly activeChannel = signal<string | null>(DEV_CHANNEL);
+  protected readonly activeDm = signal<ChatUser | null>(null);
   protected readonly channelMembers = signal<Record<string, string[]>>({
     [DEV_CHANNEL]: DEV_CHANNEL_MEMBERS,
   });
@@ -53,9 +58,10 @@ export class Home {
   protected readonly pendingChannel = signal<NewChannel | null>(null);
   protected readonly otherProfile = signal<ChatUser | null>(null);
 
-  protected readonly activeMembers = computed(
-    () => this.channelMembers()[this.activeChannel()] ?? [],
-  );
+  protected readonly activeMembers = computed(() => {
+    const channel = this.activeChannel();
+    return channel ? (this.channelMembers()[channel] ?? []) : [];
+  });
 
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
@@ -81,10 +87,25 @@ export class Home {
   }
 
   protected selectChannel(channel: string): void {
+    this.activeDm.set(null);
     this.activeChannel.set(channel);
     if (channel !== DEV_CHANNEL) {
       this.threadOpen.set(false);
     }
+  }
+
+  protected selectUser(name: string): void {
+    const user = DM_USERS.find((candidate) => candidate.name === name);
+    if (user) {
+      this.activeChannel.set(null);
+      this.activeDm.set(user);
+      this.threadOpen.set(false);
+    }
+  }
+
+  protected openDmWith(user: ChatUser): void {
+    this.selectUser(user.name);
+    this.closeOtherProfile();
   }
 
   protected openProfile(): void {

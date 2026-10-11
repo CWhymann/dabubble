@@ -26,8 +26,10 @@
       <app-workspace-menu
         [channels]="channels()"
         [activeChannel]="activeChannel()"
+        [activeUser]="activeDm()?.name ?? null"
         (addChannel)="openAddChannel()"
         (selectChannel)="selectChannel($event)"
+        (selectUser)="selectUser($event)"
       />
     </nav>
   }
@@ -36,15 +38,23 @@
     <header
       class="relative flex h-24 items-center rounded-t-[30px] bg-white px-11.25 shadow-header"
     >
-      <app-chat-header [channelName]="activeChannel()" [members]="activeMembers()" />
+      @if (activeDm(); as user) {
+        <app-dm-header [user]="user" (showProfile)="openProfileOf($event)" />
+      } @else if (activeChannel(); as channel) {
+        <app-chat-header [channelName]="channel" [members]="activeMembers()" />
+      }
     </header>
     <section class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-9.5" aria-label="Nachrichten">
       <div class="mt-auto">
-        <app-chat-messages
-          [channel]="activeChannel()"
-          (openThread)="openThread()"
-          (showProfile)="openProfileOf($event)"
-        />
+        @if (activeDm(); as user) {
+          <app-dm-intro [user]="user" (showProfile)="openProfileOf($event)" />
+        } @else if (activeChannel(); as channel) {
+          <app-chat-messages
+            [channel]="channel"
+            (openThread)="openThread()"
+            (showProfile)="openProfileOf($event)"
+          />
+        }
       </div>
     </section>
     <div class="mx-8.75 mb-10">
@@ -106,7 +116,11 @@
 }
 
 @if (otherProfile(); as user) {
-  <app-other-profile [user]="user" (closed)="closeOtherProfile()" />
+  <app-other-profile
+    [user]="user"
+    (closed)="closeOtherProfile()"
+    (messageRequested)="openDmWith(user)"
+  />
 }
 
 @if (addChannelOpen()) {

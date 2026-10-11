@@ -1,14 +1,5 @@
 import { Component, input, output, signal } from '@angular/core';
-import { AVATARS } from '../../core/avatars';
-
-interface MenuUser {
-  name: string;
-  avatar: string;
-  online: boolean;
-  you: boolean;
-}
-
-const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
+import { DM_USERS, OWN_USER } from '../../core/users';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -16,21 +7,17 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
 })
 export class WorkspaceMenu {
   readonly channels = input.required<string[]>();
-  readonly activeChannel = input.required<string>();
+  readonly activeChannel = input.required<string | null>();
+  readonly activeUser = input.required<string | null>();
   readonly addChannel = output<void>();
   readonly selectChannel = output<string>();
+  readonly selectUser = output<string>();
 
   protected readonly channelsOpen = signal(true);
   protected readonly usersOpen = signal(true);
 
-  protected readonly users: MenuUser[] = [
-    { name: 'Frederik Beck', avatar: avatarOf('Frederik Beck'), online: true, you: true },
-    { name: 'Sofia Müller', avatar: avatarOf('Sofia Müller'), online: true, you: false },
-    { name: 'Noah Braun', avatar: avatarOf('Noah Braun'), online: true, you: false },
-    { name: 'Elise Roth', avatar: avatarOf('Elise Roth'), online: false, you: false },
-    { name: 'Elias Neumann', avatar: avatarOf('Elias Neumann'), online: true, you: false },
-    { name: 'Steffen Hoffmann', avatar: avatarOf('Steffen Hoffmann'), online: true, you: false },
-  ];
+  protected readonly users = DM_USERS;
+  protected readonly ownName = OWN_USER.name;
 
   protected toggleChannels(): void {
     this.channelsOpen.update((open) => !open);

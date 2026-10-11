@@ -1,0 +1,15 @@
+<button
+  type="button"
+  class="flex cursor-pointer items-center gap-3.75 rounded-[30px] px-2 py-1 hover:bg-bg hover:text-purple-3"
+  (click)="showProfile.emit(user().name)"
+>
+  <span class="relative block size-12.5 shrink-0">
+    <img class="size-full rounded-full bg-white object-cover" [src]="user().avatar" alt="" />
+    <img
+      class="absolute right-0 bottom-0 size-3.5"
+      [src]="user().online ? '/icons/online-small.svg' : '/icons/offline-small.svg'"
+      [alt]="user().online ? 'Online' : 'Offline'"
+    />
+  </span>
+  <span class="text-2xl font-bold whitespace-nowrap">{{ label() }}</span>
+</button>

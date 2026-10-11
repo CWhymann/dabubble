@@ -1,0 +1,29 @@
+<div class="flex flex-col gap-6 px-11.25">
+  <button
+    type="button"
+    class="flex w-fit cursor-pointer items-end gap-6.25 text-left"
+    (click)="showProfile.emit(user().name)"
+  >
+    <img class="size-25 rounded-full bg-white object-cover" [src]="user().avatar" alt="" />
+    <span class="text-2xl font-bold text-black">{{ label() }}</span>
+  </button>
+
+  @if (own()) {
+    <p class="text-xl text-text-gray">
+      Dieser Raum ist nur für dich da. Mache dir Notizen, liste deine To-dos auf oder bewahre Links
+      und Dateien griffbereit auf. Du kannst hier auch gerne Dinge mit dir selbst besprechen.
+    </p>
+  } @else {
+    <p class="text-xl text-text-gray">
+      Diese Unterhaltung findet nur zwischen
+      <button
+        type="button"
+        class="cursor-pointer text-purple-3 hover:text-purple-1"
+        (click)="showProfile.emit(user().name)"
+      >
+        &#64;{{ user().name }}
+      </button>
+      und dir statt.
+    </p>
+  }
+</div>

@@ -146,6 +146,11 @@
             <button
               type="button"
               class="flex cursor-pointer items-center gap-3.75 rounded-[35px] px-5 py-1 text-lg hover:bg-bg"
+              [class.bg-bg]="user.name === activeUser()"
+              [class.font-bold]="user.name === activeUser()"
+              [class.text-purple-3]="user.name === activeUser()"
+              [attr.aria-current]="user.name === activeUser() ? 'true' : null"
+              (click)="selectUser.emit(user.name)"
             >
               <span class="relative block size-12.5 shrink-0">
                 <img class="size-full rounded-full bg-white" [src]="user.avatar" alt="" />
@@ -155,7 +160,7 @@
                   [alt]="user.online ? 'Online' : 'Offline'"
                 />
               </span>
-              {{ user.name }}{{ user.you ? ' (Du)' : '' }}
+              {{ user.name }}{{ user.name === ownName ? ' (Du)' : '' }}
             </button>
           </li>
         }
