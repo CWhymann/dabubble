@@ -57,7 +57,7 @@
       <app-logo />
     </div>
     <div class="min-w-0 flex-1">
-      <app-search-bar />
+      <app-search-bar [channels]="channels()" (pick)="openRecipient($event)" />
     </div>
     <div
       class="flex shrink-0 justify-end xl:w-85.5"
