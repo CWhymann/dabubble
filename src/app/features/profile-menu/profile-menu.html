@@ -7,15 +7,19 @@
     (click)="toggle()"
   >
     <span
-      class="min-w-0 truncate text-[32px] leading-normal font-bold text-black group-hover:text-purple-2"
+      class="hidden min-w-0 truncate text-[32px] leading-normal font-bold text-black group-hover:text-purple-2 xl:block"
       [attr.title]="name()"
       >{{ name() }}</span
     >
-    <span class="relative block size-17.5 shrink-0">
+    <span class="relative block size-12.5 shrink-0 lg:size-17.5">
       <img class="size-full rounded-full bg-white object-cover" [src]="avatar()" alt="" />
-      <img class="absolute right-0 bottom-0 size-4.25" src="/icons/online.svg" alt="Online" />
+      <img
+        class="absolute right-0 bottom-0 hidden size-4.25 lg:block"
+        src="/icons/online.svg"
+        alt="Online"
+      />
     </span>
-    <span class="relative size-7.5 shrink-0">
+    <span class="relative hidden size-7.5 shrink-0 lg:block">
       <img
         class="absolute inset-0 size-full group-hover:opacity-0"
         src="/icons/keyboard-arrow-down.svg"

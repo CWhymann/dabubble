@@ -1,19 +1,19 @@
-<div class="flex w-full items-center justify-between">
+<div class="flex w-full items-center justify-between gap-2.5">
   <button
     type="button"
-    class="flex w-69.5 cursor-pointer items-center gap-2.5 rounded-[100px] px-2.5 py-1.5 text-2xl font-bold hover:bg-bg hover:text-purple-3"
+    class="flex min-w-0 cursor-pointer items-center gap-1.25 rounded-[100px] py-0.5 text-xl font-bold hover:bg-bg hover:text-purple-3 lg:max-w-69.5 lg:gap-2.5 lg:px-1 2xl:px-2.5 lg:py-1.5 lg:text-2xl"
   >
     <img class="size-6 shrink-0" src="/icons/tag-dark.svg" alt="" />
     <span class="min-w-0 truncate">{{ channelName() }}</span>
-    <span class="flex flex-1 items-center px-2">
+    <span class="flex shrink-0 items-center lg:px-1 2xl:px-2">
       <img src="/icons/chevron-down.svg" alt="" />
     </span>
   </button>
 
-  <div class="flex items-center gap-2.5">
+  <div class="flex shrink-0 items-center gap-2.5">
     <button
       type="button"
-      class="flex h-11.5 cursor-pointer items-center gap-2.5 rounded-[30px] px-2.5 py-0.75 hover:bg-bg hover:text-purple-3"
+      class="hidden h-11.5 cursor-pointer items-center gap-2.5 rounded-[30px] px-2.5 py-0.75 hover:bg-bg hover:text-purple-3 lg:flex"
       [attr.aria-label]="members().length + ' Mitglieder anzeigen'"
     >
       <span class="flex -space-x-2.5">
@@ -32,7 +32,7 @@
       class="cursor-pointer rounded-[20px] bg-bg p-2"
       aria-label="Mitglieder hinzufügen"
     >
-      <img class="size-6" src="/icons/person-add.svg" alt="" />
+      <img class="size-4.5 lg:size-6" src="/icons/person-add.svg" alt="" />
     </button>
   </div>
 </div>

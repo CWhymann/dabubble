@@ -1,6 +1,7 @@
 <article class="group flex py-2.5 hover:bg-bg" [class]="spacing()">
   <img
-    class="size-17.5 shrink-0 self-start rounded-full bg-white"
+    class="shrink-0 self-start rounded-full bg-white"
+    [class]="compact() ? 'size-17.5' : 'size-12.5 lg:size-17.5'"
     [class.shadow-header]="message().own"
     [src]="message().avatar"
     alt=""
@@ -9,7 +10,7 @@
     class="flex min-w-0 flex-1 flex-col gap-2"
     [class]="message().own ? 'items-end' : 'items-start'"
   >
-    <div class="flex items-center gap-5" [class.flex-row-reverse]="message().own">
+    <div class="flex flex-wrap items-center gap-x-5" [class.flex-row-reverse]="message().own">
       <button
         type="button"
         class="cursor-pointer text-lg font-bold hover:text-purple-1"
@@ -20,12 +21,12 @@
       <span class="text-sm text-text-gray">{{ message().time }} Uhr</span>
     </div>
 
-    <p class="w-fit max-w-full p-3.75 text-lg wrap-break-word" [class]="bubble()">
+    <p class="w-fit max-w-full p-3.75 text-[17px] wrap-break-word lg:text-lg" [class]="bubble()">
       {{ message().text }}
     </p>
 
     @if (message().replies; as replies) {
-      <div class="flex items-center gap-5">
+      <div class="flex flex-wrap items-center gap-x-5">
         <button
           type="button"
           class="cursor-pointer text-lg text-purple-3 hover:text-purple-1"
@@ -38,7 +39,7 @@
     }
 
     @if (message().reactions.length) {
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         @for (reaction of message().reactions; track reaction.label) {
           <button
             type="button"

@@ -16,7 +16,9 @@ export class ChatMessage {
     if (this.compact()) {
       return own ? 'flex-row-reverse gap-5 px-10' : 'gap-5 px-10';
     }
-    return own ? 'flex-row-reverse gap-7.5 pr-11.25 pl-36.5' : 'gap-7.5 pl-11.25';
+    return own
+      ? 'flex-row-reverse gap-4 pr-4 pl-12.5 lg:gap-7.5 lg:pr-11.25 lg:pl-36.5'
+      : 'gap-5 px-4 lg:gap-7.5 lg:pr-0 lg:pl-11.25';
   });
 
   protected readonly bubble = computed(() => {
