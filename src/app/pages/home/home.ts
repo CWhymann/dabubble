@@ -66,11 +66,11 @@ export class Home {
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
       return this.threadOpen()
-        ? 'lg:grid-cols-[22.875rem_minmax(0,1fr)] 2xl:grid-cols-[22.875rem_minmax(0,1fr)_30.3125rem]'
+        ? 'lg:grid-cols-[22.875rem_minmax(0,1fr)] thread:grid-cols-[22.875rem_minmax(0,1fr)_30.3125rem]'
         : 'lg:grid-cols-[22.875rem_minmax(0,1fr)]';
     }
     return this.threadOpen()
-      ? 'lg:grid-cols-[minmax(0,1fr)] 2xl:grid-cols-[minmax(0,1fr)_30.3125rem]'
+      ? 'lg:grid-cols-[minmax(0,1fr)] thread:grid-cols-[minmax(0,1fr)_30.3125rem]'
       : 'lg:grid-cols-[minmax(0,1fr)]';
   });
 

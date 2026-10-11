@@ -11,7 +11,7 @@
     </div>
     <div
       class="flex w-85.5 shrink-0 justify-end"
-      [class]="threadOpen() ? '2xl:w-121.25 2xl:pr-3.5' : ''"
+      [class]="threadOpen() ? 'thread:w-121.25 thread:pr-3.5' : ''"
     >
       <app-profile-menu
         [name]="ownName()"
@@ -63,7 +63,7 @@
   </main>
 
   @if (threadOpen()) {
-    <aside class="hidden rounded-[30px] bg-white 2xl:flex 2xl:flex-col" aria-label="Thread">
+    <aside class="hidden rounded-[30px] bg-white thread:flex thread:flex-col" aria-label="Thread">
       <header
         class="relative flex h-26 items-center justify-between rounded-t-[30px] bg-white px-10 shadow-header"
       >
