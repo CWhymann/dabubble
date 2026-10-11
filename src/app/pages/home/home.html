@@ -47,6 +47,7 @@
         (addChannel)="openAddChannel()"
         (selectChannel)="selectChannel($event)"
         (selectUser)="selectUser($event)"
+        (newMessage)="openNewMessage()"
       />
     </div>
   }
@@ -79,6 +80,7 @@
         (addChannel)="openAddChannel()"
         (selectChannel)="selectChannel($event)"
         (selectUser)="selectUser($event)"
+        (newMessage)="openNewMessage()"
       />
     </nav>
   }
@@ -231,6 +233,14 @@
       (closed)="closeChannelMembers()"
     />
   }
+}
+
+@if (newMessageOpen()) {
+  <app-new-message
+    [channels]="channels()"
+    (picked)="openRecipient($event)"
+    (closed)="closeNewMessage()"
+  />
 }
 
 @if (addChannelOpen()) {

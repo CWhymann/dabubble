@@ -5,6 +5,7 @@ import {
   DEV_CHANNEL_DESCRIPTION,
   DEV_CHANNEL_MEMBERS,
 } from '../../core/channels';
+import { SearchHit } from '../../core/search';
 import { ChatUser, DM_USERS, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddChannelMembers } from '../../features/add-channel-members/add-channel-members';
@@ -18,6 +19,7 @@ import { DmIntro } from '../../features/dm-intro/dm-intro';
 import { MessageBox } from '../../features/message-box/message-box';
 import { MobileMenu } from '../../features/mobile-menu/mobile-menu';
 import { NavToggle } from '../../features/nav-toggle/nav-toggle';
+import { NewMessage } from '../../features/new-message/new-message';
 import { OtherProfile } from '../../features/other-profile/other-profile';
 import { ProfileEdit } from '../../features/profile-edit/profile-edit';
 import { ProfileMenu } from '../../features/profile-menu/profile-menu';
@@ -55,6 +57,7 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
     MessageBox,
     MobileMenu,
     NavToggle,
+    NewMessage,
     OtherProfile,
     ProfileEdit,
     ProfileMenu,
@@ -81,6 +84,7 @@ export class Home {
   protected readonly channelEditOpen = signal(false);
   protected readonly channelMembersOpen = signal(false);
   protected readonly leaveConfirmOpen = signal(false);
+  protected readonly newMessageOpen = signal(false);
   protected readonly mobileView = signal<MobileView>('menu');
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
@@ -122,6 +126,23 @@ export class Home {
 
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
+  }
+
+  protected openNewMessage(): void {
+    this.newMessageOpen.set(true);
+  }
+
+  protected closeNewMessage(): void {
+    this.newMessageOpen.set(false);
+  }
+
+  protected openRecipient(hit: SearchHit): void {
+    this.closeNewMessage();
+    if (hit.kind === 'channel') {
+      this.selectChannel(hit.name);
+    } else {
+      this.selectUser(hit.user.name);
+    }
   }
 
   protected openChannelEdit(): void {

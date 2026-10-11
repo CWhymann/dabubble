@@ -12,6 +12,7 @@ export class WorkspaceMenu {
   readonly addChannel = output<void>();
   readonly selectChannel = output<string>();
   readonly selectUser = output<string>();
+  readonly newMessage = output<void>();
 
   protected readonly channelsOpen = signal(true);
   protected readonly usersOpen = signal(true);
