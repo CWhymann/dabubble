@@ -1,5 +1,5 @@
-<div class="flex flex-col gap-7.5 lg:gap-6.25">
-  <div class="hidden w-full items-center justify-between lg:flex">
+<div class="flex min-h-0 flex-1 flex-col gap-7.5 lg:gap-6.25">
+  <div class="hidden w-full shrink-0 items-center justify-between lg:flex">
     <button
       type="button"
       class="flex w-62.5 cursor-pointer items-center gap-3.75 rounded-[30px] pr-5 text-left hover:bg-bg hover:text-purple-3"
@@ -24,8 +24,12 @@
     </button>
   </div>
 
-  <div class="flex flex-col gap-7.5 lg:gap-6.25">
-    <div class="flex w-full items-center justify-between py-0.75">
+  <div
+    class="flex min-h-0 flex-col gap-7.5 lg:gap-6.25"
+    [class.flex-1]="channelsOpen()"
+    [class.flex-none]="!channelsOpen()"
+  >
+    <div class="flex w-full shrink-0 items-center justify-between py-0.75">
       <button
         type="button"
         class="group flex cursor-pointer items-center gap-3.75 rounded-[15px] py-1.25 pr-2.5 hover:text-purple-3 active:text-black"
@@ -71,7 +75,7 @@
     </div>
 
     @if (channelsOpen()) {
-      <ul class="flex flex-col gap-3.25">
+      <ul class="flex min-h-0 flex-1 flex-col gap-3.25 overflow-y-auto">
         @for (channel of channels(); track channel) {
           <li class="flex pl-2.5 xs:pl-6.25">
             <button
@@ -102,8 +106,12 @@
     }
   </div>
 
-  <div class="flex flex-col gap-7.5 lg:gap-6.25">
-    <div class="flex w-full items-center py-0.75">
+  <div
+    class="flex min-h-0 flex-col gap-7.5 lg:gap-6.25"
+    [class.flex-1]="usersOpen()"
+    [class.flex-none]="!usersOpen()"
+  >
+    <div class="flex w-full shrink-0 items-center py-0.75">
       <button
         type="button"
         class="group flex cursor-pointer items-center gap-3.75 rounded-[15px] py-1.25 pr-2.5 hover:text-purple-3 active:text-black"
@@ -141,7 +149,7 @@
     </div>
 
     @if (usersOpen()) {
-      <ul class="flex flex-col gap-3.25">
+      <ul class="flex min-h-0 flex-1 flex-col gap-3.25 overflow-y-auto">
         @for (user of users; track user.name) {
           <li class="flex pl-2.5 xs:pl-6.25">
             <button

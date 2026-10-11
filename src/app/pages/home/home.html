@@ -72,7 +72,10 @@
   </header>
 
   @if (menuOpen()) {
-    <nav class="hidden rounded-[30px] bg-white px-7.5 py-8 lg:block" aria-label="Workspace-Menü">
+    <nav
+      class="hidden min-h-0 rounded-[30px] bg-white px-7.5 py-8 lg:flex lg:flex-col"
+      aria-label="Workspace-Menü"
+    >
       <app-workspace-menu
         [channels]="channels()"
         [activeChannel]="activeChannel()"
