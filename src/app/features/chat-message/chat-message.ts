@@ -1,55 +1,33 @@
 import { Component, computed, input, output } from '@angular/core';
-import { DayGroup } from '../../core/chat';
-import { AVATARS } from '../../core/avatars';
-import { DEV_CHANNEL } from '../../core/channels';
-import { ChatMessage } from '../chat-message/chat-message';
-
-const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
+import { Message } from '../../core/chat';
 
 @Component({
-  selector: 'app-chat-messages',
-  imports: [ChatMessage],
-  templateUrl: './chat-messages.html',
+  selector: 'app-chat-message',
+  templateUrl: './chat-message.html',
 })
-export class ChatMessages {
-  readonly channel = input.required<string>();
+export class ChatMessage {
+  readonly message = input.required<Message>();
+  readonly compact = input(false);
   readonly openThread = output<void>();
   readonly showProfile = output<string>();
 
-  private readonly devGroups: DayGroup[] = [
-    {
-      label: 'Dienstag, 14 Januar',
-      messages: [
-        {
-          author: 'Noah Braun',
-          avatar: avatarOf('Noah Braun'),
-          time: '14:25',
-          text: 'Welche Version ist aktuell von Angular?',
-          own: false,
-          replies: { count: 2, last: '14:56' },
-          reactions: [],
-        },
-      ],
-    },
-    {
-      label: 'Heute',
-      messages: [
-        {
-          author: 'Frederik Beck',
-          avatar: avatarOf('Frederik Beck'),
-          time: '15:06',
-          text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque blandit odio efficitur lectus vestibulum, quis accumsan ante vulputate. Quisque tristique iaculis erat, eu faucibus lacus iaculis ac.',
-          own: true,
-          reactions: [
-            { emoji: '/icons/emoji-rocket.svg', label: 'Rakete', count: 1 },
-            { emoji: '/icons/emoji-check.svg', label: 'Haken', count: 1 },
-          ],
-        },
-      ],
-    },
-  ];
+  protected readonly spacing = computed(() => {
+    const own = this.message().own;
+    if (this.compact()) {
+      return own ? 'flex-row-reverse gap-5 px-10' : 'gap-5 px-10';
+    }
+    return own ? 'flex-row-reverse gap-7.5 pr-11.25 pl-36.5' : 'gap-7.5 pl-11.25';
+  });
 
-  protected readonly groups = computed(() =>
-    this.channel() === DEV_CHANNEL ? this.devGroups : [],
-  );
+  protected readonly bubble = computed(() => {
+    const own = this.message().own;
+    if (this.compact()) {
+      return own
+        ? 'rounded-tl-[20px] rounded-br-[20px] rounded-bl-[20px] bg-purple-2 text-white'
+        : 'rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] bg-bg group-hover:bg-white';
+    }
+    return own
+      ? 'rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-purple-2 text-white'
+      : 'rounded-tr-[30px] rounded-br-[30px] rounded-bl-[30px] bg-bg group-hover:bg-white';
+  });
 }

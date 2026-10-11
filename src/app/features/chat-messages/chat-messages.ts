@@ -1,6 +1,7 @@
-import { Component, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { DayGroup } from '../../core/chat';
 import { AVATARS } from '../../core/avatars';
+import { DEV_CHANNEL } from '../../core/channels';
 import { ChatMessage } from '../chat-message/chat-message';
 
 const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
@@ -11,10 +12,11 @@ const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name
   templateUrl: './chat-messages.html',
 })
 export class ChatMessages {
+  readonly channel = input.required<string>();
   readonly openThread = output<void>();
   readonly showProfile = output<string>();
 
-  protected readonly groups: DayGroup[] = [
+  private readonly devGroups: DayGroup[] = [
     {
       label: 'Dienstag, 14 Januar',
       messages: [
@@ -46,4 +48,8 @@ export class ChatMessages {
       ],
     },
   ];
+
+  protected readonly groups = computed(() =>
+    this.channel() === DEV_CHANNEL ? this.devGroups : [],
+  );
 }
