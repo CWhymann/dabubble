@@ -41,6 +41,9 @@
         (keydown.enter)="create()"
       />
     </div>
+    @if (nameTaken()) {
+      <p class="text-base text-red-600">Diesen Channel-Namen gibt es schon.</p>
+    }
   </div>
 
   <div class="flex w-full flex-col gap-5">

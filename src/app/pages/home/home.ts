@@ -9,6 +9,7 @@ import { ChatUser, DM_USERS, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddChannelMembers } from '../../features/add-channel-members/add-channel-members';
 import { AddMembers } from '../../features/add-members/add-members';
+import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChannelEdit, ChannelEdition } from '../../features/channel-edition/channel-edition';
 import { ChatMessages } from '../../features/chat-messages/chat-messages';
@@ -47,6 +48,7 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
     ChatHeader,
     ChannelEdition,
     ChatMessages,
+    ConfirmDialog,
     DmHeader,
     DmIntro,
     Logo,
@@ -78,6 +80,7 @@ export class Home {
   });
   protected readonly channelEditOpen = signal(false);
   protected readonly channelMembersOpen = signal(false);
+  protected readonly leaveConfirmOpen = signal(false);
   protected readonly mobileView = signal<MobileView>('menu');
   protected readonly menuOpen = signal(true);
   protected readonly threadOpen = signal(true);
@@ -151,7 +154,16 @@ export class Home {
     this.closeChannelMembers();
   }
 
+  protected requestLeaveChannel(): void {
+    this.leaveConfirmOpen.set(true);
+  }
+
+  protected closeLeaveConfirm(): void {
+    this.leaveConfirmOpen.set(false);
+  }
+
   protected leaveChannel(): void {
+    this.leaveConfirmOpen.set(false);
     const channel = this.activeChannel();
     if (!channel) {
       return;

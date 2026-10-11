@@ -18,6 +18,7 @@ export class ChannelEdition {
   readonly description = input.required<string>();
   readonly creator = input.required<string>();
   readonly memberNames = input.required<string[]>();
+  readonly takenNames = input<string[]>([]);
   readonly saved = output<ChannelEdit>();
   readonly closed = output<void>();
   readonly showProfile = output<string>();
@@ -35,15 +36,29 @@ export class ChannelEdition {
       .filter((user): user is ChatUser => user !== undefined),
   );
 
+  protected readonly nameError = computed(() => {
+    const name = this.nameDraft().trim();
+    if (!name) {
+      return 'Bitte gib einen Namen ein.';
+    }
+    const taken = this.takenNames().some(
+      (other) => other !== this.channel() && other.toLowerCase() === name.toLowerCase(),
+    );
+    return taken ? 'Diesen Channel-Namen gibt es schon.' : '';
+  });
+
   protected label(user: ChatUser): string {
     return isOwnUser(user) ? `${user.name} (Du)` : user.name;
   }
 
   protected toggleName(): void {
     if (this.editingName()) {
+      if (this.nameError()) {
+        return;
+      }
       const name = this.nameDraft().trim();
       this.editingName.set(false);
-      if (name && name !== this.channel()) {
+      if (name !== this.channel()) {
         this.saved.emit({ name, description: this.description() });
       }
       return;

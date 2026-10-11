@@ -57,6 +57,9 @@
           [value]="nameDraft()"
           (input)="onNameInput($event)"
         />
+        @if (nameError()) {
+          <p class="text-base text-red-600">{{ nameError() }}</p>
+        }
       } @else {
         <p class="flex items-center gap-2.5 text-lg text-black">
           <img class="size-6" src="/icons/tag.svg" alt="" />

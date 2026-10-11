@@ -1,4 +1,4 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { ButtonPrimary } from '../../shared/button-primary/button-primary';
 
 export interface NewChannel {
@@ -15,6 +15,7 @@ export interface NewChannel {
   },
 })
 export class AddChannel {
+  readonly takenNames = input<string[]>([]);
   readonly created = output<NewChannel>();
   readonly closed = output<void>();
 
@@ -22,7 +23,10 @@ export class AddChannel {
   protected readonly description = signal('');
 
   private readonly cleanName = computed(() => this.name().trim().replace(/^#+/, '').trim());
-  protected readonly canCreate = computed(() => this.cleanName().length > 0);
+  protected readonly nameTaken = computed(() =>
+    this.takenNames().some((name) => name.toLowerCase() === this.cleanName().toLowerCase()),
+  );
+  protected readonly canCreate = computed(() => this.cleanName().length > 0 && !this.nameTaken());
 
   protected onName(event: Event): void {
     this.name.set((event.target as HTMLInputElement).value);

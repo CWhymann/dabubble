@@ -95,6 +95,7 @@
           [channelName]="channel"
           [members]="activeMembers()"
           (editChannel)="openChannelEdit()"
+          (addMembers)="openChannelMembers()"
         />
       }
     </header>
@@ -111,6 +112,10 @@
             (openThread)="openThread()"
             (showProfile)="openProfileOf($event)"
           />
+        } @else {
+          <p class="p-8 text-lg text-text-gray">
+            Wähle einen Channel oder eine Direktnachricht im Menü aus.
+          </p>
         }
       </div>
     </section>
@@ -195,7 +200,24 @@
       (closed)="closeChannelEdit()"
       (showProfile)="openProfileOf($event)"
       (addMembers)="openChannelMembers()"
-      (leave)="leaveChannel()"
+      [takenNames]="channels()"
+      (leave)="requestLeaveChannel()"
+    />
+  }
+}
+
+@if (leaveConfirmOpen()) {
+  @if (activeChannel(); as channel) {
+    <app-confirm-dialog
+      title="Channel verlassen?"
+      [message]="
+        'Du verlierst den Zugriff auf ' +
+        channel +
+        ' und seine Nachrichten, bis dich jemand wieder hinzufügt.'
+      "
+      confirmLabel="Verlassen"
+      (confirmed)="leaveChannel()"
+      (cancelled)="closeLeaveConfirm()"
     />
   }
 }
@@ -212,7 +234,11 @@
 }
 
 @if (addChannelOpen()) {
-  <app-add-channel (created)="createChannel($event)" (closed)="closeAddChannel()" />
+  <app-add-channel
+    [takenNames]="channels()"
+    (created)="createChannel($event)"
+    (closed)="closeAddChannel()"
+  />
 }
 
 @if (pendingChannel(); as channel) {
