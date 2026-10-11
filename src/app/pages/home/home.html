@@ -83,10 +83,7 @@
     </nav>
   }
 
-  <main
-    class="min-h-0 min-w-0 flex-col bg-white lg:flex lg:rounded-[30px]"
-    [class]="mobileView() === 'chat' ? 'flex' : 'hidden'"
-  >
+  <main class="min-h-0 min-w-0 flex-col bg-white lg:rounded-[30px]" [class]="mainClass()">
     <header
       class="relative flex h-15 items-center bg-white px-4 shadow-dropdown lg:h-24 lg:rounded-t-[30px] lg:px-6 lg:shadow-header 2xl:px-11.25"
     >
@@ -119,8 +116,8 @@
 
   @if (threadOpen()) {
     <aside
-      class="min-h-0 bg-white thread:flex thread:flex-col thread:rounded-[30px]"
-      [class]="mobileView() === 'thread' ? 'flex flex-col lg:hidden' : 'hidden'"
+      class="min-h-0 bg-white lg:rounded-[30px] thread:flex thread:flex-col"
+      [class]="mobileView() === 'thread' ? 'flex flex-col' : 'hidden'"
       aria-label="Thread"
     >
       <header

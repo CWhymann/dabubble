@@ -68,6 +68,15 @@ export class Home {
     return channel ? (this.channelMembers()[channel] ?? []) : [];
   });
 
+  protected readonly mainClass = computed(
+    () =>
+      ({
+        chat: 'flex lg:flex',
+        menu: 'hidden lg:flex',
+        thread: 'hidden thread:flex',
+      })[this.mobileView()],
+  );
+
   protected readonly gridCols = computed(() => {
     if (this.menuOpen()) {
       return this.threadOpen()
