@@ -1,4 +1,13 @@
-import { Component, DestroyRef, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Message, Reaction } from '../../core/chat';
 import { ChatStore } from '../../core/chat-store';
 import { REACTION_OPTIONS, ReactionOption } from '../../core/reactions';
@@ -8,6 +17,10 @@ const WIDE_QUERY = '(min-width: 1024px)';
 @Component({
   selector: 'app-chat-message',
   templateUrl: './chat-message.html',
+  host: {
+    '(document:click)': 'closeOnOutsideClick($event)',
+    '(document:keydown.escape)': 'closeAll()',
+  },
 })
 export class ChatMessage {
   readonly message = input.required<Message>();
@@ -22,10 +35,13 @@ export class ChatMessage {
       option.icon === '/icons/emoji-check.svg' || option.icon === '/icons/emoji-hands-up.svg',
   );
   protected readonly pickerOpen = signal(false);
+  // Auf dem Handy gibt es keinen Hover: Ein Tipp auf die Nachricht zeigt die Leiste.
+  protected readonly tapped = signal(false);
   protected readonly expanded = signal(false);
 
   private readonly store = inject(ChatStore);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly wide = signal(false);
 
   constructor() {
@@ -74,6 +90,17 @@ export class ChatMessage {
       ? 'rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-purple-2 text-white'
       : 'rounded-tr-[30px] rounded-br-[30px] rounded-bl-[30px] bg-bg group-hover:bg-white';
   });
+
+  protected closeOnOutsideClick(event: MouseEvent): void {
+    if (!this.host.nativeElement.contains(event.target as Node)) {
+      this.closeAll();
+    }
+  }
+
+  protected closeAll(): void {
+    this.pickerOpen.set(false);
+    this.tapped.set(false);
+  }
 
   protected toggle(option: ReactionOption): void {
     this.store.toggleReaction(this.message().id, option);
