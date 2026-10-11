@@ -72,10 +72,10 @@
     @if (channelsOpen()) {
       <ul class="flex flex-col gap-3.25">
         @for (channel of channels(); track channel) {
-          <li class="flex pl-6.25">
+          <li class="flex pl-2.5 xs:pl-6.25">
             <button
               type="button"
-              class="flex cursor-pointer items-center gap-2.5 rounded-[20px] px-5 py-1 text-lg hover:bg-bg"
+              class="flex cursor-pointer items-center gap-2.5 rounded-[20px] px-2.5 py-1 text-lg hover:bg-bg xs:px-5"
               [class.bg-bg]="channel === activeChannel()"
               [class.font-bold]="channel === activeChannel()"
               [class.text-purple-3]="channel === activeChannel()"
@@ -87,7 +87,7 @@
             </button>
           </li>
         }
-        <li class="flex pl-8.75">
+        <li class="flex pl-3.75 xs:pl-8.75">
           <button
             type="button"
             class="flex cursor-pointer items-center gap-2.5 px-2.5 py-1 text-lg text-purple-3 lg:text-black lg:hover:text-purple-3"
@@ -142,10 +142,10 @@
     @if (usersOpen()) {
       <ul class="flex flex-col gap-3.25">
         @for (user of users; track user.name) {
-          <li class="flex pl-6.25">
+          <li class="flex pl-2.5 xs:pl-6.25">
             <button
               type="button"
-              class="flex cursor-pointer items-center gap-3.75 rounded-[35px] px-5 py-1 text-lg hover:bg-bg"
+              class="flex cursor-pointer items-center gap-2.5 rounded-[35px] px-2.5 py-1 text-lg hover:bg-bg xs:gap-3.75 xs:px-5"
               [class.bg-bg]="user.name === activeUser()"
               [class.font-bold]="user.name === activeUser()"
               [class.text-purple-3]="user.name === activeUser()"

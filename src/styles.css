@@ -122,6 +122,7 @@
 
 @theme {
   --breakpoint-thread: 90rem;
+  --breakpoint-xs: 26.875rem;
   --font-sans: 'Nunito', sans-serif;
   --font-figtree: 'Figtree', sans-serif;
   --font-open-sans: 'Open Sans', sans-serif;
