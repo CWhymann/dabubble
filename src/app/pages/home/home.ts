@@ -77,6 +77,7 @@ export class Home {
   protected readonly channels = signal<string[]>([DEV_CHANNEL]);
   protected readonly activeChannel = signal<string | null>(DEV_CHANNEL);
   protected readonly activeDm = signal<ChatUser | null>(null);
+  protected readonly threadRootId = signal<string | null>('noah-root');
   protected readonly channelMembers = signal<Record<string, string[]>>({
     [DEV_CHANNEL]: DEV_CHANNEL_MEMBERS,
   });
@@ -141,6 +142,13 @@ export class Home {
     const key = this.activeChatKey();
     if (key) {
       this.store.send(key, text, this.ownName());
+    }
+  }
+
+  protected sendReply(text: string): void {
+    const rootId = this.threadRootId();
+    if (rootId) {
+      this.store.reply(rootId, text, this.ownName());
     }
   }
 
@@ -241,7 +249,8 @@ export class Home {
     this.activeChannel.set(newName);
   }
 
-  protected openThread(): void {
+  protected openThread(rootId: string): void {
+    this.threadRootId.set(rootId);
     this.threadOpen.set(true);
     this.mobileView.set('thread');
   }

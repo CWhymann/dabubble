@@ -10,10 +10,12 @@ import { ChatMessage } from '../chat-message/chat-message';
 export class ChatMessages {
   // Schlüssel des Chats: Channel-Name oder "dm:<Name>" für Direktnachrichten.
   readonly channel = input.required<string>();
-  readonly openThread = output<void>();
+  readonly openThread = output<string>();
   readonly showProfile = output<string>();
 
   private readonly store = inject(ChatStore);
 
   protected readonly groups = computed(() => this.store.groupsFor(this.channel()));
+  // In Direktnachrichten gibt es keinen Thread.
+  protected readonly canReply = computed(() => !this.channel().startsWith('dm:'));
 }

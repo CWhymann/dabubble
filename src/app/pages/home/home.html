@@ -110,13 +110,13 @@
           <app-dm-intro [user]="user" (showProfile)="openProfileOf($event)" />
           <app-chat-messages
             [channel]="'dm:' + user.name"
-            (openThread)="openThread()"
+            (openThread)="openThread($event)"
             (showProfile)="openProfileOf($event)"
           />
         } @else if (activeChannel(); as channel) {
           <app-chat-messages
             [channel]="channel"
-            (openThread)="openThread()"
+            (openThread)="openThread($event)"
             (showProfile)="openProfileOf($event)"
           />
         } @else {
@@ -158,10 +158,10 @@
         class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-2.5 thread:pb-9.5"
         aria-label="Thread-Nachrichten"
       >
-        <app-thread (showProfile)="openProfileOf($event)" />
+        <app-thread [rootId]="threadRootId()" (showProfile)="openProfileOf($event)" />
       </section>
       <div class="mx-4 mb-7.5 thread:mx-5 thread:mb-10">
-        <app-message-box placeholder="Antworten..." />
+        <app-message-box placeholder="Antworten..." (sent)="sendReply($event)" />
       </div>
     </aside>
   }

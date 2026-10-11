@@ -8,10 +8,11 @@
         {{ group.label }}
       </span>
     </div>
-    @for (message of group.messages; track $index) {
+    @for (message of group.messages; track message.id) {
       <app-chat-message
         [message]="message"
-        (openThread)="openThread.emit()"
+        [canReply]="canReply()"
+        (openThread)="openThread.emit($event)"
         (showProfile)="showProfile.emit($event)"
       />
     }

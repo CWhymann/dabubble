@@ -2,6 +2,7 @@ export interface Reaction {
   emoji: string;
   label: string;
   count: number;
+  mine?: boolean;
 }
 
 export interface Replies {
@@ -10,6 +11,7 @@ export interface Replies {
 }
 
 export interface Message {
+  id: string;
   author: string;
   avatar: string;
   time: string;

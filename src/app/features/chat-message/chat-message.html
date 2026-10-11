@@ -25,12 +25,12 @@
       {{ message().text }}
     </p>
 
-    @if (message().replies; as replies) {
+    @if (canReply() && message().replies; as replies) {
       <div class="flex flex-wrap items-center gap-x-5">
         <button
           type="button"
           class="cursor-pointer text-lg text-purple-3 hover:text-purple-1"
-          (click)="openThread.emit()"
+          (click)="openThread.emit(message().id)"
         >
           {{ replies.count }} {{ replies.count === 1 ? 'Antwort' : 'Antworten' }}
         </button>
@@ -38,25 +38,118 @@
       </div>
     }
 
-    @if (message().reactions.length) {
-      <div class="flex flex-wrap items-center gap-2">
-        @for (reaction of message().reactions; track reaction.label) {
-          <button
-            type="button"
-            class="flex cursor-pointer items-center gap-2.5 rounded-[20px] border border-light-purple bg-white px-2.5 py-1.25 text-base"
-          >
-            <img class="size-6" [src]="reaction.emoji" [alt]="reaction.label" />
-            {{ reaction.count }}
-          </button>
-        }
+    <div class="relative flex flex-wrap items-center gap-2">
+      @for (reaction of visibleReactions(); track reaction.emoji) {
         <button
           type="button"
-          class="cursor-pointer rounded-[20px] bg-white p-1.25"
-          aria-label="Reaktion hinzufügen"
+          class="flex cursor-pointer items-center gap-2.5 rounded-[20px] border bg-white px-2.5 py-1.25 text-base"
+          [class.border-purple-1]="reaction.mine"
+          [class.border-light-purple]="!reaction.mine"
+          [attr.aria-pressed]="reaction.mine === true"
+          [attr.aria-label]="reaction.label + ', ' + reaction.count"
+          (click)="toggleChip(reaction)"
         >
-          <img class="size-6" src="/icons/add-reaction.svg" alt="" />
+          <img class="size-6" [src]="reaction.emoji" [alt]="reaction.label" />
+          {{ reaction.count }}
+        </button>
+      }
+
+      @if (hiddenCount() > 0) {
+        <button
+          type="button"
+          class="cursor-pointer rounded-[20px] border border-light-purple bg-white px-2.5 py-1.25 text-base text-purple-3"
+          (click)="expanded.set(true)"
+        >
+          +{{ hiddenCount() }} weitere
+        </button>
+      }
+      @if (expanded() && message().reactions.length > limit()) {
+        <button
+          type="button"
+          class="cursor-pointer rounded-[20px] border border-light-purple bg-white px-2.5 py-1.25 text-base text-purple-3"
+          (click)="expanded.set(false)"
+        >
+          Weniger anzeigen
+        </button>
+      }
+
+      <div
+        class="flex items-center gap-1 rounded-[25px] border border-light-purple bg-white py-0.75 pr-1.5 pl-2.5"
+      >
+        @for (option of quickReactions; track option.icon) {
+          <button
+            type="button"
+            class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+            [attr.aria-label]="option.label + ' setzen'"
+            (click)="toggle(option)"
+          >
+            <img class="size-5" [src]="option.icon" [alt]="option.label" />
+          </button>
+        }
+
+        <div class="relative">
+          <button
+            type="button"
+            class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+            aria-label="Reaktion hinzufügen"
+            [attr.aria-expanded]="pickerOpen()"
+            (click)="pickerOpen.update((open) => !open)"
+          >
+            <img class="size-6" src="/icons/add-reaction.svg" alt="" />
+          </button>
+
+          @if (pickerOpen()) {
+            <div
+              class="absolute bottom-full left-0 z-20 mb-2 flex w-72 max-w-[calc(100vw-2rem)] flex-col gap-3 rounded-[20px] border border-light-purple bg-white p-3 shadow-menu"
+              role="listbox"
+              aria-label="Reaktionen"
+            >
+              <div class="flex gap-2">
+                @for (option of reactionOptions; track option.icon) {
+                  <button
+                    type="button"
+                    class="flex size-10 cursor-pointer items-center justify-center rounded-[10px] hover:bg-bg"
+                    [attr.aria-label]="option.label"
+                    (click)="toggle(option)"
+                  >
+                    <img class="size-6" [src]="option.icon" [alt]="option.label" />
+                  </button>
+                }
+              </div>
+              <p class="text-xs text-black">
+                Die Emoticons für Reaktionen stammen von iconduck, Emojitwo Emoji Set.
+                <a
+                  href="https://iconduck.com/sets/emoji-two-emoji-set"
+                  target="_blank"
+                  rel="noopener"
+                  class="text-purple-3 hover:underline"
+                >
+                  Link zum Emojitwo Emoji Set
+                </a>
+              </p>
+            </div>
+          }
+        </div>
+
+        @if (canReply()) {
+          <button
+            type="button"
+            class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+            aria-label="Antworten"
+            (click)="openThread.emit(message().id)"
+          >
+            <img class="size-6" src="/icons/comment.svg" alt="" />
+          </button>
+        }
+
+        <button
+          type="button"
+          class="flex size-9 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+          aria-label="Weitere Optionen"
+        >
+          <img class="size-6" src="/icons/more-vert.svg" alt="" />
         </button>
       </div>
-    }
+    </div>
   </div>
 </article>

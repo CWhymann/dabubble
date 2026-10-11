@@ -1,5 +1,9 @@
-import { Component, computed, input, output } from '@angular/core';
-import { Message } from '../../core/chat';
+import { Component, DestroyRef, computed, inject, input, output, signal } from '@angular/core';
+import { Message, Reaction } from '../../core/chat';
+import { ChatStore } from '../../core/chat-store';
+import { REACTION_OPTIONS, ReactionOption } from '../../core/reactions';
+
+const WIDE_QUERY = '(min-width: 1024px)';
 
 @Component({
   selector: 'app-chat-message',
@@ -8,8 +12,44 @@ import { Message } from '../../core/chat';
 export class ChatMessage {
   readonly message = input.required<Message>();
   readonly compact = input(false);
-  readonly openThread = output<void>();
+  readonly canReply = input(true);
+  readonly openThread = output<string>();
   readonly showProfile = output<string>();
+
+  protected readonly reactionOptions = REACTION_OPTIONS;
+  protected readonly quickReactions = REACTION_OPTIONS.filter(
+    (option) =>
+      option.icon === '/icons/emoji-check.svg' || option.icon === '/icons/emoji-hands-up.svg',
+  );
+  protected readonly pickerOpen = signal(false);
+  protected readonly expanded = signal(false);
+
+  private readonly store = inject(ChatStore);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly wide = signal(false);
+
+  constructor() {
+    if (typeof matchMedia === 'undefined') {
+      return;
+    }
+    const query = matchMedia(WIDE_QUERY);
+    this.wide.set(query.matches);
+    const listener = (event: MediaQueryListEvent) => this.wide.set(event.matches);
+    query.addEventListener('change', listener);
+    this.destroyRef.onDestroy(() => query.removeEventListener('change', listener));
+  }
+
+  // Thread und Mobil: 7 Reaktionen, Desktop: 20.
+  protected readonly limit = computed(() => (this.compact() || !this.wide() ? 7 : 20));
+
+  protected readonly visibleReactions = computed<Reaction[]>(() => {
+    const all = this.message().reactions;
+    return this.expanded() ? all : all.slice(0, this.limit());
+  });
+
+  protected readonly hiddenCount = computed(() =>
+    this.expanded() ? 0 : Math.max(0, this.message().reactions.length - this.limit()),
+  );
 
   protected readonly spacing = computed(() => {
     const own = this.message().own;
@@ -34,4 +74,13 @@ export class ChatMessage {
       ? 'rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-purple-2 text-white'
       : 'rounded-tr-[30px] rounded-br-[30px] rounded-bl-[30px] bg-bg group-hover:bg-white';
   });
+
+  protected toggle(option: ReactionOption): void {
+    this.store.toggleReaction(this.message().id, option);
+    this.pickerOpen.set(false);
+  }
+
+  protected toggleChip(reaction: Reaction): void {
+    this.toggle({ icon: reaction.emoji, label: reaction.label });
+  }
 }
