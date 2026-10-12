@@ -127,7 +127,7 @@ export class Data {
         id: message.id,
         text: message.text,
         author: profile?.name ?? '',
-        avatar: profile?.avatar ?? '',
+        avatar: profile?.avatar || '/icons/avatar-frederik-beck.svg',
         time: created.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
         dayLabel: dayLabel(created),
         own: message.author_id === me,
@@ -196,6 +196,15 @@ export class Data {
   private async userIdsOf(names: string[]): Promise<string[]> {
     const { data } = await this.supabase.client.from('profiles').select('id').in('name', names);
     return (data ?? []).map((profile) => profile.id);
+  }
+
+  async loadAvatars(): Promise<Record<string, string>> {
+    const { data: profiles } = await this.supabase.client.from('profiles').select('name, avatar');
+    return Object.fromEntries(
+      (profiles ?? [])
+        .filter((profile) => profile.name !== '')
+        .map((profile) => [profile.name, profile.avatar || '/icons/avatar-frederik-beck.svg']),
+    );
   }
 
   async loadChannels(): Promise<ChannelRecord[]> {

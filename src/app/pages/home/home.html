@@ -23,21 +23,13 @@
       </span>
       <span class="ml-2.5 min-w-0 truncate text-xl font-bold">Devspace</span>
     </button>
-    <app-profile-menu
-      [name]="ownName()"
-      avatar="/icons/avatar-frederik-beck.svg"
-      (openProfile)="openProfile()"
-    />
+    <app-profile-menu [name]="ownName()" [avatar]="ownAvatar()" (openProfile)="openProfile()" />
   </header>
 
   @if (mobileView() === 'menu') {
     <header class="flex items-center justify-between gap-2.5 bg-bg px-4 lg:hidden">
       <app-logo [compact]="true" />
-      <app-profile-menu
-        [name]="ownName()"
-        avatar="/icons/avatar-frederik-beck.svg"
-        (openProfile)="openProfile()"
-      />
+      <app-profile-menu [name]="ownName()" [avatar]="ownAvatar()" (openProfile)="openProfile()" />
     </header>
     <div class="min-h-0 overflow-y-auto bg-white px-4 pt-3 lg:hidden">
       <app-mobile-menu
@@ -63,11 +55,7 @@
       class="flex shrink-0 justify-end xl:w-85.5"
       [class]="threadOpen() ? 'thread:w-121.25 thread:pr-3.5' : ''"
     >
-      <app-profile-menu
-        [name]="ownName()"
-        avatar="/icons/avatar-frederik-beck.svg"
-        (openProfile)="openProfile()"
-      />
+      <app-profile-menu [name]="ownName()" [avatar]="ownAvatar()" (openProfile)="openProfile()" />
     </div>
   </header>
 
@@ -99,6 +87,7 @@
           class="block w-full"
           [channelName]="channel"
           [members]="activeMembers()"
+          [memberAvatars]="memberAvatars()"
           (editChannel)="openChannelEdit()"
           (addMembers)="openChannelMembers()"
           (showMembers)="openMembers()"
@@ -176,8 +165,8 @@
 @if (profileOpen()) {
   <app-profile-view
     [name]="ownName()"
-    avatar="/icons/avatar-frederik-beck.svg"
-    email="fred.beck@email.com"
+    [avatar]="ownAvatar()"
+    [email]="ownEmail()"
     (closed)="closeProfile()"
     (editRequested)="editProfile()"
   />
@@ -186,7 +175,7 @@
 @if (profileEditOpen()) {
   <app-profile-edit
     [name]="ownName()"
-    avatar="/icons/avatar-frederik-beck.svg"
+    [avatar]="ownAvatar()"
     (saved)="saveProfile($event)"
     (cancelled)="cancelEdit()"
   />

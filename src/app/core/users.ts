@@ -49,9 +49,10 @@ export const OWN_USER: ChatUser = {
   online: true,
 };
 
-export const setOwnUser = (name: string, email: string): void => {
+export const setOwnUser = (name: string, email: string, avatar: string): void => {
   OWN_USER.name = name;
   OWN_USER.email = email;
+  OWN_USER.avatar = avatar;
 };
 
 export const DM_USERS: ChatUser[] = [OWN_USER, ...USERS];

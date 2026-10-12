@@ -50,7 +50,12 @@ export class Auth {
     });
   }
 
-  async getCurrentProfile(): Promise<{ name: string; email: string; isAdmin: boolean } | null> {
+  async getCurrentProfile(): Promise<{
+    name: string;
+    email: string;
+    avatar: string;
+    isAdmin: boolean;
+  } | null> {
     const { data: userData } = await this.supabase.client.auth.getUser();
     const user = userData.user;
     if (!user) {
@@ -58,13 +63,14 @@ export class Auth {
     }
     const { data } = await this.supabase.client
       .from('profiles')
-      .select('name, is_admin')
+      .select('name, avatar, is_admin')
       .eq('id', user.id)
       .single();
     const fallback = user.is_anonymous ? 'Gast' : (user.email?.split('@')[0] ?? 'Gast');
     return {
       name: data?.name || fallback,
       email: user.email ?? '',
+      avatar: data?.avatar || '/icons/avatar-frederik-beck.svg',
       isAdmin: data?.is_admin === true,
     };
   }

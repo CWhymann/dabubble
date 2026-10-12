@@ -69,6 +69,8 @@ export class Home {
   private readonly data = inject(Data);
   protected readonly ownName = signal('');
   protected readonly ownEmail = signal('');
+  protected readonly ownAvatar = signal('/icons/avatar-frederik-beck.svg');
+  protected readonly memberAvatars = signal<Record<string, string>>({});
   private readonly isAdminAccount = signal(false);
 
   constructor() {
@@ -176,9 +178,10 @@ export class Home {
   private async loadCurrentProfile(): Promise<void> {
     const profile = await this.auth.getCurrentProfile();
     if (profile) {
-      setOwnUser(profile.name, profile.email);
+      setOwnUser(profile.name, profile.email, profile.avatar);
       this.ownName.set(profile.name);
       this.ownEmail.set(profile.email);
+      this.ownAvatar.set(profile.avatar);
       this.isAdminAccount.set(profile.isAdmin);
     }
     await this.loadChannels();
@@ -198,6 +201,7 @@ export class Home {
         ]),
       ),
     );
+    this.memberAvatars.set(await this.data.loadAvatars());
     const first = records.find((record) => record.name === DEV_CHANNEL) ?? records[0];
     this.activeChannel.set(first?.name ?? null);
     await this.loadMessages();
