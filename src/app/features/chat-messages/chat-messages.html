@@ -14,7 +14,7 @@
       } @else {
         <app-chat-message
           [message]="message"
-          [canReply]="canReply()"
+          [canReply]="true"
           (openThread)="openThread.emit($event)"
           (showProfile)="showProfile.emit($event)"
         />

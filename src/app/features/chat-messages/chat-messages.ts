@@ -15,5 +15,4 @@ export class ChatMessages {
   private readonly store = inject(ChatStore);
 
   protected readonly groups = computed(() => this.store.groupsFor(this.channel()));
-  protected readonly canReply = computed(() => !this.channel().startsWith('dm:'));
 }
