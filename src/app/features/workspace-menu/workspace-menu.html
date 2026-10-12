@@ -71,7 +71,7 @@
     </div>
 
     @if (channelsOpen()) {
-      <ul class="flex min-h-0 flex-col gap-3.25 overflow-y-auto">
+      <ul class="flex min-h-0 flex-col gap-3.25 overflow-y-auto max-h-34">
         @for (channel of channels(); track channel) {
           <li class="flex pl-2.5 xs:pl-6.25">
             <button
@@ -141,7 +141,7 @@
     </div>
 
     @if (usersOpen()) {
-      <ul class="flex min-h-0 flex-col gap-3.25 overflow-y-auto">
+      <ul class="flex min-h-0 flex-col gap-3.25 overflow-y-auto max-h-68">
         @for (user of users; track user.name) {
           <li class="flex pl-2.5 xs:pl-6.25">
             <button
