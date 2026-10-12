@@ -17,7 +17,11 @@ export class ProfileView {
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
-    this.destroyRef.onDestroy(() => (document.body.style.overflow = ''));
+    this.destroyRef.onDestroy(() => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    });
   }
 }
