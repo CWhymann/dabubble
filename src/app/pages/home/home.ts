@@ -5,6 +5,7 @@ import {
   DEV_CHANNEL_DESCRIPTION,
   DEV_CHANNEL_MEMBERS,
 } from '../../core/channels';
+import { Auth } from '../../core/auth';
 import { ChatStore } from '../../core/chat-store';
 import { SearchHit } from '../../core/search';
 import { ChatUser, DM_USERS, USERS } from '../../core/users';
@@ -75,6 +76,12 @@ export class Home {
   private readonly ownAuthor = 'Frederik Beck';
   private readonly adminName = 'Frederik Beck';
   private readonly store = inject(ChatStore);
+  private readonly auth = inject(Auth);
+  private readonly authorName = signal<string | null>(null);
+
+  constructor() {
+    void this.loadAuthorName();
+  }
 
   protected readonly ownName = signal('Frederik Beck');
   protected readonly channels = signal<string[]>([DEV_CHANNEL]);
@@ -157,14 +164,21 @@ export class Home {
   protected sendMessage(text: string): void {
     const key = this.activeChatKey();
     if (key) {
-      this.store.send(key, text, this.ownName());
+      this.store.send(key, text, this.authorName() ?? this.ownName());
     }
   }
 
   protected sendReply(text: string): void {
     const rootId = this.threadRootId();
     if (rootId) {
-      this.store.reply(rootId, text, this.ownName());
+      this.store.reply(rootId, text, this.authorName() ?? this.ownName());
+    }
+  }
+
+  private async loadAuthorName(): Promise<void> {
+    const name = await this.auth.getProfileName();
+    if (name) {
+      this.authorName.set(name);
     }
   }
 
@@ -334,6 +348,7 @@ export class Home {
     }
     this.openProfileOf(name);
   }
+
   protected closeProfile(): void {
     this.profileOpen.set(false);
     this.returnToMembers();

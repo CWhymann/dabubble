@@ -50,6 +50,19 @@ export class Auth {
     });
   }
 
+  async getProfileName(): Promise<string | null> {
+    const { data: userData } = await this.supabase.client.auth.getUser();
+    if (!userData.user) {
+      return null;
+    }
+    const { data } = await this.supabase.client
+      .from('profiles')
+      .select('name')
+      .eq('id', userData.user.id)
+      .single();
+    return data?.name || null;
+  }
+
   async getUser() {
     const { data, error } = await this.supabase.client.auth.getUser();
 
