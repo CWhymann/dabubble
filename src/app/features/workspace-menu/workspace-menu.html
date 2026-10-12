@@ -24,11 +24,7 @@
     </button>
   </div>
 
-  <div
-    class="flex min-h-0 flex-col gap-7.5 lg:gap-6.25"
-    [class.flex-1]="channelsOpen()"
-    [class.flex-none]="!channelsOpen()"
-  >
+  <div class="flex min-h-0 flex-col gap-7.5 lg:gap-6.25">
     <div class="flex w-full shrink-0 items-center justify-between py-0.75">
       <button
         type="button"
@@ -75,7 +71,7 @@
     </div>
 
     @if (channelsOpen()) {
-      <ul class="flex min-h-0 flex-1 flex-col gap-3.25 overflow-y-auto">
+      <ul class="flex min-h-0 flex-col gap-3.25 overflow-y-auto">
         @for (channel of channels(); track channel) {
           <li class="flex pl-2.5 xs:pl-6.25">
             <button
@@ -106,11 +102,7 @@
     }
   </div>
 
-  <div
-    class="flex min-h-0 flex-col gap-7.5 lg:gap-6.25"
-    [class.flex-1]="usersOpen()"
-    [class.flex-none]="!usersOpen()"
-  >
+  <div class="flex min-h-0 flex-col gap-7.5 lg:gap-6.25">
     <div class="flex w-full shrink-0 items-center py-0.75">
       <button
         type="button"
@@ -149,7 +141,7 @@
     </div>
 
     @if (usersOpen()) {
-      <ul class="flex min-h-0 flex-1 flex-col gap-3.25 overflow-y-auto">
+      <ul class="flex min-h-0 flex-col gap-3.25 overflow-y-auto">
         @for (user of users; track user.name) {
           <li class="flex pl-2.5 xs:pl-6.25">
             <button
