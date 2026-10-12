@@ -50,17 +50,23 @@ export class Auth {
     });
   }
 
-  async getProfileName(): Promise<string | null> {
+  async getCurrentProfile(): Promise<{ name: string; email: string; isAdmin: boolean } | null> {
     const { data: userData } = await this.supabase.client.auth.getUser();
-    if (!userData.user) {
+    const user = userData.user;
+    if (!user) {
       return null;
     }
     const { data } = await this.supabase.client
       .from('profiles')
-      .select('name')
-      .eq('id', userData.user.id)
+      .select('name, is_admin')
+      .eq('id', user.id)
       .single();
-    return data?.name || null;
+    const fallback = user.is_anonymous ? 'Gast' : (user.email?.split('@')[0] ?? 'Gast');
+    return {
+      name: data?.name || fallback,
+      email: user.email ?? '',
+      isAdmin: data?.is_admin === true,
+    };
   }
 
   async getUser() {

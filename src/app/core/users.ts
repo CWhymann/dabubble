@@ -43,12 +43,18 @@ export const USERS: ChatUser[] = [
 ];
 
 export const OWN_USER: ChatUser = {
-  name: 'Frederik Beck',
-  avatar: avatarOf('Frederik Beck'),
-  email: 'fred.beck@email.com',
+  name: '',
+  avatar: '/icons/avatar-frederik-beck.svg',
+  email: '',
   online: true,
+};
+
+export const setOwnUser = (name: string, email: string): void => {
+  OWN_USER.name = name;
+  OWN_USER.email = email;
 };
 
 export const DM_USERS: ChatUser[] = [OWN_USER, ...USERS];
 
-export const isOwnUser = (user: ChatUser): boolean => user.name === OWN_USER.name;
+export const isOwnUser = (user: ChatUser): boolean =>
+  user.name !== '' && user.name === OWN_USER.name;

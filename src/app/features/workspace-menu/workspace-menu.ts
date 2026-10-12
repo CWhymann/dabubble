@@ -18,7 +18,9 @@ export class WorkspaceMenu {
   protected readonly usersOpen = signal(true);
 
   protected readonly users = DM_USERS;
-  protected readonly ownName = OWN_USER.name;
+  protected get ownName(): string {
+    return OWN_USER.name;
+  }
 
   protected toggleChannels(): void {
     this.channelsOpen.update((open) => !open);

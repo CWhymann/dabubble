@@ -8,7 +8,7 @@ import {
 import { Auth } from '../../core/auth';
 import { ChatStore } from '../../core/chat-store';
 import { SearchHit } from '../../core/search';
-import { ChatUser, DM_USERS, USERS } from '../../core/users';
+import { ChatUser, DM_USERS, setOwnUser, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddChannelMembers } from '../../features/add-channel-members/add-channel-members';
 import { AddMembers } from '../../features/add-members/add-members';
@@ -73,17 +73,19 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
   templateUrl: './home.html',
 })
 export class Home {
-  private readonly ownAuthor = 'Frederik Beck';
-  private readonly adminName = 'Frederik Beck';
   private readonly store = inject(ChatStore);
   private readonly auth = inject(Auth);
-  private readonly authorName = signal<string | null>(null);
+  protected readonly ownName = signal('');
+  protected readonly ownEmail = signal('');
+  private readonly isAdminAccount = signal(false);
 
   constructor() {
-    void this.loadAuthorName();
+    void this.loadCurrentProfile();
   }
 
-  protected readonly ownName = signal('Frederik Beck');
+  private get ownAuthor(): string {
+    return this.ownName();
+  }
   protected readonly channels = signal<string[]>([DEV_CHANNEL]);
   protected readonly activeChannel = signal<string | null>(DEV_CHANNEL);
   protected readonly activeDm = signal<ChatUser | null>(null);
@@ -129,7 +131,7 @@ export class Home {
     return dm ? `Nachricht an ${dm.name}` : `Nachricht an #${this.activeChannel() ?? ''}`;
   });
 
-  protected readonly isAdmin = computed(() => this.ownName() === this.adminName);
+  protected readonly isAdmin = computed(() => this.isAdminAccount());
 
   protected readonly memberNeighbors = computed(() => {
     const current = this.otherProfile()?.name;
@@ -164,21 +166,30 @@ export class Home {
   protected sendMessage(text: string): void {
     const key = this.activeChatKey();
     if (key) {
-      this.store.send(key, text, this.authorName() ?? this.ownName());
+      this.store.send(key, text, this.ownName());
     }
   }
 
   protected sendReply(text: string): void {
     const rootId = this.threadRootId();
     if (rootId) {
-      this.store.reply(rootId, text, this.authorName() ?? this.ownName());
+      this.store.reply(rootId, text, this.ownName());
     }
   }
 
-  private async loadAuthorName(): Promise<void> {
-    const name = await this.auth.getProfileName();
-    if (name) {
-      this.authorName.set(name);
+  private async loadCurrentProfile(): Promise<void> {
+    const profile = await this.auth.getCurrentProfile();
+    if (profile) {
+      setOwnUser(profile.name, profile.email);
+      this.ownName.set(profile.name);
+      this.ownEmail.set(profile.email);
+      this.isAdminAccount.set(profile.isAdmin);
+      this.channelMembers.update((map) => {
+        const current = map[DEV_CHANNEL] ?? [];
+        return current.includes(profile.name)
+          ? map
+          : { ...map, [DEV_CHANNEL]: [...current, profile.name] };
+      });
     }
   }
 

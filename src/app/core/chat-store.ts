@@ -3,6 +3,7 @@ import { AVATARS } from './avatars';
 import { DEV_CHANNEL } from './channels';
 import { DayGroup, Message, Reaction } from './chat';
 import { ReactionOption } from './reactions';
+import { OWN_USER } from './users';
 
 const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
 const OWN_AVATAR = '/icons/avatar-frederik-beck.svg';
@@ -74,11 +75,18 @@ export class ChatStore {
   private readonly threads = signal<Record<string, Message[]>>(THREAD_SEED);
 
   groupsFor(key: string): DayGroup[] {
-    return this.chats()[key] ?? [];
+    return (this.chats()[key] ?? []).map((group) => ({
+      ...group,
+      messages: group.messages.map((message) => this.withOwnAuthor(message)),
+    }));
   }
 
   repliesOf(rootId: string): Message[] {
-    return this.threads()[rootId] ?? [];
+    return (this.threads()[rootId] ?? []).map((message) => this.withOwnAuthor(message));
+  }
+
+  private withOwnAuthor(message: Message): Message {
+    return message.own && OWN_USER.name !== '' ? { ...message, author: OWN_USER.name } : message;
   }
 
   findMessage(id: string): Message | undefined {

@@ -1,6 +1,6 @@
 export const DEV_CHANNEL = 'Entwicklerteam';
 
-export const DEV_CHANNEL_MEMBERS = ['Noah Braun', 'Sofia Müller', 'Frederik Beck'];
+export const DEV_CHANNEL_MEMBERS = ['Noah Braun', 'Sofia Müller'];
 
 export const DEV_CHANNEL_CREATOR = 'Noah Braun';
 
