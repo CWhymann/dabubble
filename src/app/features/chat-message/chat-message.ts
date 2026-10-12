@@ -141,6 +141,8 @@ export class ChatMessage {
     const text = this.draft().trim();
     if (text) {
       this.store.editMessage(this.message().id, text);
+    } else {
+      this.store.delete(this.message().id);
     }
     this.editing.set(false);
   }

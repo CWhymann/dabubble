@@ -149,6 +149,42 @@ export class ChatStore {
     });
   }
 
+  delete(id: string): void {
+    const rootId = Object.keys(this.threads()).find((root) =>
+      this.threads()[root].some((message) => message.id === id),
+    );
+    this.chats.update((map) =>
+      Object.fromEntries(
+        Object.entries(map).map(([key, groups]) => [
+          key,
+          groups
+            .map((group) => ({
+              ...group,
+              messages: group.messages.filter((message) => message.id !== id),
+            }))
+            .filter((group) => group.messages.length > 0),
+        ]),
+      ),
+    );
+    this.threads.update((map) =>
+      Object.fromEntries(
+        Object.entries(map).map(([root, list]) => [
+          root,
+          list.filter((message) => message.id !== id),
+        ]),
+      ),
+    );
+    if (rootId) {
+      this.mapMessage(rootId, (root) => {
+        const count = (root.replies?.count ?? 0) - 1;
+        return {
+          ...root,
+          replies: count > 0 && root.replies ? { ...root.replies, count } : undefined,
+        };
+      });
+    }
+  }
+
   notify(key: string, text: string): void {
     const message: Message = {
       id: crypto.randomUUID(),
