@@ -14,11 +14,20 @@ export class Auth {
     });
   }
 
-  async signUp(email: string, password: string) {
+  async signUp(email: string, password: string, name: string, avatar: string) {
     return this.supabase.client.auth.signUp({
       email,
       password,
+      options: {
+        data: { name, avatar },
+        emailRedirectTo: `${window.location.origin}/login`,
+      },
     });
+  }
+
+  async hasSession(): Promise<boolean> {
+    const { data } = await this.supabase.client.auth.getSession();
+    return data.session !== null;
   }
 
   async sendResetEmail(email: string) {

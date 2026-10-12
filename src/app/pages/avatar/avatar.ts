@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AVATARS } from '../../core/avatars';
+import { Auth } from '../../core/auth';
 import { RegisterState } from '../../core/register-state';
 import { Toast } from '../../core/toast';
 import { AuthLayout } from '../../features/auth-layout/auth-layout';
@@ -15,6 +16,7 @@ export class Avatar {
   private readonly router = inject(Router);
   private readonly registerState = inject(RegisterState);
   private readonly toast = inject(Toast);
+  private readonly auth = inject(Auth);
 
   protected readonly avatars = AVATARS;
   protected readonly selected = this.registerState.avatar;
@@ -29,7 +31,18 @@ export class Avatar {
   }
 
   protected async submit(): Promise<void> {
-    if (!this.selected() || this.toast.content()) return;
+    const data = this.registerState.data();
+    const avatar = this.selected();
+    if (!avatar || !data || this.toast.content()) return;
+
+    const { error } = await this.auth.signUp(data.email, data.password, data.name, avatar);
+
+    if (error) {
+      await this.toast.show('Das Konto konnte nicht erstellt werden.');
+      return;
+    }
+
+    this.registerState.clear();
     await this.toast.show('Konto erfolgreich erstellt!');
     await this.router.navigateByUrl('/login');
   }

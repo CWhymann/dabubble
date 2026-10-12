@@ -55,10 +55,17 @@ export class ResetPassword {
       return;
     }
 
+    if (!(await this.auth.hasSession())) {
+      this.submitError.set(
+        'Der Link ist ungültig oder abgelaufen. Bitte fordere eine neue E-Mail an.',
+      );
+      return;
+    }
+
     const { error } = await this.auth.updatePassword(this.form.controls.password.value);
 
     if (error) {
-      this.submitError.set(error.message);
+      this.submitError.set('Das Passwort konnte nicht geändert werden. Bitte versuche es erneut.');
       return;
     }
 
