@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+﻿import { Injectable, signal } from '@angular/core';
 import { AVATARS } from './avatars';
 import { DEV_CHANNEL } from './channels';
 import { DayGroup, Message, Reaction } from './chat';
@@ -68,7 +68,6 @@ const THREAD_SEED: Record<string, Message[]> = {
   ],
 };
 
-// Speichert Nachrichten je Chat, Antworten je Thread und Reaktionen je Nachricht.
 @Injectable({ providedIn: 'root' })
 export class ChatStore {
   private readonly chats = signal<Record<string, DayGroup[]>>({ [DEV_CHANNEL]: DEV_SEED });
@@ -122,12 +121,10 @@ export class ChatStore {
     }));
   }
 
-  // Ändert den Text einer eigenen Nachricht (Chat oder Thread).
   editMessage(id: string, text: string): void {
     this.mapMessage(id, (message) => ({ ...message, text }));
   }
 
-  // Setzt die Reaktion des eigenen Nutzers, oder nimmt sie wieder zurück.
   toggleReaction(messageId: string, option: ReactionOption): void {
     this.mapMessage(messageId, (message) => {
       const existing = message.reactions.find((reaction) => reaction.emoji === option.icon);

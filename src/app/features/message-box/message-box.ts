@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+﻿import { Component, computed, input, output, signal } from '@angular/core';
 import { ChatUser, DM_USERS, isOwnUser } from '../../core/users';
 
 const EMOJIS = [
@@ -40,7 +40,6 @@ export class MessageBox {
   protected readonly text = signal('');
   protected readonly emojiOpen = signal(false);
 
-  // Trifft zu, wenn das Feld mit "@" plus optionalem Suchbegriff endet.
   private readonly tagMatch = computed(() => this.text().match(/(?:^|\s)@([^\s@]*)$/));
   protected readonly tagging = computed(() => this.tagMatch() !== null);
   protected readonly tagHits = computed<ChatUser[]>(() => {
@@ -60,7 +59,6 @@ export class MessageBox {
     this.text.set((event.target as HTMLTextAreaElement).value);
   }
 
-  // Enter sendet, Shift+Enter fügt eine neue Zeile ein.
   protected onEnter(event: Event): void {
     if ((event as KeyboardEvent).shiftKey) {
       return;

@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   DestroyRef,
   ElementRef,
@@ -39,7 +39,6 @@ export class ChatMessage {
   protected readonly menuOpen = signal(false);
   protected readonly editing = signal(false);
   protected readonly draft = signal('');
-  // Auf dem Handy gibt es keinen Hover: Ein Tipp auf die Nachricht zeigt die Leiste.
   protected readonly tapped = signal(false);
   protected readonly expanded = signal(false);
 
@@ -59,12 +58,10 @@ export class ChatMessage {
     this.destroyRef.onDestroy(() => query.removeEventListener('change', listener));
   }
 
-  // Die Leiste bleibt sichtbar, solange ein Menü offen ist oder die Nachricht angetippt wurde.
   protected readonly barVisible = computed(
     () => this.tapped() || this.pickerOpen() || this.menuOpen(),
   );
 
-  // Thread und Mobil: 7 Reaktionen, Desktop: 20.
   protected readonly limit = computed(() => (this.compact() || !this.wide() ? 7 : 20));
 
   protected readonly visibleReactions = computed<Reaction[]>(() => {
@@ -108,7 +105,6 @@ export class ChatMessage {
     }
   }
 
-  // Escape bricht eine laufende Bearbeitung ab, sonst schließt es Menüs.
   protected onEscape(): void {
     if (this.editing()) {
       this.cancelEdit();

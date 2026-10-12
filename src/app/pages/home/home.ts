@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, computed, inject, signal } from '@angular/core';
 import type { User } from '@supabase/supabase-js';
 import { Auth } from '../../core/auth';
 import {
@@ -76,7 +76,6 @@ export class Home {
   private readonly store = inject(ChatStore);
   private readonly auth = inject(Auth);
 
-  // Name des angemeldeten Nutzers, unter dem Nachrichten gesendet werden.
   private readonly authorName = signal<string | null>(null);
 
   constructor() {
@@ -117,7 +116,6 @@ export class Home {
     return (channel && this.channelMeta()[channel]) || { description: '', creator: '' };
   });
 
-  // Schlüssel des offenen Chats: Channel-Name oder "dm:<Name>".
   protected readonly activeChatKey = computed(() => {
     const dm = this.activeDm();
     return dm ? `dm:${dm.name}` : this.activeChannel();
@@ -245,7 +243,6 @@ export class Home {
     if (!channel) {
       return;
     }
-    // Nur die eigene Mitgliedschaft wird entfernt. Der Channel mit Mitgliedern und Nachrichten bleibt bestehen.
     const remaining = this.channels().filter((name) => name !== channel);
     this.channels.set(remaining);
     this.channelMembers.update((map) => ({
