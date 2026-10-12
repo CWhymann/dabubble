@@ -243,19 +243,11 @@ export class Home {
     if (!channel) {
       return;
     }
-    const remaining = this.channels().filter((name) => name !== channel);
-    this.channels.set(remaining);
     this.channelMembers.update((map) => ({
       ...map,
       [channel]: (map[channel] ?? []).filter((member) => member !== this.ownAuthor),
     }));
     this.closeChannelEdit();
-    if (remaining.length > 0) {
-      this.selectChannel(remaining[0]);
-    } else {
-      this.activeChannel.set(null);
-      this.mobileView.set('menu');
-    }
   }
 
   protected saveChannel(edit: ChannelEdit): void {
