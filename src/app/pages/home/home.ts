@@ -1,11 +1,7 @@
 ﻿import { Component, computed, inject, signal } from '@angular/core';
-import {
-  DEV_CHANNEL,
-  DEV_CHANNEL_CREATOR,
-  DEV_CHANNEL_DESCRIPTION,
-  DEV_CHANNEL_MEMBERS,
-} from '../../core/channels';
+import { DEV_CHANNEL } from '../../core/channels';
 import { Auth } from '../../core/auth';
+import { Data } from '../../core/data';
 import { ChatStore } from '../../core/chat-store';
 import { SearchHit } from '../../core/search';
 import { ChatUser, DM_USERS, setOwnUser, USERS } from '../../core/users';
@@ -75,6 +71,7 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
 export class Home {
   private readonly store = inject(ChatStore);
   private readonly auth = inject(Auth);
+  private readonly data = inject(Data);
   protected readonly ownName = signal('');
   protected readonly ownEmail = signal('');
   private readonly isAdminAccount = signal(false);
@@ -86,16 +83,12 @@ export class Home {
   private get ownAuthor(): string {
     return this.ownName();
   }
-  protected readonly channels = signal<string[]>([DEV_CHANNEL]);
-  protected readonly activeChannel = signal<string | null>(DEV_CHANNEL);
+  protected readonly channels = signal<string[]>([]);
+  protected readonly activeChannel = signal<string | null>(null);
   protected readonly activeDm = signal<ChatUser | null>(null);
   protected readonly threadRootId = signal<string | null>('noah-root');
-  protected readonly channelMembers = signal<Record<string, string[]>>({
-    [DEV_CHANNEL]: DEV_CHANNEL_MEMBERS,
-  });
-  protected readonly channelMeta = signal<Record<string, ChannelMeta>>({
-    [DEV_CHANNEL]: { description: DEV_CHANNEL_DESCRIPTION, creator: DEV_CHANNEL_CREATOR },
-  });
+  protected readonly channelMembers = signal<Record<string, string[]>>({});
+  protected readonly channelMeta = signal<Record<string, ChannelMeta>>({});
   protected readonly channelEditOpen = signal(false);
   protected readonly channelMembersOpen = signal(false);
   protected readonly leaveConfirmOpen = signal(false);
@@ -184,13 +177,26 @@ export class Home {
       this.ownName.set(profile.name);
       this.ownEmail.set(profile.email);
       this.isAdminAccount.set(profile.isAdmin);
-      this.channelMembers.update((map) => {
-        const current = map[DEV_CHANNEL] ?? [];
-        return current.includes(profile.name)
-          ? map
-          : { ...map, [DEV_CHANNEL]: [...current, profile.name] };
-      });
     }
+    await this.loadChannels();
+  }
+
+  private async loadChannels(): Promise<void> {
+    const records = await this.data.loadChannels();
+    this.channels.set(records.map((record) => record.name));
+    this.channelMembers.set(
+      Object.fromEntries(records.map((record) => [record.name, record.members])),
+    );
+    this.channelMeta.set(
+      Object.fromEntries(
+        records.map((record) => [
+          record.name,
+          { description: record.description, creator: record.createdBy },
+        ]),
+      ),
+    );
+    const first = records.find((record) => record.name === DEV_CHANNEL) ?? records[0];
+    this.activeChannel.set(first?.name ?? null);
   }
 
   protected toggleMenu(): void {
