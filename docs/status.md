@@ -51,3 +51,11 @@ Diese Liste ist ehrlich gemeint: Vieles ist im Code vorhanden, aber nicht im Bro
 - **Google-Anmeldung:** Der Button „Anmelden mit Google“ hat noch keine Funktion, im Code gibt es keinen Aufruf für den Google-Login. Einrichtung im Google-Cloud-Projekt und in der Supabase-Konsole, die Schritte muss der Projektinhaber selbst durchführen.
 - **Startseite schützen:** Die Startseite ist ohne Anmeldung erreichbar. Es fehlt eine Routen-Sperre.
 - **Test und Feinschliff:** Alle Breiten von 320px bis 1440px im Browser, Ansichten Chat, DM, Thread, Menü, Dialoge.
+
+## 7. Rechte bei Mitgliedern (festgelegt)
+
+- **Admin:** Der Admin ist für die gesamte App zuständig, unabhängig vom Ersteller eines Channels. Aktuell ist das der Nutzer, der die App betreibt.
+- **Ersteller eines Channels:** Darf Mitglieder hinzufügen, die er dafür vorsieht. Darf keine Mitglieder entfernen.
+- **Mitglieder entfernen:** Nur der Admin, und nur nach Absprache. Der Admin wählt die Mitglieder aus, wie bei der @-Funktion: Mehrere Personen markieren, dann entfernen.
+- **Sich selbst entfernen:** Jedes Mitglied darf sich selbst aus einem Channel entfernen. Der Channel bleibt bestehen, nur die eigene Mitgliedschaft endet. Der Channel bleibt in der Seitenleiste.
+- **Demo-Hinweis:** Die App kennt bisher nur einen Nutzer (Frederik Beck). Die Admin-Rechte wirken erst mit echten Nutzern aus Supabase (Punkt 1).
