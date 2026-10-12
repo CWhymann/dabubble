@@ -217,12 +217,13 @@ export class Home {
     if (!channel) {
       return;
     }
+    // Nur die eigene Mitgliedschaft wird entfernt. Der Channel mit Mitgliedern und Nachrichten bleibt bestehen.
     const remaining = this.channels().filter((name) => name !== channel);
-    const withoutKey = <T>(map: Record<string, T>) =>
-      Object.fromEntries(Object.entries(map).filter(([key]) => key !== channel));
     this.channels.set(remaining);
-    this.channelMembers.update(withoutKey);
-    this.channelMeta.update(withoutKey);
+    this.channelMembers.update((map) => ({
+      ...map,
+      [channel]: (map[channel] ?? []).filter((member) => member !== this.ownAuthor),
+    }));
     this.closeChannelEdit();
     if (remaining.length > 0) {
       this.selectChannel(remaining[0]);
