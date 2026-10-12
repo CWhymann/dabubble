@@ -35,11 +35,6 @@ interface ChannelMeta {
   creator: string;
 }
 
-function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<string, T> {
-  const { [from]: value, ...rest } = map;
-  return value === undefined ? rest : { ...rest, [to]: value };
-}
-
 @Component({
   selector: 'app-home',
   imports: [
@@ -244,16 +239,11 @@ export class Home {
     this.channelMembersOpen.set(false);
   }
 
-  protected addChannelMembers(names: string[]): void {
+  protected async addChannelMembers(names: string[]): Promise<void> {
     const channel = this.activeChannel();
     if (channel) {
-      this.channelMembers.update((map) => {
-        const current = map[channel] ?? [];
-        return {
-          ...map,
-          [channel]: [...current, ...names.filter((name) => !current.includes(name))],
-        };
-      });
+      await this.data.addMembers(channel, names);
+      await this.loadChannels();
     }
     this.closeChannelMembers();
   }
@@ -266,48 +256,39 @@ export class Home {
     this.leaveConfirmOpen.set(false);
   }
 
-  protected leaveChannel(): void {
+  protected async leaveChannel(): Promise<void> {
     this.leaveConfirmOpen.set(false);
     const channel = this.activeChannel();
     if (!channel) {
       return;
     }
-    this.channelMembers.update((map) => ({
-      ...map,
-      [channel]: (map[channel] ?? []).filter((member) => member !== this.ownAuthor),
-    }));
+    await this.data.leaveChannel(channel);
     this.store.notify(channel, `${this.ownName()} hat den Channel verlassen.`);
     this.closeChannelEdit();
+    await this.loadChannels();
   }
 
-  protected removeMembers(names: string[]): void {
+  protected async removeMembers(names: string[]): Promise<void> {
     const channel = this.activeChannel();
     if (!channel || !this.isAdmin()) {
       return;
     }
-    this.channelMembers.update((map) => ({
-      ...map,
-      [channel]: (map[channel] ?? []).filter((member) => !names.includes(member)),
-    }));
+    await this.data.removeMembers(channel, names);
     for (const name of names) {
       this.store.notify(channel, `${this.ownName()} hat ${name} aus dem Channel entfernt.`);
     }
+    await this.loadChannels();
   }
 
-  protected saveChannel(edit: ChannelEdit): void {
+  protected async saveChannel(edit: ChannelEdit): Promise<void> {
     const old = this.activeChannel();
     if (!old) {
       return;
     }
     const name = edit.name.trim();
     const newName = name && (name === old || !this.channels().includes(name)) ? name : old;
-    const meta = this.channelMeta()[old] ?? { description: '', creator: this.ownAuthor };
-    this.channels.update((list) => list.map((channel) => (channel === old ? newName : channel)));
-    this.channelMembers.update((map) => renameKey(map, old, newName));
-    this.channelMeta.update((map) => ({
-      ...renameKey(map, old, newName),
-      [newName]: { ...meta, description: edit.description },
-    }));
+    await this.data.updateChannel(old, newName, edit.description);
+    await this.loadChannels();
     this.activeChannel.set(newName);
   }
 
@@ -434,25 +415,17 @@ export class Home {
     this.pendingChannel.set(null);
   }
 
-  protected confirmMembers(names: string[]): void {
+  protected async confirmMembers(names: string[]): Promise<void> {
     const channel = this.pendingChannel();
     if (channel) {
-      this.addChannel(channel.name, names);
+      await this.data.createChannel(channel.name, '');
+      await this.data.addMembers(
+        channel.name,
+        names.filter((name) => name !== this.ownAuthor),
+      );
+      await this.loadChannels();
       this.selectChannel(channel.name);
     }
     this.closeAddMembers();
-  }
-
-  private addChannel(name: string, names: string[]): void {
-    if (this.channels().includes(name)) {
-      return;
-    }
-    const members = [this.ownAuthor, ...names.filter((member) => member !== this.ownAuthor)];
-    this.channels.update((list) => [...list, name]);
-    this.channelMembers.update((map) => ({ ...map, [name]: members }));
-    this.channelMeta.update((map) => ({
-      ...map,
-      [name]: { description: '', creator: this.ownAuthor },
-    }));
   }
 }

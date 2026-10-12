@@ -12,6 +12,84 @@ export interface ChannelRecord {
 export class Data {
   private readonly supabase = inject(Supabase);
 
+  async createChannel(name: string, description: string): Promise<void> {
+    const userId = await this.currentUserId();
+    if (!userId) {
+      return;
+    }
+    const { data: channel } = await this.supabase.client
+      .from('channels')
+      .insert({ name, description, created_by: userId })
+      .select('id')
+      .single();
+    if (channel) {
+      await this.supabase.client
+        .from('channel_members')
+        .insert({ channel_id: channel.id, user_id: userId });
+    }
+  }
+
+  async updateChannel(oldName: string, name: string, description: string): Promise<void> {
+    await this.supabase.client.from('channels').update({ name, description }).eq('name', oldName);
+  }
+
+  async addMembers(channelName: string, memberNames: string[]): Promise<void> {
+    const channelId = await this.channelIdOf(channelName);
+    const userIds = await this.userIdsOf(memberNames);
+    if (!channelId || userIds.length === 0) {
+      return;
+    }
+    await this.supabase.client.from('channel_members').upsert(
+      userIds.map((userId) => ({ channel_id: channelId, user_id: userId })),
+      { onConflict: 'channel_id,user_id', ignoreDuplicates: true },
+    );
+  }
+
+  async removeMembers(channelName: string, memberNames: string[]): Promise<void> {
+    const channelId = await this.channelIdOf(channelName);
+    const userIds = await this.userIdsOf(memberNames);
+    if (!channelId || userIds.length === 0) {
+      return;
+    }
+    await this.supabase.client
+      .from('channel_members')
+      .delete()
+      .eq('channel_id', channelId)
+      .in('user_id', userIds);
+  }
+
+  async leaveChannel(channelName: string): Promise<void> {
+    const channelId = await this.channelIdOf(channelName);
+    const userId = await this.currentUserId();
+    if (!channelId || !userId) {
+      return;
+    }
+    await this.supabase.client
+      .from('channel_members')
+      .delete()
+      .eq('channel_id', channelId)
+      .eq('user_id', userId);
+  }
+
+  private async currentUserId(): Promise<string | null> {
+    const { data } = await this.supabase.client.auth.getUser();
+    return data.user?.id ?? null;
+  }
+
+  private async channelIdOf(name: string): Promise<string | null> {
+    const { data } = await this.supabase.client
+      .from('channels')
+      .select('id')
+      .eq('name', name)
+      .maybeSingle();
+    return data?.id ?? null;
+  }
+
+  private async userIdsOf(names: string[]): Promise<string[]> {
+    const { data } = await this.supabase.client.from('profiles').select('id').in('name', names);
+    return (data ?? []).map((profile) => profile.id);
+  }
+
   async loadChannels(): Promise<ChannelRecord[]> {
     const { data: channels } = await this.supabase.client
       .from('channels')
