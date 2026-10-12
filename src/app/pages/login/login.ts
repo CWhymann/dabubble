@@ -86,6 +86,7 @@ export class Login {
       return;
     }
 
+    await this.toast.show('Willkommen Gast');
     await this.router.navigateByUrl('/home');
   }
 }
