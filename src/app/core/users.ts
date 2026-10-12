@@ -40,6 +40,12 @@ export const USERS: ChatUser[] = [
     email: 'thehoffman@beispiel.com',
     online: true,
   },
+  {
+    name: 'Frederik Beck',
+    avatar: avatarOf('Frederik Beck'),
+    email: 'fred.beck@email.com',
+    online: true,
+  },
 ];
 
 export const OWN_USER: ChatUser = {
