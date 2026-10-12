@@ -1,5 +1,5 @@
 import { Component, computed, input, output, signal } from '@angular/core';
-import { ChatUser, USERS } from '../../core/users';
+import { ChatUser, DM_USERS } from '../../core/users';
 import { ButtonPrimary } from '../../shared/button-primary/button-primary';
 
 @Component({
@@ -25,7 +25,7 @@ export class AddChannelMembers {
       return [];
     }
     const taken = [...this.existingMembers(), ...this.selected().map((user) => user.name)];
-    return USERS.filter(
+    return DM_USERS.filter(
       (user) => !taken.includes(user.name) && user.name.toLowerCase().includes(term),
     );
   });
