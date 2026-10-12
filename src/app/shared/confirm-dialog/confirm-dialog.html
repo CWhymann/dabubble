@@ -8,12 +8,8 @@
 >
   <h2 id="confirm-dialog-title" class="text-2xl font-bold text-black">{{ title() }}</h2>
   <p class="text-lg text-text-gray">{{ message() }}</p>
-  <div class="flex flex-col gap-4 @min-[20rem]:flex-row @min-[20rem]:justify-end">
-    <app-button-secondary class="w-full @min-[20rem]:w-auto" (click)="cancelled.emit()"
-      >Abbrechen</app-button-secondary
-    >
-    <app-button-primary class="w-full @min-[20rem]:w-auto" (click)="confirmed.emit()">{{
-      confirmLabel()
-    }}</app-button-primary>
+  <div class="flex flex-col items-center gap-4 @min-[20rem]:flex-row @min-[20rem]:justify-end">
+    <app-button-secondary (click)="cancelled.emit()">Abbrechen</app-button-secondary>
+    <app-button-primary (click)="confirmed.emit()">{{ confirmLabel() }}</app-button-primary>
   </div>
 </section>
