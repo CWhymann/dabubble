@@ -4,7 +4,7 @@
   role="dialog"
   aria-modal="true"
   aria-labelledby="other-profile-title"
-  class="@container fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-9.5 overflow-y-auto rounded-[30px] bg-white p-5 shadow-menu lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:gap-11.25 lg:p-10"
+  class="@container fixed top-1/2 left-1/2 z-50 flex w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-6 rounded-[30px] bg-white p-5 shadow-menu @min-[20rem]:gap-9.5 max-lg:landscape:top-1/2 max-lg:landscape:right-3 max-lg:landscape:left-auto max-lg:landscape:translate-x-0 max-lg:landscape:-translate-y-1/2 max-lg:landscape:w-[min(22rem,calc(50vw-1.5rem))] max-lg:landscape:max-w-none max-lg:landscape:gap-3 max-lg:landscape:p-4 lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:gap-11.25 lg:p-10"
 >
   <div class="flex w-full items-center justify-between">
     <h2 id="other-profile-title" class="text-2xl font-bold text-black">Profil</h2>
@@ -40,13 +40,15 @@
   </div>
 
   <img
-    class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50"
+    class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50 max-lg:landscape:size-[min(30vh,7rem)]"
     [src]="user().avatar"
     alt=""
   />
 
   <div class="flex w-full flex-col gap-3.75">
-    <p class="text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px]">
+    <p
+      class="text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px] max-lg:landscape:text-xl"
+    >
       {{ user().name }}
     </p>
     <div class="flex items-center gap-3.75">

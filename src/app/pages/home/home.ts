@@ -328,13 +328,12 @@ export class Home {
   }
 
   protected openProfileFromMembers(name: string): void {
-    if (window.matchMedia('(max-width: 1023px)').matches) {
+    if (window.matchMedia('(max-width: 1023px) and (orientation: portrait)').matches) {
       this.membersOpen.set(false);
       this.profileFromMembers = true;
     }
     this.openProfileOf(name);
   }
-
   protected closeProfile(): void {
     this.profileOpen.set(false);
     this.returnToMembers();
