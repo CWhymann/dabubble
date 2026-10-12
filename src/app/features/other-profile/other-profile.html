@@ -4,13 +4,33 @@
   role="dialog"
   aria-modal="true"
   aria-labelledby="other-profile-title"
-  class="@container fixed top-1/2 left-1/2 z-50 flex w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-6 rounded-[30px] bg-white p-5 shadow-menu @min-[20rem]:gap-9.5 max-lg:landscape:top-1/2 max-lg:landscape:right-3 max-lg:landscape:left-auto max-lg:landscape:translate-x-0 max-lg:landscape:-translate-y-1/2 max-lg:landscape:w-[min(22rem,calc(50vw-1.5rem))] max-lg:landscape:max-w-none max-lg:landscape:gap-3 max-lg:landscape:p-4 lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:gap-11.25 lg:p-10"
+  class="@container fixed top-1/2 left-1/2 z-50 flex w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-6 rounded-[30px] bg-white p-5 shadow-menu @min-[20rem]:gap-9.5 max-lg:landscape:top-1/2 max-lg:landscape:right-3 max-lg:landscape:left-auto max-lg:landscape:translate-x-0 max-lg:landscape:-translate-y-1/2 max-lg:landscape:w-[min(22rem,calc(50vw-1.5rem))] max-lg:landscape:max-w-none max-lg:landscape:gap-2 max-lg:landscape:p-3 lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:gap-11.25 lg:p-10"
 >
-  <div class="flex w-full items-center justify-between">
-    <h2 id="other-profile-title" class="text-2xl font-bold text-black">Profil</h2>
+  <div class="flex w-full items-center justify-between gap-2">
     <button
       type="button"
-      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+      class="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg disabled:opacity-30 lg:hidden"
+      aria-label="Vorheriges Mitglied"
+      [disabled]="!hasPrevious()"
+      (click)="previous.emit()"
+    >
+      <img class="size-6 rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
+    </button>
+    <h2 id="other-profile-title" class="text-2xl font-bold text-black max-lg:landscape:text-lg">
+      Profil
+    </h2>
+    <button
+      type="button"
+      class="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg disabled:opacity-30 lg:hidden"
+      aria-label="Nächstes Mitglied"
+      [disabled]="!hasNext()"
+      (click)="next.emit()"
+    >
+      <img class="size-6 -rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
+    </button>
+    <button
+      type="button"
+      class="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
       aria-label="Profil schließen"
       (click)="closed.emit()"
     >
@@ -18,36 +38,15 @@
     </button>
   </div>
 
-  <div class="flex w-full items-center justify-between lg:hidden">
-    <button
-      type="button"
-      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg disabled:opacity-30"
-      aria-label="Vorheriges Mitglied"
-      [disabled]="!hasPrevious()"
-      (click)="previous.emit()"
-    >
-      <img class="size-6 rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
-    </button>
-    <button
-      type="button"
-      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg disabled:opacity-30"
-      aria-label="Nächstes Mitglied"
-      [disabled]="!hasNext()"
-      (click)="next.emit()"
-    >
-      <img class="size-6 -rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
-    </button>
-  </div>
-
   <img
-    class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50 max-lg:landscape:size-[min(30vh,7rem)]"
+    class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50 max-lg:landscape:size-[min(20vh,4.5rem)]"
     [src]="user().avatar"
     alt=""
   />
 
-  <div class="flex w-full flex-col gap-3.75">
+  <div class="flex w-full flex-col gap-3.75 max-lg:landscape:gap-2">
     <p
-      class="text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px] max-lg:landscape:text-xl"
+      class="text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px] max-lg:landscape:text-lg"
     >
       {{ user().name }}
     </p>
@@ -57,19 +56,21 @@
         [src]="user().online ? '/icons/online.svg' : '/icons/offline.svg'"
         alt=""
       />
-      <span class="text-lg text-text-gray @min-[20rem]:text-xl">
+      <span class="text-lg text-text-gray @min-[20rem]:text-xl max-lg:landscape:text-base">
         {{ user().online ? 'Aktiv' : 'Abwesend' }}
       </span>
     </div>
   </div>
 
-  <div class="flex w-full flex-col gap-3.75">
+  <div class="flex w-full flex-col gap-3.75 max-lg:landscape:gap-2">
     <div class="flex items-center gap-5">
       <img class="size-7.5" src="/icons/mail-dark.svg" alt="" />
-      <span class="text-lg font-bold text-black @min-[20rem]:text-xl">E-Mail-Adresse</span>
+      <span class="text-lg font-bold text-black @min-[20rem]:text-xl max-lg:landscape:text-base">
+        E-Mail-Adresse
+      </span>
     </div>
     <a
-      class="pr-2.5 pl-10 text-base wrap-anywhere text-link @min-[20rem]:pl-12.5 @min-[20rem]:text-lg"
+      class="pr-2.5 pl-10 text-base wrap-anywhere text-link @min-[20rem]:pl-12.5 @min-[20rem]:text-lg max-lg:landscape:text-sm"
       [href]="'mailto:' + user().email"
     >
       {{ user().email }}
@@ -78,7 +79,7 @@
 
   <button
     type="button"
-    class="flex cursor-pointer items-center justify-center gap-2.5 rounded-[50px] bg-purple-1 px-6.25 py-3 text-lg font-bold whitespace-nowrap text-white transition-colors hover:bg-purple-2"
+    class="flex cursor-pointer items-center justify-center gap-2.5 rounded-[50px] bg-purple-1 px-6.25 py-3 text-lg font-bold whitespace-nowrap text-white transition-colors hover:bg-purple-2 max-lg:landscape:py-2 max-lg:landscape:text-base"
     (click)="messageRequested.emit()"
   >
     <img class="size-6" src="/icons/mode-comment.svg" alt="" />

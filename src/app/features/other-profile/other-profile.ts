@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, DestroyRef, inject, input, output } from '@angular/core';
 import { ChatUser } from '../../core/users';
 
 @Component({
@@ -16,4 +16,11 @@ export class OtherProfile {
   readonly previous = output<void>();
   readonly next = output<void>();
   readonly messageRequested = output<void>();
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    document.body.style.overflow = 'hidden';
+    this.destroyRef.onDestroy(() => (document.body.style.overflow = ''));
+  }
 }

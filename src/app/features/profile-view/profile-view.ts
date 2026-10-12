@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, DestroyRef, inject, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-profile-view',
@@ -13,4 +13,11 @@ export class ProfileView {
   readonly email = input.required<string>();
   readonly closed = output<void>();
   readonly editRequested = output<void>();
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    document.body.style.overflow = 'hidden';
+    this.destroyRef.onDestroy(() => (document.body.style.overflow = ''));
+  }
 }

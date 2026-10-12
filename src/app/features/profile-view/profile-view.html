@@ -4,10 +4,12 @@
   role="dialog"
   aria-modal="true"
   aria-labelledby="profile-title"
-  class="@container fixed top-1/2 left-1/2 z-50 flex w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-[30px] bg-white px-5 py-6 shadow-menu @min-[20rem]:gap-9.5 @min-[20rem]:py-11.25 max-lg:landscape:top-1/2 max-lg:landscape:right-3 max-lg:landscape:left-auto max-lg:landscape:translate-x-0 max-lg:landscape:-translate-y-1/2 max-lg:landscape:w-[min(22rem,calc(50vw-1.5rem))] max-lg:landscape:max-w-none max-lg:landscape:gap-3 max-lg:landscape:px-4 max-lg:landscape:py-4 lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:px-10"
+  class="@container fixed top-1/2 left-1/2 z-50 flex w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-[30px] bg-white px-5 py-6 shadow-menu @min-[20rem]:gap-9.5 @min-[20rem]:py-11.25 max-lg:landscape:top-1/2 max-lg:landscape:right-3 max-lg:landscape:left-auto max-lg:landscape:translate-x-0 max-lg:landscape:-translate-y-1/2 max-lg:landscape:w-[min(22rem,calc(50vw-1.5rem))] max-lg:landscape:max-w-none max-lg:landscape:gap-2 max-lg:landscape:px-4 max-lg:landscape:py-3 lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:px-10"
 >
   <div class="flex items-center justify-between">
-    <h2 id="profile-title" class="text-2xl font-bold text-black">Profil</h2>
+    <h2 id="profile-title" class="text-2xl font-bold text-black max-lg:landscape:text-lg">
+      Profil
+    </h2>
     <button
       type="button"
       class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
@@ -20,16 +22,16 @@
 
   <div class="flex justify-center">
     <img
-      class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50 max-lg:landscape:size-[min(30vh,7rem)]"
+      class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50 max-lg:landscape:size-[min(20vh,4.5rem)]"
       [src]="avatar()"
       alt=""
     />
   </div>
 
-  <div class="flex flex-col gap-3.75">
+  <div class="flex flex-col gap-3.75 max-lg:landscape:gap-2">
     <div class="flex items-center justify-between gap-5">
       <p
-        class="min-w-0 truncate text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px] max-lg:landscape:text-xl"
+        class="min-w-0 truncate text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px] max-lg:landscape:text-lg"
         [attr.title]="name()"
       >
         {{ name() }}
@@ -52,17 +54,19 @@
     </div>
     <div class="flex items-center gap-3.75">
       <img class="size-4" src="/icons/online.svg" alt="" />
-      <span class="text-lg text-online @min-[20rem]:text-xl">Aktiv</span>
+      <span class="text-lg text-online @min-[20rem]:text-xl max-lg:landscape:text-base">Aktiv</span>
     </div>
   </div>
 
-  <div class="flex flex-col gap-3.75">
+  <div class="flex flex-col gap-3.75 max-lg:landscape:gap-2">
     <div class="flex items-center gap-5">
       <img class="size-7.5" src="/icons/mail-dark.svg" alt="" />
-      <span class="text-lg font-bold text-black @min-[20rem]:text-xl">E-Mail-Adresse</span>
+      <span class="text-lg font-bold text-black @min-[20rem]:text-xl max-lg:landscape:text-base">
+        E-Mail-Adresse
+      </span>
     </div>
     <a
-      class="pl-10 text-base leading-[1.2] font-medium wrap-anywhere text-black @min-[20rem]:pl-12.5 @min-[20rem]:text-lg lg:text-link"
+      class="pl-10 text-base leading-[1.2] font-medium wrap-anywhere text-black @min-[20rem]:pl-12.5 @min-[20rem]:text-lg max-lg:landscape:text-sm lg:text-link"
       [href]="'mailto:' + email()"
     >
       {{ email() }}
