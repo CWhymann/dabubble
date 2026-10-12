@@ -105,6 +105,10 @@ export class ChatStore {
   }
 
   toggleReaction(messageId: string, option: ReactionOption): void {
+    const wasMine =
+      this.findMessage(messageId)?.reactions.find((reaction) => reaction.emoji === option.icon)
+        ?.mine === true;
+    void this.data.toggleReaction(messageId, option.icon, wasMine);
     this.mapMessage(messageId, (message) => {
       const existing = message.reactions.find((reaction) => reaction.emoji === option.icon);
       if (!existing) {
@@ -178,7 +182,7 @@ export class ChatStore {
         time: record.time,
         text: record.text,
         own: record.own,
-        reactions: [],
+        reactions: record.reactions,
         replies:
           record.replyCount > 0 ? { count: record.replyCount, last: record.lastReply } : undefined,
       };
@@ -208,7 +212,7 @@ export class ChatStore {
       time: record.time,
       text: record.text,
       own: record.own,
-      reactions: [],
+      reactions: record.reactions,
     }));
     this.threads.update((map) => ({ ...map, [rootId]: replies }));
   }

@@ -1,5 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Supabase } from './supabase';
+import { Reaction } from './chat';
+import { REACTION_OPTIONS } from './reactions';
 
 export interface MessageRecord {
   id: string;
@@ -11,6 +13,7 @@ export interface MessageRecord {
   own: boolean;
   replyCount: number;
   lastReply: string;
+  reactions: Reaction[];
 }
 
 function dayLabel(date: Date): string {
@@ -28,6 +31,7 @@ export interface ReplyRecord {
   avatar: string;
   time: string;
   own: boolean;
+  reactions: Reaction[];
 }
 
 export interface ChannelRecord {
@@ -111,6 +115,35 @@ export class Data {
       .insert({ author_id: userId, text, [target.column]: target.id });
   }
 
+  private async reactionsFor(messageIds: string[]): Promise<Map<string, Reaction[]>> {
+    const result = new Map<string, Reaction[]>();
+    if (messageIds.length === 0) {
+      return result;
+    }
+    const { data: rows } = await this.supabase.client
+      .from('reactions')
+      .select('message_id, user_id, emoji')
+      .in('message_id', messageIds);
+    const me = await this.currentUserId();
+    for (const row of rows ?? []) {
+      const list = result.get(row.message_id) ?? [];
+      const existing = list.find((reaction) => reaction.emoji === row.emoji);
+      if (existing) {
+        existing.count += 1;
+        existing.mine = existing.mine || row.user_id === me;
+      } else {
+        list.push({
+          emoji: row.emoji,
+          label: REACTION_OPTIONS.find((option) => option.icon === row.emoji)?.label ?? '',
+          count: 1,
+          mine: row.user_id === me,
+        });
+      }
+      result.set(row.message_id, list);
+    }
+    return result;
+  }
+
   async loadMessages(chatKey: string): Promise<MessageRecord[]> {
     const target = await this.targetOf(chatKey);
     if (!target) {
@@ -139,6 +172,7 @@ export class Data {
         : { data: [] };
     const profileById = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
     const me = await this.currentUserId();
+    const reactionsByMessage = await this.reactionsFor(ids);
 
     return (messages ?? []).map((message) => {
       const profile = message.author_id ? profileById.get(message.author_id) : undefined;
@@ -157,6 +191,7 @@ export class Data {
         lastReply: lastReply
           ? lastReply.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
           : '',
+        reactions: reactionsByMessage.get(message.id) ?? [],
       };
     });
   }
@@ -174,6 +209,7 @@ export class Data {
         : { data: [] };
     const profileById = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
     const me = await this.currentUserId();
+    const reactionsByMessage = await this.reactionsFor((replies ?? []).map((reply) => reply.id));
 
     return (replies ?? []).map((reply) => {
       const profile = reply.author_id ? profileById.get(reply.author_id) : undefined;
@@ -187,8 +223,31 @@ export class Data {
           minute: '2-digit',
         }),
         own: reply.author_id === me,
+        reactions: reactionsByMessage.get(reply.id) ?? [],
       };
     });
+  }
+
+  async toggleReaction(messageId: string, emoji: string, wasMine: boolean): Promise<void> {
+    const userId = await this.currentUserId();
+    if (!userId) {
+      return;
+    }
+    if (wasMine) {
+      await this.supabase.client
+        .from('reactions')
+        .delete()
+        .eq('message_id', messageId)
+        .eq('user_id', userId)
+        .eq('emoji', emoji);
+    } else {
+      await this.supabase.client
+        .from('reactions')
+        .upsert(
+          { message_id: messageId, user_id: userId, emoji },
+          { onConflict: 'message_id,user_id,emoji', ignoreDuplicates: true },
+        );
+    }
   }
 
   async sendReply(rootId: string, text: string): Promise<void> {
