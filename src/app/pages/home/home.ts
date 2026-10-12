@@ -1,4 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import type { User } from '@supabase/supabase-js';
+import { Auth } from '../../core/auth';
 import {
   DEV_CHANNEL,
   DEV_CHANNEL_CREATOR,
@@ -72,6 +74,14 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
 export class Home {
   private readonly ownAuthor = 'Frederik Beck';
   private readonly store = inject(ChatStore);
+  private readonly auth = inject(Auth);
+
+  // Name des angemeldeten Nutzers, unter dem Nachrichten gesendet werden.
+  private readonly authorName = signal<string | null>(null);
+
+  constructor() {
+    void this.loadAuthor();
+  }
 
   protected readonly ownName = signal('Frederik Beck');
   protected readonly channels = signal<string[]>([DEV_CHANNEL]);
@@ -141,15 +151,33 @@ export class Home {
   protected sendMessage(text: string): void {
     const key = this.activeChatKey();
     if (key) {
-      this.store.send(key, text, this.ownName());
+      this.store.send(key, text, this.authorName() ?? this.ownName());
     }
   }
 
   protected sendReply(text: string): void {
     const rootId = this.threadRootId();
     if (rootId) {
-      this.store.reply(rootId, text, this.ownName());
+      this.store.reply(rootId, text, this.authorName() ?? this.ownName());
     }
+  }
+
+  private async loadAuthor(): Promise<void> {
+    const { user } = await this.auth.getUser();
+    if (user) {
+      this.authorName.set(this.nameOf(user));
+    }
+  }
+
+  private nameOf(user: User): string {
+    if (user.is_anonymous) {
+      return 'Gast';
+    }
+    const name = user.user_metadata?.['name'];
+    if (typeof name === 'string' && name.trim()) {
+      return name.trim();
+    }
+    return user.email?.split('@')[0] ?? 'Gast';
   }
 
   protected toggleMenu(): void {
