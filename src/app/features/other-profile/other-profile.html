@@ -18,6 +18,27 @@
     </button>
   </div>
 
+  <div class="flex w-full items-center justify-between lg:hidden">
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg disabled:opacity-30"
+      aria-label="Vorheriges Mitglied"
+      [disabled]="!hasPrevious()"
+      (click)="previous.emit()"
+    >
+      <img class="size-6 rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
+    </button>
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg disabled:opacity-30"
+      aria-label="Nächstes Mitglied"
+      [disabled]="!hasNext()"
+      (click)="next.emit()"
+    >
+      <img class="size-6 -rotate-90" src="/icons/keyboard-arrow-down.svg" alt="" />
+    </button>
+  </div>
+
   <img class="size-50 rounded-full bg-white object-cover" [src]="user().avatar" alt="" />
 
   <div class="flex w-full flex-col gap-3.75">

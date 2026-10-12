@@ -11,5 +11,9 @@ import { ChatUser } from '../../core/users';
 export class OtherProfile {
   readonly user = input.required<ChatUser>();
   readonly closed = output<void>();
+  readonly hasPrevious = input(false);
+  readonly hasNext = input(false);
+  readonly previous = output<void>();
+  readonly next = output<void>();
   readonly messageRequested = output<void>();
 }

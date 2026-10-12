@@ -195,6 +195,10 @@
 @if (otherProfile(); as user) {
   <app-other-profile
     [user]="user"
+    [hasPrevious]="memberNeighbors().previous !== null"
+    [hasNext]="memberNeighbors().next !== null"
+    (previous)="showNeighbor(memberNeighbors().previous)"
+    (next)="showNeighbor(memberNeighbors().next)"
     (closed)="closeOtherProfile()"
     (messageRequested)="openDmWith(user)"
   />
@@ -239,7 +243,7 @@
   <app-channel-members
     [memberNames]="activeMembers()"
     (closed)="closeMembers()"
-    (showProfile)="openProfileOf($event)"
+    (showProfile)="openProfileFromMembers($event)"
     (addMembers)="openChannelMembers()"
   />
 }

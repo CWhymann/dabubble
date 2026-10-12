@@ -91,6 +91,7 @@ export class Home {
   protected readonly channelMembersOpen = signal(false);
   protected readonly leaveConfirmOpen = signal(false);
   protected readonly membersOpen = signal(false);
+  private profileFromMembers = false;
   protected readonly newMessageOpen = signal(false);
   protected readonly mobileView = signal<MobileView>('menu');
   protected readonly menuOpen = signal(true);
@@ -122,6 +123,16 @@ export class Home {
   });
 
   protected readonly isAdmin = computed(() => this.ownName() === this.adminName);
+
+  protected readonly memberNeighbors = computed(() => {
+    const current = this.otherProfile()?.name;
+    const others = this.activeMembers().filter((name) => name !== this.ownAuthor);
+    const index = current ? others.indexOf(current) : -1;
+    return {
+      previous: index > 0 ? others[index - 1] : null,
+      next: index >= 0 && index < others.length - 1 ? others[index + 1] : null,
+    };
+  });
 
   protected readonly mainClass = computed(
     () =>
@@ -316,8 +327,24 @@ export class Home {
     this.profileOpen.set(true);
   }
 
+  protected openProfileFromMembers(name: string): void {
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      this.membersOpen.set(false);
+      this.profileFromMembers = true;
+    }
+    this.openProfileOf(name);
+  }
+
   protected closeProfile(): void {
     this.profileOpen.set(false);
+    this.returnToMembers();
+  }
+
+  private returnToMembers(): void {
+    if (this.profileFromMembers) {
+      this.profileFromMembers = false;
+      this.membersOpen.set(true);
+    }
   }
 
   protected editProfile(): void {
@@ -348,8 +375,15 @@ export class Home {
     }
   }
 
+  protected showNeighbor(name: string | null): void {
+    if (name) {
+      this.openProfileOf(name);
+    }
+  }
+
   protected closeOtherProfile(): void {
     this.otherProfile.set(null);
+    this.returnToMembers();
   }
 
   protected openAddChannel(): void {
