@@ -3,7 +3,7 @@ import { AVATARS } from './avatars';
 import { DEV_CHANNEL } from './channels';
 import { DayGroup, Message, Reaction } from './chat';
 import { ReactionOption } from './reactions';
-import { Data, MessageRecord } from './data';
+import { Data, MessageRecord, ReplyRecord } from './data';
 import { OWN_USER } from './users';
 
 const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
@@ -47,34 +47,11 @@ const DEV_SEED: DayGroup[] = [
   },
 ];
 
-const THREAD_SEED: Record<string, Message[]> = {
-  'noah-root': [
-    {
-      id: 'sofia-reply',
-      author: 'Sofia Müller',
-      avatar: avatarOf('Sofia Müller'),
-      time: '14:30',
-      text: 'Ich habe die gleiche Frage. Ich habe gegoogelt und es scheint, dass die aktuelle Version Angular 13 ist. Vielleicht weiß Frederik, ob es wahr ist.',
-      own: false,
-      reactions: [{ emoji: '/icons/emoji-nerd.svg', label: 'Nerd', count: 1 }],
-    },
-    {
-      id: 'frederik-reply',
-      author: 'Frederik Beck',
-      avatar: avatarOf('Frederik Beck'),
-      time: '15:06',
-      text: 'Ja das ist es.',
-      own: true,
-      reactions: [{ emoji: '/icons/emoji-hands-up.svg', label: 'Hände hoch', count: 1 }],
-    },
-  ],
-};
-
 @Injectable({ providedIn: 'root' })
 export class ChatStore {
   private readonly data = inject(Data);
   private readonly chats = signal<Record<string, DayGroup[]>>({ [DEV_CHANNEL]: DEV_SEED });
-  private readonly threads = signal<Record<string, Message[]>>(THREAD_SEED);
+  private readonly threads = signal<Record<string, Message[]>>({});
 
   groupsFor(key: string): DayGroup[] {
     return (this.chats()[key] ?? []).map((group) => ({
@@ -120,15 +97,6 @@ export class ChatStore {
           : [...groups, { label: 'Heute', messages: [message] }];
       return { ...map, [key]: next };
     });
-  }
-
-  reply(rootId: string, text: string, author: string): void {
-    const message = this.createMessage(text, author);
-    this.threads.update((map) => ({ ...map, [rootId]: [...(map[rootId] ?? []), message] }));
-    this.mapMessage(rootId, (root) => ({
-      ...root,
-      replies: { count: (root.replies?.count ?? 0) + 1, last: message.time },
-    }));
   }
 
   editMessage(id: string, text: string): void {
@@ -211,6 +179,8 @@ export class ChatStore {
         text: record.text,
         own: record.own,
         reactions: [],
+        replies:
+          record.replyCount > 0 ? { count: record.replyCount, last: record.lastReply } : undefined,
       };
       const last = groups[groups.length - 1];
       if (last?.label === record.dayLabel) {
@@ -228,6 +198,19 @@ export class ChatStore {
       }
     }
     this.chats.update((map) => ({ ...map, [key]: groups }));
+  }
+
+  setReplies(rootId: string, records: ReplyRecord[]): void {
+    const replies: Message[] = records.map((record) => ({
+      id: record.id,
+      author: record.author,
+      avatar: record.avatar,
+      time: record.time,
+      text: record.text,
+      own: record.own,
+      reactions: [],
+    }));
+    this.threads.update((map) => ({ ...map, [rootId]: replies }));
   }
 
   notify(key: string, text: string): void {

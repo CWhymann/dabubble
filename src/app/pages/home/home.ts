@@ -83,7 +83,7 @@ export class Home {
   protected readonly channels = signal<string[]>([]);
   protected readonly activeChannel = signal<string | null>(null);
   protected readonly activeDm = signal<ChatUser | null>(null);
-  protected readonly threadRootId = signal<string | null>('noah-root');
+  protected readonly threadRootId = signal<string | null>(null);
   protected readonly channelMembers = signal<Record<string, string[]>>({});
   protected readonly channelMeta = signal<Record<string, ChannelMeta>>({});
   protected readonly channelEditOpen = signal(false);
@@ -168,10 +168,19 @@ export class Home {
     }
   }
 
-  protected sendReply(text: string): void {
+  protected async sendReply(text: string): Promise<void> {
     const rootId = this.threadRootId();
     if (rootId) {
-      this.store.reply(rootId, text, this.ownName());
+      await this.data.sendReply(rootId, text);
+      await this.loadReplies();
+      await this.loadMessages();
+    }
+  }
+
+  private async loadReplies(): Promise<void> {
+    const rootId = this.threadRootId();
+    if (rootId) {
+      this.store.setReplies(rootId, await this.data.loadReplies(rootId));
     }
   }
 
@@ -309,6 +318,7 @@ export class Home {
     this.threadRootId.set(rootId);
     this.threadOpen.set(true);
     this.mobileView.set('thread');
+    void this.loadReplies();
   }
 
   protected closeThread(): void {

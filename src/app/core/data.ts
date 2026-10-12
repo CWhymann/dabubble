@@ -9,6 +9,8 @@ export interface MessageRecord {
   time: string;
   dayLabel: string;
   own: boolean;
+  replyCount: number;
+  lastReply: string;
 }
 
 function dayLabel(date: Date): string {
@@ -17,6 +19,15 @@ function dayLabel(date: Date): string {
   return isToday
     ? 'Heute'
     : date.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+export interface ReplyRecord {
+  id: string;
+  text: string;
+  author: string;
+  avatar: string;
+  time: string;
+  own: boolean;
 }
 
 export interface ChannelRecord {
@@ -109,7 +120,16 @@ export class Data {
       .from('messages')
       .select('id, text, author_id, created_at')
       .eq(target.column, target.id)
+      .is('reply_to', null)
       .order('created_at', { ascending: true });
+    const ids = (messages ?? []).map((message) => message.id);
+    const { data: replies } =
+      ids.length > 0
+        ? await this.supabase.client
+            .from('messages')
+            .select('reply_to, created_at')
+            .in('reply_to', ids)
+        : { data: [] };
     const authorIds = [
       ...new Set((messages ?? []).map((message) => message.author_id).filter(Boolean)),
     ];
@@ -123,6 +143,8 @@ export class Data {
     return (messages ?? []).map((message) => {
       const profile = message.author_id ? profileById.get(message.author_id) : undefined;
       const created = new Date(message.created_at);
+      const own = (replies ?? []).filter((reply) => reply.reply_to === message.id);
+      const lastReply = own.length > 0 ? new Date(own[own.length - 1].created_at) : null;
       return {
         id: message.id,
         text: message.text,
@@ -131,7 +153,60 @@ export class Data {
         time: created.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
         dayLabel: dayLabel(created),
         own: message.author_id === me,
+        replyCount: own.length,
+        lastReply: lastReply
+          ? lastReply.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+          : '',
       };
+    });
+  }
+
+  async loadReplies(rootId: string): Promise<ReplyRecord[]> {
+    const { data: replies } = await this.supabase.client
+      .from('messages')
+      .select('id, text, author_id, created_at')
+      .eq('reply_to', rootId)
+      .order('created_at', { ascending: true });
+    const authorIds = [...new Set((replies ?? []).map((reply) => reply.author_id).filter(Boolean))];
+    const { data: profiles } =
+      authorIds.length > 0
+        ? await this.supabase.client.from('profiles').select('id, name, avatar').in('id', authorIds)
+        : { data: [] };
+    const profileById = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
+    const me = await this.currentUserId();
+
+    return (replies ?? []).map((reply) => {
+      const profile = reply.author_id ? profileById.get(reply.author_id) : undefined;
+      return {
+        id: reply.id,
+        text: reply.text,
+        author: profile?.name ?? '',
+        avatar: profile?.avatar || '/icons/avatar-frederik-beck.svg',
+        time: new Date(reply.created_at).toLocaleTimeString('de-DE', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        own: reply.author_id === me,
+      };
+    });
+  }
+
+  async sendReply(rootId: string, text: string): Promise<void> {
+    const userId = await this.currentUserId();
+    const { data: root } = await this.supabase.client
+      .from('messages')
+      .select('channel_id, direct_chat_id')
+      .eq('id', rootId)
+      .maybeSingle();
+    if (!userId || !root) {
+      return;
+    }
+    await this.supabase.client.from('messages').insert({
+      author_id: userId,
+      text,
+      channel_id: root.channel_id,
+      direct_chat_id: root.direct_chat_id,
+      reply_to: rootId,
     });
   }
 
