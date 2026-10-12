@@ -1,6 +1,4 @@
 ﻿import { Component, computed, inject, signal } from '@angular/core';
-import type { User } from '@supabase/supabase-js';
-import { Auth } from '../../core/auth';
 import {
   DEV_CHANNEL,
   DEV_CHANNEL_CREATOR,
@@ -73,14 +71,8 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
 })
 export class Home {
   private readonly ownAuthor = 'Frederik Beck';
+  private readonly adminName = 'Frederik Beck';
   private readonly store = inject(ChatStore);
-  private readonly auth = inject(Auth);
-
-  private readonly authorName = signal<string | null>(null);
-
-  constructor() {
-    void this.loadAuthor();
-  }
 
   protected readonly ownName = signal('Frederik Beck');
   protected readonly channels = signal<string[]>([DEV_CHANNEL]);
@@ -126,6 +118,8 @@ export class Home {
     return dm ? `Nachricht an ${dm.name}` : `Nachricht an #${this.activeChannel() ?? ''}`;
   });
 
+  protected readonly isAdmin = computed(() => this.ownName() === this.adminName);
+
   protected readonly mainClass = computed(
     () =>
       ({
@@ -149,33 +143,15 @@ export class Home {
   protected sendMessage(text: string): void {
     const key = this.activeChatKey();
     if (key) {
-      this.store.send(key, text, this.authorName() ?? this.ownName());
+      this.store.send(key, text, this.ownName());
     }
   }
 
   protected sendReply(text: string): void {
     const rootId = this.threadRootId();
     if (rootId) {
-      this.store.reply(rootId, text, this.authorName() ?? this.ownName());
+      this.store.reply(rootId, text, this.ownName());
     }
-  }
-
-  private async loadAuthor(): Promise<void> {
-    const { user } = await this.auth.getUser();
-    if (user) {
-      this.authorName.set(this.nameOf(user));
-    }
-  }
-
-  private nameOf(user: User): string {
-    if (user.is_anonymous) {
-      return 'Gast';
-    }
-    const name = user.user_metadata?.['name'];
-    if (typeof name === 'string' && name.trim()) {
-      return name.trim();
-    }
-    return user.email?.split('@')[0] ?? 'Gast';
   }
 
   protected toggleMenu(): void {
@@ -247,7 +223,22 @@ export class Home {
       ...map,
       [channel]: (map[channel] ?? []).filter((member) => member !== this.ownAuthor),
     }));
+    this.store.notify(channel, `${this.ownName()} hat den Channel verlassen.`);
     this.closeChannelEdit();
+  }
+
+  protected removeMembers(names: string[]): void {
+    const channel = this.activeChannel();
+    if (!channel || !this.isAdmin()) {
+      return;
+    }
+    this.channelMembers.update((map) => ({
+      ...map,
+      [channel]: (map[channel] ?? []).filter((member) => !names.includes(member)),
+    }));
+    for (const name of names) {
+      this.store.notify(channel, `${this.ownName()} hat ${name} aus dem Channel entfernt.`);
+    }
   }
 
   protected saveChannel(edit: ChannelEdit): void {

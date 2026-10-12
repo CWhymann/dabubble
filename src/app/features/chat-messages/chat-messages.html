@@ -9,12 +9,16 @@
       </span>
     </div>
     @for (message of group.messages; track message.id) {
-      <app-chat-message
-        [message]="message"
-        [canReply]="canReply()"
-        (openThread)="openThread.emit($event)"
-        (showProfile)="showProfile.emit($event)"
-      />
+      @if (message.system) {
+        <p class="px-8 text-center text-sm text-text-gray">{{ message.text }}</p>
+      } @else {
+        <app-chat-message
+          [message]="message"
+          [canReply]="canReply()"
+          (openThread)="openThread.emit($event)"
+          (showProfile)="showProfile.emit($event)"
+        />
+      }
     }
   }
 </div>

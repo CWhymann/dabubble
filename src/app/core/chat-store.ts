@@ -149,6 +149,28 @@ export class ChatStore {
     });
   }
 
+  notify(key: string, text: string): void {
+    const message: Message = {
+      id: crypto.randomUUID(),
+      author: '',
+      avatar: '',
+      time: timeNow(),
+      text,
+      own: false,
+      reactions: [],
+      system: true,
+    };
+    this.chats.update((map) => {
+      const groups = map[key] ?? [];
+      const last = groups[groups.length - 1];
+      const next =
+        last?.label === 'Heute'
+          ? [...groups.slice(0, -1), { ...last, messages: [...last.messages, message] }]
+          : [...groups, { label: 'Heute', messages: [message] }];
+      return { ...map, [key]: next };
+    });
+  }
+
   private createMessage(text: string, author: string): Message {
     return {
       id: crypto.randomUUID(),

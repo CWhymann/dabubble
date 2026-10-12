@@ -212,6 +212,8 @@
       (addMembers)="openChannelMembers()"
       [takenNames]="channels()"
       (leave)="requestLeaveChannel()"
+      [isAdmin]="isAdmin()"
+      (removeMembers)="removeMembers($event)"
     />
   }
 }

@@ -24,6 +24,33 @@ export class ChannelEdition {
   readonly showProfile = output<string>();
   readonly addMembers = output<void>();
   readonly leave = output<void>();
+  readonly isAdmin = input(false);
+  readonly removeMembers = output<string[]>();
+
+  protected readonly selected = signal<string[]>([]);
+
+  protected selectable(user: ChatUser): boolean {
+    return this.isAdmin() && !isOwnUser(user);
+  }
+
+  protected isSelected(user: ChatUser): boolean {
+    return this.selected().includes(user.name);
+  }
+
+  protected toggleSelect(user: ChatUser): void {
+    this.selected.update((list) =>
+      list.includes(user.name) ? list.filter((name) => name !== user.name) : [...list, user.name],
+    );
+  }
+
+  protected removeSelected(): void {
+    const names = this.selected();
+    if (names.length === 0) {
+      return;
+    }
+    this.selected.set([]);
+    this.removeMembers.emit(names);
+  }
 
   protected readonly editingName = signal(false);
   protected readonly editingDescription = signal(false);

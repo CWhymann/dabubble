@@ -19,6 +19,7 @@ export interface Message {
   own: boolean;
   replies?: Replies;
   reactions: Reaction[];
+  system?: boolean;
 }
 
 export interface DayGroup {
