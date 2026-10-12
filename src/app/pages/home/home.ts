@@ -151,10 +151,18 @@ export class Home {
       : 'lg:grid-cols-[minmax(0,1fr)]';
   });
 
-  protected sendMessage(text: string): void {
+  protected async sendMessage(text: string): Promise<void> {
     const key = this.activeChatKey();
     if (key) {
-      this.store.send(key, text, this.ownName());
+      await this.data.sendMessage(key, text);
+      await this.loadMessages();
+    }
+  }
+
+  private async loadMessages(): Promise<void> {
+    const key = this.activeChatKey();
+    if (key) {
+      this.store.setMessages(key, await this.data.loadMessages(key));
     }
   }
 
@@ -192,6 +200,7 @@ export class Home {
     );
     const first = records.find((record) => record.name === DEV_CHANNEL) ?? records[0];
     this.activeChannel.set(first?.name ?? null);
+    await this.loadMessages();
   }
 
   protected toggleMenu(): void {
@@ -316,6 +325,7 @@ export class Home {
     if (channel !== DEV_CHANNEL) {
       this.threadOpen.set(false);
     }
+    void this.loadMessages();
   }
 
   protected selectUser(name: string): void {
@@ -325,6 +335,7 @@ export class Home {
       this.activeDm.set(user);
       this.threadOpen.set(false);
       this.mobileView.set('chat');
+      void this.loadMessages();
     }
   }
 

@@ -1,8 +1,9 @@
-﻿import { Injectable, signal } from '@angular/core';
+﻿import { Injectable, inject, signal } from '@angular/core';
 import { AVATARS } from './avatars';
 import { DEV_CHANNEL } from './channels';
 import { DayGroup, Message, Reaction } from './chat';
 import { ReactionOption } from './reactions';
+import { Data, MessageRecord } from './data';
 import { OWN_USER } from './users';
 
 const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
@@ -71,6 +72,7 @@ const THREAD_SEED: Record<string, Message[]> = {
 
 @Injectable({ providedIn: 'root' })
 export class ChatStore {
+  private readonly data = inject(Data);
   private readonly chats = signal<Record<string, DayGroup[]>>({ [DEV_CHANNEL]: DEV_SEED });
   private readonly threads = signal<Record<string, Message[]>>(THREAD_SEED);
 
@@ -130,6 +132,7 @@ export class ChatStore {
   }
 
   editMessage(id: string, text: string): void {
+    void this.data.editMessage(id, text);
     this.mapMessage(id, (message) => ({ ...message, text }));
   }
 
@@ -158,6 +161,7 @@ export class ChatStore {
   }
 
   delete(id: string): void {
+    void this.data.deleteMessage(id);
     const rootId = Object.keys(this.threads()).find((root) =>
       this.threads()[root].some((message) => message.id === id),
     );
@@ -191,6 +195,39 @@ export class ChatStore {
         };
       });
     }
+  }
+
+  setMessages(key: string, records: MessageRecord[]): void {
+    const systemMessages = (this.chats()[key] ?? []).flatMap((group) =>
+      group.messages.filter((message) => message.system),
+    );
+    const groups: DayGroup[] = [];
+    for (const record of records) {
+      const message: Message = {
+        id: record.id,
+        author: record.author,
+        avatar: record.avatar,
+        time: record.time,
+        text: record.text,
+        own: record.own,
+        reactions: [],
+      };
+      const last = groups[groups.length - 1];
+      if (last?.label === record.dayLabel) {
+        last.messages.push(message);
+      } else {
+        groups.push({ label: record.dayLabel, messages: [message] });
+      }
+    }
+    if (systemMessages.length > 0) {
+      const last = groups[groups.length - 1];
+      if (last) {
+        last.messages.push(...systemMessages);
+      } else {
+        groups.push({ label: 'Heute', messages: systemMessages });
+      }
+    }
+    this.chats.update((map) => ({ ...map, [key]: groups }));
   }
 
   notify(key: string, text: string): void {

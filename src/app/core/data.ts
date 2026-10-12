@@ -1,6 +1,24 @@
 import { Injectable, inject } from '@angular/core';
 import { Supabase } from './supabase';
 
+export interface MessageRecord {
+  id: string;
+  text: string;
+  author: string;
+  avatar: string;
+  time: string;
+  dayLabel: string;
+  own: boolean;
+}
+
+function dayLabel(date: Date): string {
+  const today = new Date();
+  const isToday = date.toDateString() === today.toDateString();
+  return isToday
+    ? 'Heute'
+    : date.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
 export interface ChannelRecord {
   name: string;
   description: string;
@@ -69,6 +87,96 @@ export class Data {
       .delete()
       .eq('channel_id', channelId)
       .eq('user_id', userId);
+  }
+
+  async sendMessage(chatKey: string, text: string): Promise<void> {
+    const target = await this.targetOf(chatKey);
+    const userId = await this.currentUserId();
+    if (!target || !userId) {
+      return;
+    }
+    await this.supabase.client
+      .from('messages')
+      .insert({ author_id: userId, text, [target.column]: target.id });
+  }
+
+  async loadMessages(chatKey: string): Promise<MessageRecord[]> {
+    const target = await this.targetOf(chatKey);
+    if (!target) {
+      return [];
+    }
+    const { data: messages } = await this.supabase.client
+      .from('messages')
+      .select('id, text, author_id, created_at')
+      .eq(target.column, target.id)
+      .order('created_at', { ascending: true });
+    const authorIds = [
+      ...new Set((messages ?? []).map((message) => message.author_id).filter(Boolean)),
+    ];
+    const { data: profiles } =
+      authorIds.length > 0
+        ? await this.supabase.client.from('profiles').select('id, name, avatar').in('id', authorIds)
+        : { data: [] };
+    const profileById = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
+    const me = await this.currentUserId();
+
+    return (messages ?? []).map((message) => {
+      const profile = message.author_id ? profileById.get(message.author_id) : undefined;
+      const created = new Date(message.created_at);
+      return {
+        id: message.id,
+        text: message.text,
+        author: profile?.name ?? '',
+        avatar: profile?.avatar ?? '',
+        time: created.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
+        dayLabel: dayLabel(created),
+        own: message.author_id === me,
+      };
+    });
+  }
+
+  async editMessage(id: string, text: string): Promise<void> {
+    await this.supabase.client
+      .from('messages')
+      .update({ text, edited_at: new Date().toISOString() })
+      .eq('id', id);
+  }
+
+  async deleteMessage(id: string): Promise<void> {
+    await this.supabase.client.from('messages').delete().eq('id', id);
+  }
+
+  private async targetOf(chatKey: string): Promise<{ column: string; id: string } | null> {
+    if (chatKey.startsWith('dm:')) {
+      const otherName = chatKey.slice(3);
+      const me = await this.currentUserId();
+      const { data: other } = await this.supabase.client
+        .from('profiles')
+        .select('id')
+        .eq('name', otherName)
+        .maybeSingle();
+      if (!me || !other) {
+        return null;
+      }
+      const [userA, userB] = [me, other.id].sort();
+      const { data: existing } = await this.supabase.client
+        .from('direct_chats')
+        .select('id')
+        .eq('user_a', userA)
+        .eq('user_b', userB)
+        .maybeSingle();
+      if (existing) {
+        return { column: 'direct_chat_id', id: existing.id };
+      }
+      const { data: created } = await this.supabase.client
+        .from('direct_chats')
+        .insert({ user_a: userA, user_b: userB })
+        .select('id')
+        .single();
+      return created ? { column: 'direct_chat_id', id: created.id } : null;
+    }
+    const channelId = await this.channelIdOf(chatKey);
+    return channelId ? { column: 'channel_id', id: channelId } : null;
   }
 
   private async currentUserId(): Promise<string | null> {
