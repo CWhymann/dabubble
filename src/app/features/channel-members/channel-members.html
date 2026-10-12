@@ -1,0 +1,53 @@
+<div class="fixed inset-0 z-40 bg-black/20" aria-hidden="true" (click)="closed.emit()"></div>
+
+<section
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="channel-members-title"
+  class="fixed top-1/2 left-1/2 z-40 flex w-[min(415px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col items-start gap-5 rounded-tl-[30px] rounded-br-[30px] rounded-bl-[30px] bg-white p-5 shadow-menu lg:p-10"
+>
+  <div class="flex w-full items-center justify-between">
+    <h2 id="channel-members-title" class="text-2xl font-bold text-black">Mitglieder</h2>
+    <button
+      type="button"
+      class="flex size-10 cursor-pointer items-center justify-center rounded-[20px] hover:bg-bg"
+      aria-label="Dialog schließen"
+      (click)="closed.emit()"
+    >
+      <img class="size-6" src="/icons/close.svg" alt="" />
+    </button>
+  </div>
+
+  <ul class="flex w-full flex-col gap-3">
+    @for (user of members(); track user.name) {
+      <li>
+        <button
+          type="button"
+          class="flex w-full cursor-pointer items-center gap-4 rounded-[30px] px-2 py-1 text-left text-lg text-black hover:bg-bg"
+          (click)="showProfile.emit(user.name)"
+        >
+          <span class="relative block size-12.5 shrink-0">
+            <img class="size-full rounded-full bg-white object-cover" [src]="user.avatar" alt="" />
+            <img
+              class="absolute right-0 bottom-0 size-3.5"
+              [src]="user.online ? '/icons/online-small.svg' : '/icons/offline-small.svg'"
+              [alt]="user.online ? 'Online' : 'Offline'"
+            />
+          </span>
+          <span class="min-w-0 truncate">{{ label(user) }}</span>
+        </button>
+      </li>
+    }
+  </ul>
+
+  <button
+    type="button"
+    class="flex w-fit cursor-pointer items-center gap-4 rounded-[100px] py-3 pr-7 pl-2 text-lg text-black hover:bg-bg"
+    (click)="addMembers.emit()"
+  >
+    <span class="flex items-center justify-center rounded-[20px] bg-bg p-1">
+      <img class="size-6" src="/icons/person-add.svg" alt="" />
+    </span>
+    Mitglieder hinzufügen
+  </button>
+</section>

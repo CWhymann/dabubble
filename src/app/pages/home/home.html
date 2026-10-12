@@ -101,6 +101,7 @@
           [members]="activeMembers()"
           (editChannel)="openChannelEdit()"
           (addMembers)="openChannelMembers()"
+          (showMembers)="openMembers()"
         />
       }
     </header>
@@ -232,6 +233,15 @@
       (cancelled)="closeLeaveConfirm()"
     />
   }
+}
+
+@if (membersOpen()) {
+  <app-channel-members
+    [memberNames]="activeMembers()"
+    (closed)="closeMembers()"
+    (showProfile)="openProfileOf($event)"
+    (addMembers)="openChannelMembers()"
+  />
 }
 
 @if (channelMembersOpen()) {

@@ -17,6 +17,7 @@
       type="button"
       class="hidden h-11.5 cursor-pointer items-center gap-2.5 rounded-[30px] px-2.5 py-0.75 hover:bg-bg hover:text-purple-3 lg:flex"
       [attr.aria-label]="members().length + ' Mitglieder anzeigen'"
+      (click)="showMembers.emit()"
     >
       <span class="flex -space-x-2.5">
         @for (avatar of avatars(); track avatar) {

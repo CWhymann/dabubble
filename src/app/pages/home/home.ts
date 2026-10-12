@@ -11,6 +11,7 @@ import { ChatUser, DM_USERS, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddChannelMembers } from '../../features/add-channel-members/add-channel-members';
 import { AddMembers } from '../../features/add-members/add-members';
+import { ChannelMembers } from '../../features/channel-members/channel-members';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { ChatHeader } from '../../features/chat-header/chat-header';
 import { ChannelEdit, ChannelEdition } from '../../features/channel-edition/channel-edition';
@@ -50,6 +51,7 @@ function renameKey<T>(map: Record<string, T>, from: string, to: string): Record<
     AddMembers,
     ChatHeader,
     ChannelEdition,
+    ChannelMembers,
     ChatMessages,
     ConfirmDialog,
     DmHeader,
@@ -88,6 +90,7 @@ export class Home {
   protected readonly channelEditOpen = signal(false);
   protected readonly channelMembersOpen = signal(false);
   protected readonly leaveConfirmOpen = signal(false);
+  protected readonly membersOpen = signal(false);
   protected readonly newMessageOpen = signal(false);
   protected readonly mobileView = signal<MobileView>('menu');
   protected readonly menuOpen = signal(true);
@@ -181,6 +184,14 @@ export class Home {
 
   protected closeChannelEdit(): void {
     this.channelEditOpen.set(false);
+  }
+
+  protected openMembers(): void {
+    this.membersOpen.set(true);
+  }
+
+  protected closeMembers(): void {
+    this.membersOpen.set(false);
   }
 
   protected openChannelMembers(): void {
