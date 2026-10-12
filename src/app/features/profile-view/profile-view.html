@@ -4,7 +4,7 @@
   role="dialog"
   aria-modal="true"
   aria-labelledby="profile-title"
-  class="fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-9.5 overflow-y-auto rounded-[30px] bg-white px-5 py-11.25 shadow-menu lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:px-10"
+  class="@container fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-9.5 overflow-y-auto rounded-[30px] bg-white px-5 py-11.25 shadow-menu lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:px-10"
 >
   <div class="flex items-center justify-between">
     <h2 id="profile-title" class="text-2xl font-bold text-black">Profil</h2>
@@ -19,13 +19,17 @@
   </div>
 
   <div class="flex justify-center">
-    <img class="size-50 rounded-full bg-white object-cover" [src]="avatar()" alt="" />
+    <img
+      class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50"
+      [src]="avatar()"
+      alt=""
+    />
   </div>
 
   <div class="flex flex-col gap-3.75">
     <div class="flex items-center justify-between gap-5">
       <p
-        class="min-w-0 truncate text-[32px] leading-normal font-bold text-black"
+        class="min-w-0 truncate text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px]"
         [attr.title]="name()"
       >
         {{ name() }}
@@ -48,17 +52,17 @@
     </div>
     <div class="flex items-center gap-3.75">
       <img class="size-4" src="/icons/online.svg" alt="" />
-      <span class="text-xl text-online">Aktiv</span>
+      <span class="text-lg text-online @min-[20rem]:text-xl">Aktiv</span>
     </div>
   </div>
 
   <div class="flex flex-col gap-3.75">
     <div class="flex items-center gap-5">
       <img class="size-7.5" src="/icons/mail-dark.svg" alt="" />
-      <span class="text-xl font-bold text-black">E-Mail-Adresse</span>
+      <span class="text-lg font-bold text-black @min-[20rem]:text-xl">E-Mail-Adresse</span>
     </div>
     <a
-      class="pl-12.5 text-lg leading-[1.2] font-medium wrap-anywhere text-black lg:text-link"
+      class="pl-10 text-base leading-[1.2] font-medium wrap-anywhere text-black @min-[20rem]:pl-12.5 @min-[20rem]:text-lg lg:text-link"
       [href]="'mailto:' + email()"
     >
       {{ email() }}

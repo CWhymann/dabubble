@@ -4,7 +4,7 @@
   role="dialog"
   aria-modal="true"
   aria-labelledby="other-profile-title"
-  class="fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-9.5 overflow-y-auto rounded-[30px] bg-white p-5 shadow-menu lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:gap-11.25 lg:p-10"
+  class="@container fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-125 max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-9.5 overflow-y-auto rounded-[30px] bg-white p-5 shadow-menu lg:top-26 lg:right-5 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:rounded-tr-none lg:gap-11.25 lg:p-10"
 >
   <div class="flex w-full items-center justify-between">
     <h2 id="other-profile-title" class="text-2xl font-bold text-black">Profil</h2>
@@ -39,26 +39,37 @@
     </button>
   </div>
 
-  <img class="size-50 rounded-full bg-white object-cover" [src]="user().avatar" alt="" />
+  <img
+    class="size-30 rounded-full bg-white object-cover @min-[20rem]:size-50"
+    [src]="user().avatar"
+    alt=""
+  />
 
   <div class="flex w-full flex-col gap-3.75">
-    <p class="text-[32px] leading-normal font-bold text-black">{{ user().name }}</p>
+    <p class="text-2xl leading-normal font-bold text-black @min-[20rem]:text-[32px]">
+      {{ user().name }}
+    </p>
     <div class="flex items-center gap-3.75">
       <img
         class="size-4"
         [src]="user().online ? '/icons/online.svg' : '/icons/offline.svg'"
         alt=""
       />
-      <span class="text-xl text-text-gray">{{ user().online ? 'Aktiv' : 'Abwesend' }}</span>
+      <span class="text-lg text-text-gray @min-[20rem]:text-xl">
+        {{ user().online ? 'Aktiv' : 'Abwesend' }}
+      </span>
     </div>
   </div>
 
   <div class="flex w-full flex-col gap-3.75">
     <div class="flex items-center gap-5">
       <img class="size-7.5" src="/icons/mail-dark.svg" alt="" />
-      <span class="text-xl font-bold text-black">E-Mail-Adresse</span>
+      <span class="text-lg font-bold text-black @min-[20rem]:text-xl">E-Mail-Adresse</span>
     </div>
-    <a class="pr-2.5 pl-12.5 text-lg wrap-anywhere text-link" [href]="'mailto:' + user().email">
+    <a
+      class="pr-2.5 pl-10 text-base wrap-anywhere text-link @min-[20rem]:pl-12.5 @min-[20rem]:text-lg"
+      [href]="'mailto:' + user().email"
+    >
       {{ user().email }}
     </a>
   </div>
