@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../core/auth';
+import { Toast } from '../../core/toast';
 import {
   EMAIL_ERROR,
   EMAIL_PATTERN,
@@ -37,6 +38,7 @@ export class Login {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
   private readonly auth = inject(Auth);
+  private readonly toast = inject(Toast);
 
   protected readonly loginError = signal('');
 
@@ -70,6 +72,7 @@ export class Login {
       return;
     }
 
+    await this.toast.show('Willkommen zurück!');
     await this.router.navigateByUrl('/home');
   }
 
