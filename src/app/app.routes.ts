@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth.guard';
 import { Avatar } from './pages/avatar/avatar';
 import { Home } from './pages/home/home';
 import { Imprint } from './pages/imprint/imprint';
@@ -15,7 +16,7 @@ export const routes: Routes = [
   { path: 'register/avatar', component: Avatar },
   { path: 'send-email', component: SendEmail },
   { path: 'reset-password', component: ResetPassword },
-  { path: 'home', component: Home },
+  { path: 'home', component: Home, canActivate: [authGuard] },
   { path: 'impressum', component: Imprint },
   { path: 'datenschutz', component: PrivacyPolicy },
 ];
