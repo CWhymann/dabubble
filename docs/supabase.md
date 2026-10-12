@@ -20,15 +20,20 @@
 - Gast-Zugang legt ein anonymes Konto an, ohne E-Mail und Passwort.
 - Meldung „Willkommen Gast", dann Startseite.
 - Beim Abmelden oder Schließen des Browsers ist der Gast weg. Ein neuer Gast-Login ist ein neues Konto.
-- Spätere Umwandlung des Gastes in ein Konto mit E-Mail: offen, Thema für später.
+- Spätere Umwandlung des Gastes in ein Konto mit E-Mail: offen.
 
 ## Ablauf Google (noch nicht umgesetzt)
 
 - Button „Anmelden mit Google" ist vorhanden, aber ohne Funktion.
-- Supabase legt bei der ersten Anmeldung ein Konto an. Name und Bild kommen aus Google (`full_name`, `avatar_url`).
-- Einrichtung im Google-Cloud-Projekt und in der Supabase-Konsole muss der Projektinhaber selbst machen.
+- Supabase legt bei der ersten Anmeldung ein Konto an. Name und Bild kommen aus Google.
+- Einrichtung im Google-Cloud-Projekt und in der Supabase-Konsole macht der Projektinhaber selbst.
 
-## Festlegungen in Supabase (Einstellungen)
+## Schutz der Startseite
+
+- `/home` ist nur für angemeldete Nutzer und Gäste erreichbar (Route-Guard `authGuard`).
+- Ohne Anmeldung landet man auf `/login`.
+
+## Einstellungen in Supabase
 
 - Authentication → Providers → Email: „Confirm email" an (Standard).
 - Authentication → Providers: „Anonymous sign-ins" an (für den Gast).
@@ -36,16 +41,15 @@
 
 ## Datenmodell (Vorschlag, noch nicht umgesetzt)
 
-- `profiles`: id (= Konto-ID), name, avatar. Wird bei der Registrierung angelegt.
-- `channels`: id, name, description, created_by, created_at.
-- `channel_members`: channel_id, user_id, role (admin oder member).
+- `profiles`: id (= Konto-ID), name, avatar, is_admin (Standard: false). Nur das Konto des Betreibers bekommt is_admin = true, einmalig von Hand in Supabase.
+- `channels`: id, name, description, created_by, created_at. Der Ersteller hat keine Sonderrechte außer dem Hinzufügen von Mitgliedern.
+- `channel_members`: channel_id, user_id. Keine Rolle, nur die Mitgliedschaft.
 - `messages`: id, channel_id oder dm_key, author_id, text, created_at, reply_to.
 - `reactions`: message_id, user_id, emoji.
-- Rechte (RLS) pro Tabelle: werden gemeinsam festgelegt, bevor die Tabellen angelegt werden.
 
 ## Offene Punkte
 
-- Rechte pro Rolle (Admin, Ersteller, Mitglied, Gast): gemeinsam festlegen.
+- Rechte je Nutzer und je Aktion (wer darf was): gemeinsam festlegen, bevor die Tabellen angelegt werden.
 - Verhalten nach Bestätigung der E-Mail (direkt anmelden oder Hinweis auf der Anmeldeseite).
 - Gast in Konto umwandeln.
 - Google-Anmeldung einrichten und anbinden.
