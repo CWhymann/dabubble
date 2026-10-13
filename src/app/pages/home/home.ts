@@ -2,7 +2,6 @@
 import { Auth } from '../../core/auth';
 import { ChannelActions } from '../../core/channel-actions';
 import { ChatState } from '../../core/chat-state';
-import { DEV_CHANNEL } from '../../core/channels';
 import { Presence } from '../../core/presence';
 import { SearchHit } from '../../core/search';
 import { ChatUser, DM_USERS, setOwnUser, USERS } from '../../core/users';
@@ -28,6 +27,7 @@ import { SearchBar } from '../../features/search-bar/search-bar';
 import { Thread } from '../../features/thread/thread';
 import { WorkspaceMenu } from '../../features/workspace-menu/workspace-menu';
 import { Logo } from '../../shared/logo/logo';
+import { DEV_CHANNEL } from '../../core/channels';
 
 type MobileView = 'menu' | 'chat' | 'thread';
 
@@ -69,6 +69,7 @@ export class Home {
   protected readonly ownEmail = signal('');
   protected readonly ownAvatar = signal('/icons/avatar-frederik-beck.svg');
   private readonly isAdminAccount = signal(false);
+  protected readonly isGuest = signal(false);
 
   protected readonly channels = this.state.channels;
   protected readonly memberAvatars = this.state.memberAvatars;
@@ -92,14 +93,12 @@ export class Home {
   protected readonly addChannelOpen = signal(false);
   protected readonly pendingChannel = signal<NewChannel | null>(null);
   protected readonly otherProfile = signal<ChatUser | null>(null);
-
   protected readonly messagePlaceholder = computed(() => {
     const dm = this.activeDm();
     return dm ? `Nachricht an ${dm.name}` : `Nachricht an #${this.activeChannel() ?? ''}`;
   });
 
   protected readonly isAdmin = computed(() => this.isAdminAccount());
-
   protected readonly memberNeighbors = computed(() => {
     const current = this.otherProfile()?.name;
     const others = this.activeMembers().filter((name) => name !== this.ownAuthor);
@@ -153,6 +152,7 @@ export class Home {
 
   private async loadCurrentProfile(): Promise<void> {
     const profile = await this.auth.getCurrentProfile();
+    this.isGuest.set((await this.auth.getUser()).user?.is_anonymous === true);
     if (profile) {
       setOwnUser(profile.name, profile.email, profile.avatar);
       this.presence.start(profile.name);
