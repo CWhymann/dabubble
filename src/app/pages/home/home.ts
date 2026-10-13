@@ -1,12 +1,11 @@
 ﻿import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
-import { DEV_CHANNEL } from '../../core/channels';
 import { Auth } from '../../core/auth';
-import { ChatStatus } from '../../core/chat-status';
+import { ChannelActions } from '../../core/channel-actions';
+import { ChatState } from '../../core/chat-state';
+import { DEV_CHANNEL } from '../../core/channels';
 import { Presence } from '../../core/presence';
-import { Data } from '../../core/data';
-import { ChatStore } from '../../core/chat-store';
 import { SearchHit } from '../../core/search';
-import { ChatUser, DM_USERS, setOwnUser, setUsers, USERS } from '../../core/users';
+import { ChatUser, DM_USERS, setOwnUser, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddChannelMembers } from '../../features/add-channel-members/add-channel-members';
 import { AddMembers } from '../../features/add-members/add-members';
@@ -31,11 +30,6 @@ import { WorkspaceMenu } from '../../features/workspace-menu/workspace-menu';
 import { Logo } from '../../shared/logo/logo';
 
 type MobileView = 'menu' | 'chat' | 'thread';
-
-interface ChannelMeta {
-  description: string;
-  creator: string;
-}
 
 @Component({
   selector: 'app-home',
@@ -66,38 +60,24 @@ interface ChannelMeta {
   templateUrl: './home.html',
 })
 export class Home {
-  private readonly store = inject(ChatStore);
   private readonly auth = inject(Auth);
-  private readonly data = inject(Data);
   private readonly presence = inject(Presence);
-  private readonly chatStatus = inject(ChatStatus);
+  private readonly state = inject(ChatState);
+  private readonly actions = inject(ChannelActions);
+
   protected readonly ownName = signal('');
   protected readonly ownEmail = signal('');
   protected readonly ownAvatar = signal('/icons/avatar-frederik-beck.svg');
-  protected readonly memberAvatars = signal<Record<string, string>>({});
   private readonly isAdminAccount = signal(false);
 
-  constructor() {
-    void this.loadCurrentProfile();
-    const stopWatching = this.data.watchChanges(() => {
-      void this.loadMessages();
-      void this.loadReplies();
-    });
-    inject(DestroyRef).onDestroy(() => {
-      stopWatching();
-      this.presence.stop();
-    });
-  }
+  protected readonly channels = this.state.channels;
+  protected readonly memberAvatars = this.state.memberAvatars;
+  protected readonly activeChannel = this.state.activeChannel;
+  protected readonly activeDm = this.state.activeDm;
+  protected readonly threadRootId = this.state.threadRootId;
+  protected readonly activeMembers = this.state.activeMembers;
+  protected readonly activeChannelMeta = this.state.activeChannelMeta;
 
-  private get ownAuthor(): string {
-    return this.ownName();
-  }
-  protected readonly channels = signal<string[]>([]);
-  protected readonly activeChannel = signal<string | null>(null);
-  protected readonly activeDm = signal<ChatUser | null>(null);
-  protected readonly threadRootId = signal<string | null>(null);
-  protected readonly channelMembers = signal<Record<string, string[]>>({});
-  protected readonly channelMeta = signal<Record<string, ChannelMeta>>({});
   protected readonly channelEditOpen = signal(false);
   protected readonly channelMembersOpen = signal(false);
   protected readonly leaveConfirmOpen = signal(false);
@@ -112,21 +92,6 @@ export class Home {
   protected readonly addChannelOpen = signal(false);
   protected readonly pendingChannel = signal<NewChannel | null>(null);
   protected readonly otherProfile = signal<ChatUser | null>(null);
-
-  protected readonly activeMembers = computed(() => {
-    const channel = this.activeChannel();
-    return channel ? (this.channelMembers()[channel] ?? []) : [];
-  });
-
-  protected readonly activeChannelMeta = computed<ChannelMeta>(() => {
-    const channel = this.activeChannel();
-    return (channel && this.channelMeta()[channel]) || { description: '', creator: '' };
-  });
-
-  protected readonly activeChatKey = computed(() => {
-    const dm = this.activeDm();
-    return dm ? `dm:${dm.name}` : this.activeChannel();
-  });
 
   protected readonly messagePlaceholder = computed(() => {
     const dm = this.activeDm();
@@ -165,37 +130,25 @@ export class Home {
       : 'lg:grid-cols-[minmax(0,1fr)]';
   });
 
-  protected async sendMessage(text: string): Promise<void> {
-    const key = this.activeChatKey();
-    if (key) {
-      await this.data.sendMessage(key, text);
-      await this.loadMessages();
-    }
+  constructor() {
+    void this.loadCurrentProfile();
+    this.state.start();
+    inject(DestroyRef).onDestroy(() => {
+      this.state.stop();
+      this.presence.stop();
+    });
   }
 
-  private async loadMessages(): Promise<void> {
-    const key = this.activeChatKey();
-    if (key) {
-      this.store.setMessages(key, await this.data.loadMessages(key));
-      await this.chatStatus.markRead(key);
-    }
-    await this.chatStatus.refresh();
+  private get ownAuthor(): string {
+    return this.ownName();
   }
 
-  protected async sendReply(text: string): Promise<void> {
-    const rootId = this.threadRootId();
-    if (rootId) {
-      await this.data.sendReply(rootId, text);
-      await this.loadReplies();
-      await this.loadMessages();
-    }
+  protected sendMessage(text: string): Promise<void> {
+    return this.state.sendMessage(text);
   }
 
-  private async loadReplies(): Promise<void> {
-    const rootId = this.threadRootId();
-    if (rootId) {
-      this.store.setReplies(rootId, await this.data.loadReplies(rootId));
-    }
+  protected sendReply(text: string): Promise<void> {
+    return this.state.sendReply(text);
   }
 
   private async loadCurrentProfile(): Promise<void> {
@@ -208,29 +161,7 @@ export class Home {
       this.ownAvatar.set(profile.avatar);
       this.isAdminAccount.set(profile.isAdmin);
     }
-    await this.loadChannels();
-  }
-
-  private async loadChannels(): Promise<void> {
-    const records = await this.data.loadChannels();
-    this.channels.set(records.map((record) => record.name));
-    this.channelMembers.set(
-      Object.fromEntries(records.map((record) => [record.name, record.members])),
-    );
-    this.channelMeta.set(
-      Object.fromEntries(
-        records.map((record) => [
-          record.name,
-          { description: record.description, creator: record.createdBy },
-        ]),
-      ),
-    );
-    const avatars = await this.data.loadAvatars();
-    setUsers(avatars);
-    this.memberAvatars.set(avatars);
-    const first = records.find((record) => record.name === DEV_CHANNEL) ?? records[0];
-    this.activeChannel.set(first?.name ?? null);
-    await this.loadMessages();
+    await this.state.loadChannels();
   }
 
   protected toggleMenu(): void {
@@ -281,8 +212,8 @@ export class Home {
   protected async addChannelMembers(names: string[]): Promise<void> {
     const channel = this.activeChannel();
     if (channel) {
-      await this.data.addMembers(channel, names);
-      await this.loadChannels();
+      await this.actions.addMembers(channel, names);
+      await this.state.loadChannels();
     }
     this.closeChannelMembers();
   }
@@ -301,10 +232,9 @@ export class Home {
     if (!channel) {
       return;
     }
-    await this.data.leaveChannel(channel);
-    this.store.notify(channel, `${this.ownName()} hat den Channel verlassen.`);
+    await this.actions.leave(channel, this.ownName());
     this.closeChannelEdit();
-    await this.loadChannels();
+    await this.state.loadChannels();
   }
 
   protected async removeMembers(names: string[]): Promise<void> {
@@ -312,11 +242,8 @@ export class Home {
     if (!channel || !this.isAdmin()) {
       return;
     }
-    await this.data.removeMembers(channel, names);
-    for (const name of names) {
-      this.store.notify(channel, `${this.ownName()} hat ${name} aus dem Channel entfernt.`);
-    }
-    await this.loadChannels();
+    await this.actions.removeMembers(channel, names, this.ownName());
+    await this.state.loadChannels();
   }
 
   protected async saveChannel(edit: ChannelEdit): Promise<void> {
@@ -326,8 +253,8 @@ export class Home {
     }
     const name = edit.name.trim();
     const newName = name && (name === old || !this.channels().includes(name)) ? name : old;
-    await this.data.updateChannel(old, newName, edit.description);
-    await this.loadChannels();
+    await this.actions.update(old, newName, edit.description);
+    await this.state.loadChannels();
     this.activeChannel.set(newName);
   }
 
@@ -335,7 +262,7 @@ export class Home {
     this.threadRootId.set(rootId);
     this.threadOpen.set(true);
     this.mobileView.set('thread');
-    void this.loadReplies();
+    void this.state.loadReplies();
   }
 
   protected closeThread(): void {
@@ -356,7 +283,7 @@ export class Home {
     if (channel !== DEV_CHANNEL) {
       this.threadOpen.set(false);
     }
-    void this.loadMessages();
+    void this.state.loadMessages();
   }
 
   protected selectUser(name: string): void {
@@ -366,7 +293,7 @@ export class Home {
       this.activeDm.set(user);
       this.threadOpen.set(false);
       this.mobileView.set('chat');
-      void this.loadMessages();
+      void this.state.loadMessages();
     }
   }
 
@@ -460,12 +387,12 @@ export class Home {
   protected async confirmMembers(names: string[]): Promise<void> {
     const channel = this.pendingChannel();
     if (channel) {
-      await this.data.createChannel(channel.name, '');
-      await this.data.addMembers(
+      await this.actions.create(channel.name);
+      await this.actions.addMembers(
         channel.name,
         names.filter((name) => name !== this.ownAuthor),
       );
-      await this.loadChannels();
+      await this.state.loadChannels();
       this.selectChannel(channel.name);
     }
     this.closeAddMembers();
