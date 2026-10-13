@@ -78,13 +78,16 @@
               type="button"
               class="flex cursor-pointer items-center gap-2.5 rounded-[20px] px-2.5 py-1 text-lg hover:bg-bg xs:px-5"
               [class.bg-bg]="channel === activeChannel()"
-              [class.font-bold]="channel === activeChannel()"
+              [class.font-bold]="channel === activeChannel() || unreadChannel(channel)"
               [class.text-purple-3]="channel === activeChannel()"
               [attr.aria-current]="channel === activeChannel() ? 'true' : null"
               (click)="selectChannel.emit(channel)"
             >
               <img class="size-6" src="/icons/tag.svg" alt="" />
               {{ channel }}
+              @if (unreadChannel(channel)) {
+                <span class="size-2.5 rounded-full bg-purple-3" aria-label="Neue Nachricht"></span>
+              }
             </button>
           </li>
         }
@@ -142,13 +145,13 @@
 
     @if (usersOpen()) {
       <ul class="flex min-h-0 flex-col gap-3.25 overflow-y-auto max-h-68">
-        @for (user of users; track user.name) {
+        @for (user of users(); track user.name) {
           <li class="flex pl-2.5 xs:pl-6.25">
             <button
               type="button"
               class="flex cursor-pointer items-center gap-2.5 rounded-[35px] px-2.5 py-1 text-lg hover:bg-bg xs:gap-3.75 xs:px-5"
               [class.bg-bg]="user.name === activeUser()"
-              [class.font-bold]="user.name === activeUser()"
+              [class.font-bold]="user.name === activeUser() || unreadDm(user.name)"
               [class.text-purple-3]="user.name === activeUser()"
               [attr.aria-current]="user.name === activeUser() ? 'true' : null"
               (click)="selectUser.emit(user.name)"
@@ -162,6 +165,9 @@
                 />
               </span>
               {{ user.name }}{{ user.name === ownName ? ' (Du)' : '' }}
+              @if (unreadDm(user.name)) {
+                <span class="size-2.5 rounded-full bg-purple-3" aria-label="Neue Nachricht"></span>
+              }
             </button>
           </li>
         }

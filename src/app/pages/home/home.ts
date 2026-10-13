@@ -1,6 +1,7 @@
 ﻿import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { DEV_CHANNEL } from '../../core/channels';
 import { Auth } from '../../core/auth';
+import { ChatStatus } from '../../core/chat-status';
 import { Presence } from '../../core/presence';
 import { Data } from '../../core/data';
 import { ChatStore } from '../../core/chat-store';
@@ -69,6 +70,7 @@ export class Home {
   private readonly auth = inject(Auth);
   private readonly data = inject(Data);
   private readonly presence = inject(Presence);
+  private readonly chatStatus = inject(ChatStatus);
   protected readonly ownName = signal('');
   protected readonly ownEmail = signal('');
   protected readonly ownAvatar = signal('/icons/avatar-frederik-beck.svg');
@@ -175,7 +177,9 @@ export class Home {
     const key = this.activeChatKey();
     if (key) {
       this.store.setMessages(key, await this.data.loadMessages(key));
+      await this.chatStatus.markRead(key);
     }
+    await this.chatStatus.refresh();
   }
 
   protected async sendReply(text: string): Promise<void> {
