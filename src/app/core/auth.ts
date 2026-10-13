@@ -40,6 +40,13 @@ export class Auth {
     return this.supabase.client.auth.updateUser({ password });
   }
 
+  async signInWithGoogle() {
+    return this.supabase.client.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: new URL('home', document.baseURI).href },
+    });
+  }
+
   async signInAsGuest() {
     return this.supabase.client.auth.signInAnonymously();
   }
@@ -70,7 +77,7 @@ export class Auth {
     return {
       name: data?.name || fallback,
       email: user.email ?? '',
-      avatar: data?.avatar || '/icons/avatar-frederik-beck.svg',
+      avatar: data?.avatar || 'icons/avatar-frederik-beck.svg',
       isAdmin: data?.is_admin === true,
     };
   }

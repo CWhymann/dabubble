@@ -25,6 +25,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx ng build --configuration production --base-href /dabubble/
+      - name: Pfade für Icons und Schriften an den Unterordner anpassen
+        run: |
+          find dist/dabubble/browser -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" \) \
+            -exec sed -i 's#/icons/#/dabubble/icons/#g; s#/fonts/#/dabubble/fonts/#g' {} +
       - name: Fallback für direkte Aufrufe wie /home
         run: cp dist/dabubble/browser/index.html dist/dabubble/browser/404.html
       - uses: actions/upload-pages-artifact@v3
