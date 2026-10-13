@@ -1,6 +1,7 @@
 ﻿import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { DEV_CHANNEL } from '../../core/channels';
 import { Auth } from '../../core/auth';
+import { Presence } from '../../core/presence';
 import { Data } from '../../core/data';
 import { ChatStore } from '../../core/chat-store';
 import { SearchHit } from '../../core/search';
@@ -67,6 +68,7 @@ export class Home {
   private readonly store = inject(ChatStore);
   private readonly auth = inject(Auth);
   private readonly data = inject(Data);
+  private readonly presence = inject(Presence);
   protected readonly ownName = signal('');
   protected readonly ownEmail = signal('');
   protected readonly ownAvatar = signal('/icons/avatar-frederik-beck.svg');
@@ -79,7 +81,10 @@ export class Home {
       void this.loadMessages();
       void this.loadReplies();
     });
-    inject(DestroyRef).onDestroy(stopWatching);
+    inject(DestroyRef).onDestroy(() => {
+      stopWatching();
+      this.presence.stop();
+    });
   }
 
   private get ownAuthor(): string {
@@ -193,6 +198,7 @@ export class Home {
     const profile = await this.auth.getCurrentProfile();
     if (profile) {
       setOwnUser(profile.name, profile.email, profile.avatar);
+      this.presence.start(profile.name);
       this.ownName.set(profile.name);
       this.ownEmail.set(profile.email);
       this.ownAvatar.set(profile.avatar);
