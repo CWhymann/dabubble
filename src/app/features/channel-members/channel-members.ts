@@ -1,5 +1,5 @@
 import { Component, computed, input, output } from '@angular/core';
-import { ChatUser, DM_USERS, isOwnUser } from '../../core/users';
+import { ChatUser, OWN_USER, isOwnUser } from '../../core/users';
 
 @Component({
   selector: 'app-channel-members',
@@ -10,14 +10,18 @@ import { ChatUser, DM_USERS, isOwnUser } from '../../core/users';
 })
 export class ChannelMembers {
   readonly memberNames = input.required<string[]>();
+  readonly memberAvatars = input<Record<string, string>>({});
   readonly closed = output<void>();
   readonly showProfile = output<string>();
   readonly addMembers = output<void>();
 
-  protected readonly members = computed(() =>
-    this.memberNames()
-      .map((name) => DM_USERS.find((user) => user.name === name))
-      .filter((user): user is ChatUser => user !== undefined),
+  protected readonly members = computed<ChatUser[]>(() =>
+    this.memberNames().map((name) => ({
+      name,
+      avatar: this.memberAvatars()[name] ?? '/icons/avatar-frederik-beck.svg',
+      email: name === OWN_USER.name ? OWN_USER.email : '',
+      online: true,
+    })),
   );
 
   protected label(user: ChatUser): string {

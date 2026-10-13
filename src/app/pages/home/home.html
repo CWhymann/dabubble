@@ -232,6 +232,7 @@
 @if (membersOpen()) {
   <app-channel-members
     [memberNames]="activeMembers()"
+    [memberAvatars]="memberAvatars()"
     (closed)="closeMembers()"
     (showProfile)="openProfileFromMembers($event)"
     (addMembers)="openChannelMembers()"
