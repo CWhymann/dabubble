@@ -1,4 +1,4 @@
-﻿import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { DEV_CHANNEL } from '../../core/channels';
 import { Auth } from '../../core/auth';
 import { Data } from '../../core/data';
@@ -75,6 +75,11 @@ export class Home {
 
   constructor() {
     void this.loadCurrentProfile();
+    const stopWatching = this.data.watchChanges(() => {
+      void this.loadMessages();
+      void this.loadReplies();
+    });
+    inject(DestroyRef).onDestroy(stopWatching);
   }
 
   private get ownAuthor(): string {

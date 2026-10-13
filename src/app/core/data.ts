@@ -45,6 +45,23 @@ export interface ChannelRecord {
 export class Data {
   private readonly supabase = inject(Supabase);
 
+  watchChanges(onChange: () => void): () => void {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const notify = () => {
+      clearTimeout(timer);
+      timer = setTimeout(onChange, 150);
+    };
+    const channel = this.supabase.client
+      .channel('chat-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, notify)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reactions' }, notify)
+      .subscribe();
+    return () => {
+      clearTimeout(timer);
+      void this.supabase.client.removeChannel(channel);
+    };
+  }
+
   async createChannel(name: string, description: string): Promise<void> {
     const userId = await this.currentUserId();
     if (!userId) {
