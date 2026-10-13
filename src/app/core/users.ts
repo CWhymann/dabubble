@@ -1,52 +1,9 @@
-import { AVATARS } from './avatars';
-
 export interface ChatUser {
   name: string;
   avatar: string;
   email: string;
   online: boolean;
 }
-
-const avatarOf = (name: string) => AVATARS.find((avatar) => avatar.name === name)?.src ?? '';
-
-export const USERS: ChatUser[] = [
-  {
-    name: 'Sofia Müller',
-    avatar: avatarOf('Sofia Müller'),
-    email: 'sofia.muel@beispiel.com',
-    online: true,
-  },
-  {
-    name: 'Noah Braun',
-    avatar: avatarOf('Noah Braun'),
-    email: 'noahbra@beispiel.com',
-    online: true,
-  },
-  {
-    name: 'Elise Roth',
-    avatar: avatarOf('Elise Roth'),
-    email: 'rothelise@beispiel.com',
-    online: false,
-  },
-  {
-    name: 'Elias Neumann',
-    avatar: avatarOf('Elias Neumann'),
-    email: 'ichbinelias@beispiel.com',
-    online: true,
-  },
-  {
-    name: 'Steffen Hoffmann',
-    avatar: avatarOf('Steffen Hoffmann'),
-    email: 'thehoffman@beispiel.com',
-    online: true,
-  },
-  {
-    name: 'Frederik Beck',
-    avatar: avatarOf('Frederik Beck'),
-    email: 'fred.beck@email.com',
-    online: true,
-  },
-];
 
 export const OWN_USER: ChatUser = {
   name: '',
@@ -55,13 +12,23 @@ export const OWN_USER: ChatUser = {
   online: true,
 };
 
+export const USERS: ChatUser[] = [];
+
+export const DM_USERS: ChatUser[] = [OWN_USER];
+
 export const setOwnUser = (name: string, email: string, avatar: string): void => {
   OWN_USER.name = name;
   OWN_USER.email = email;
   OWN_USER.avatar = avatar;
 };
 
-export const DM_USERS: ChatUser[] = [OWN_USER, ...USERS];
+export const setUsers = (avatars: Record<string, string>): void => {
+  const others: ChatUser[] = Object.entries(avatars)
+    .filter(([name]) => name !== '' && name !== OWN_USER.name)
+    .map(([name, avatar]) => ({ name, avatar, email: '', online: false }));
+  USERS.splice(0, USERS.length, ...others);
+  DM_USERS.splice(0, DM_USERS.length, OWN_USER, ...others);
+};
 
 export const isOwnUser = (user: ChatUser): boolean =>
   user.name !== '' && user.name === OWN_USER.name;

@@ -4,7 +4,7 @@ import { Auth } from '../../core/auth';
 import { Data } from '../../core/data';
 import { ChatStore } from '../../core/chat-store';
 import { SearchHit } from '../../core/search';
-import { ChatUser, DM_USERS, setOwnUser, USERS } from '../../core/users';
+import { ChatUser, DM_USERS, setOwnUser, setUsers, USERS } from '../../core/users';
 import { AddChannel, NewChannel } from '../../features/add-channel/add-channel';
 import { AddChannelMembers } from '../../features/add-channel-members/add-channel-members';
 import { AddMembers } from '../../features/add-members/add-members';
@@ -215,7 +215,9 @@ export class Home {
         ]),
       ),
     );
-    this.memberAvatars.set(await this.data.loadAvatars());
+    const avatars = await this.data.loadAvatars();
+    setUsers(avatars);
+    this.memberAvatars.set(avatars);
     const first = records.find((record) => record.name === DEV_CHANNEL) ?? records[0];
     this.activeChannel.set(first?.name ?? null);
     await this.loadMessages();
