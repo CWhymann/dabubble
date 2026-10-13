@@ -24,11 +24,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx ng build --configuration production --base-href /dabubble/
-      - name: Pfade für Icons und Schriften an den Unterordner anpassen
+      - name: Pfade für Icons und Schriften relativ machen
         run: |
-          find dist/dabubble/browser -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" \) \
-            -exec sed -i 's#/icons/#/dabubble/icons/#g; s#/fonts/#/dabubble/fonts/#g' {} +
+          find src -type f \( -name "*.ts" -o -name "*.html" -o -name "*.css" \) \
+            -exec sed -i 's#/icons/#icons/#g; s#/fonts/#fonts/#g' {} +
+      - run: npx ng build --configuration production --base-href /dabubble/
       - name: Fallback für direkte Aufrufe wie /home
         run: cp dist/dabubble/browser/index.html dist/dabubble/browser/404.html
       - uses: actions/upload-pages-artifact@v3
